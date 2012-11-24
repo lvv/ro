@@ -1,0 +1,10 @@
+// vim:set ft=asciidoc:
+STO — STL Template Operators
+===============
+:compact-option: compact
+
+_STO_ is _+++C++ +++_ headers only lobrary, which provides alternative
+interface to STL.
+
+
+See full docs at http://volnitsky.com/project/sto[]
