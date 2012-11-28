@@ -13,8 +13,8 @@ SCC
 ---
 
 STO was originally part of SCC (+++ C++ +++ snippet evaluator at shell prompt).
-It does not depands on SCC but we will use it in out examples, so we need to
-tell you about SCC first.  Without SCC, minimal and complete example for 
+It does not depands on SCC but we will use it in examples, so we need to
+tell about SCC first.  Without SCC, minimal complete example for 
 `operator*(Range,Functor)` would be:
 
 ----------------------------------------------------------------------------
@@ -44,8 +44,9 @@ statement-expresion, if not terminated by semi-colon, to `std::cout`.  Typedef
 `str` is shortcut for `std::string`, similarly `vint` (in examples that will
 follow) is `std::vector<int>`.
 
-SCC printer can print almost any STL containers (containers, tuples, etc)
-directly.  Items in print operator are seperated by `,` not by `<<`. 
+SCC printer can print almost any STL objects (containers, tuples, etc)
+directly.  Items in print operator (and last expression which will be printed)
+are seperated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
 scc 'auto r = range(0, 1, 0.1);  r, endl, r * sin'
@@ -55,7 +56,6 @@ scc 'auto r = range(0, 1, 0.1);  r, endl, r * sin'
 
 Print operator are `_` and `__`.  Longer one terminates output with `endl`.
 With these, previous example would be:
-
 
 -----------------------------------------------------------------------------
 scc '__ range(0, 1, 0.1);  __ range(0, 1, 0.1) * sin;'
@@ -70,27 +70,28 @@ Range Operators
 
 Ranges are generalization of STL containers.
 STO defines operators to work with ranges (and STL containers). 
-It have two groups of operations.  First is shortcuts for containers' member functions and simple
+It have two groups of operators.  First is shortcuts for containers' member functions and simple
 extensions. Second is more complex operations like
 fold, reduce, filter and arbitrary transformation of ranges.
 
 In table below are 1st group - simple shortcuts for container member functions.
-Unlike STL member functions they usually return result of operation (so it can be used in expressions).
+Unlike STL member functions they usually return result of operation (so it can
+be used in expressions), and are more generic (can work with any range).
 
 ----------------------------------------------------------------
-+C			//  C.begin()
--C			//  C.end()
-++C			//  C.front()
-C++			//  C.back()
---C			//  C.pop_front()
-C--			//  C.pop_back()
++Rg			//  Rg.begin()
+-Rg			//  Rg.end()
+++Rg			//  Rg.front()
+Rg++			//  Rg.back()
+--Rg			//  Rg.pop_front()
+Rg--			//  Rg.pop_back()
 
-C << x			//  C.push_back(x)
-x >> C			//  C.push_front(x)
-C >> x			//  x = C.back(x);   C.pop_back();
-x << C			//  x = C.front(x);  C.pop_front();
-C1 << C2		//  copy(C2.begin(), C2.end(), back_inserter(C1));
-C1 >> C2		//  copy(C1.rbegin(), C1.rend(), front_inserter(C2)); 
+Rg << x			//  Rg.push_back(x)
+x >> Rg			//  Rg.push_front(x)
+Rg >> x			//  x = Rg.back(x);   Rg.pop_back();
+x << Rg			//  x = Rg.front(x);  Rg.pop_front();
+Rg1 << Rg2		//  copy(Rg2.begin(), Rg2.end(), back_inserter(Rg1));
+Rg1 >> Rg2		//  copy(Rg1.rbegin(), Rg1.rend(), front_inserter(Rg2)); 
 
 ++Pair			//  Pair.first
 Pair++			//  Pair.second
@@ -109,20 +110,46 @@ Queue++ 		//  Queue.back(x)
 --Queue 		//  Queue.pop(x)
 Queue << x		//  Queue.push(x)
 x << Queue		//  x = Queue.front(x);  Queue.pop()
+
+Rg = Rg2 		//  undelying contanainers can be of different type
+Rg = x 			//  fill(Rg.begin(), Rg.end(), x)
+
+// SEARCH
+
+Rg / x			// find(+Rg, -Rg, x)
+Rg % x			// find(+Rg, -Rg, x) != -Rg
+Rg / f		
+Rg % f			// find(+Rg, -Rg, x) != -Rg
+Rg / Rg			// search(+Rg, -Rg, +Rg, -Rg) 
+
+
+// GENERIC ERASE
+
+Rg - x			// erase all elements equal to x
+Rg - pred		// erase all elements evaluated to 'true` 
+Rg - Rg2		// erase subrange 
+
 ----------------------------------------------------------------
 
 
-Ranges
-~~~~~~
 
-Ranges are numeric ranges,  iterator ranges,  expression ranges, STL
+Ranges
+------
+
+_Ranges_ are numeric ranges,  iterator ranges,  expression ranges, STL
 containers, C-arrays and C-strings.  STO defines C-strings as zero terminated
 arrays of `char` (not `signed char` or `unsigned chars`).  Expression ranges
-are result of various range expression (like fold/reduce/filter).  Subset of
-Ranges are STO Ranges:  iterator ranges, expresion ranges and numeric ranges.
-STO ranges do not contain data, they refer to an existing STL container or
-generate its elements.
+are result of range expression (fold/reduce/filter). 
 
+Subset of Ranges are _STO Ranges_:  iterator ranges, expression ranges and numeric
+ranges.  STO ranges do not contain data, they refer to an existing STL
+container or generate its elements.  Particular type of the range often is not
+important and it is result of range expression or `range()` convenience
+function.
+
+
+Numeric range
+~~~~~~~~~~~~~
 
 Numeric range is simple numeric sequence generator :
 
@@ -140,17 +167,22 @@ scc 'range(10,0,-1.5)'
 {10, 8.5, 7, 5.5, 4, 2.5, 1}
 -----------------------------------
 
-Iterator range is simple wrapper for for a range defined be first and last iterator.
-Below we will assign 42 to elements `2..4` of vector `{0,1,2,3,4,5,6,7,8,9}`:
+Iterator range
+~~~~~~~~~~~~~~
+
+Iterator range is simple wrapper for for a range defined by first and last iterator.
+
+Assign `42` to elements `2..4` of vector `{0,1,2,3,4,5,6,7,8,9}`:
 
 ------------------------------------
 scc 'vint v;  v << range(0,9);   range(v/2, v/5) = 42;  v'
 {0, 1, 42, 42, 42, 5, 6, 7, 8, 9}
 ------------------------------------
 
-Expression `range(0,9)` construct numeric range which initialize `v`.  
+Expression `range(0,9)` constructs numeric range which initialize `v`.  
 Expression `v/2` returns iterator to 1st element with value `2`.  Expression
-`range(v/2,v/5)` construct iterator range from pair of iterators.
+`range(v/2,v/5)` constructs iterator range from pair of iterators.
+
 
 Ranges can be assigned to another range even if they have different underlying
 containers.  Here is simplest expression range, which shows that it just
@@ -162,7 +194,10 @@ scc  'vint v;  auto r=range(v);  r = range(0,9);  r, v'
 -------------------------------------------------
 
 
-Operation with C-strings. We first assign a c-string and then append another:
+Operation with C-strings 
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+We first assign a c-string and then append another:
 
 -----------------------------------------
 scc 'char S[99];  range(S) = "abc";  __ S;   range(S) << " XYZ"'
@@ -170,7 +205,7 @@ abc
 abc XYZ
 ------------------------------------------
 
-Note that we can not define overloaded operations for POD types (like c-string).
+Note that we can not define overloaded operations if arguments are only POD types (like c-string).
 +++C++ +++ do not allow this. This is a reason why we have to wrap `S` with `range()`. For binary
 ops, we need to wrap at least one of operands in a class.
 
@@ -183,14 +218,14 @@ abc XYZ
 ------------------------------------------
 
 
-Pipe, Map, Reduce
------------------
+Operators: Map, Reduce, Filter
+----------------------------
 
 
 Map/Transform
 ~~~~~~~~~~~~~
 
-Operator `sto::operator* (Range,Functor)` is equivalent to `std::transform`:
+Operator `sto::operator* (Range,Functor)` is map/transform operator.
 
 ------------------------------------------
 scc 'range("abc") * toupper'
@@ -212,16 +247,16 @@ std::transform(V.begin(), V.end(), V.begin(), std::abs<int>)'
 Reduce/Fold
 ~~~~~~~~~~~
 
-Operator `sto::operator|| (Range,Functor)` is equivalent to `std::accumulate`
+Operator `sto::operator|| (Range,Functor)` is fold operator.
 
 ------------------------------------------
 scc 'vint V{1,2,3};  V || plus<int>()'
 6
 
-scc 'vint V{1,2,3};  V || add'  	// with STO shortcut for std::plus<int>()
+scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<int>()
 6
 
-scc 'vint V{1,2,3};  V || mul'		// with shortcut for std::multiplyes<int>()
+scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplyes<int>()
 6
 
 scc 'vint V{1,2,3};  V || min'		// uses std::min
@@ -252,11 +287,13 @@ Pipe
 ~~~~
 
 Pipe operator have much more freedom on what it can do with range. It can filter out,
-add, reorder and convert to different type. It is overloaded for different right-hand-side objects.
+add, reorder and convert to different type. It has overloads for different right-hand-side objects.
 
 
 Pipe-filter
 ^^^^^^^^^^^
+
+Pipe-filter are defined with `operators|(Range, Predicate)` and `operator|(Range, range_elem_type)`. 
 
 Predicate is functor with signature `bool(*)(range_elem_type)`. If such is used
 with pipe operator, all elements which evaluate to `false` with predicate - are
@@ -265,20 +302,16 @@ filtered out:
 ------------------------------------------
 scc 'range("abc-123") | isdigit'
 123
+-----------------------------------------
 
+Filter and transform:
+
+-----------------------------------------
 scc '(range("abc-123, xyz/") | isalnum) * toupper'
 ABC123XYZ
 ------------------------------------------
 
-Range expression are lazy evaluated - value is computed only when needed. 
-In above examples there was no dynamic memory or stack  space allocation. 
-It should be as efficient as manually written `for` loop.
-
-
-
-
-
-Here we use `std::string` assignment operator to append, and  STO `<<` op to append.
+Hide digits:
 
 ---------------------------------------------------------------------
 scc 'str S="John Q Public  (650)1234567";  S|isdigit=*"X";  S'
@@ -287,44 +320,22 @@ John Q Public  (XXX)XXXXXXX
 
 Expression `S | isdigit`, produce a filtered range,  where `isdigit` is
 predicate for filtering.  This is lazy-evaluated, it does not creates
-temporary container and should be efficient as hand written for-loop.
+temporary container and should be as efficient as hand written for-loop.
 Expression `*"X"` is the same thing as `'X'` (as work around for Bash/+++C++ +++
-qoutes conflict).
+quotes conflict).
 
+
+Filter `operator|(Range, range_elem_type)` selects only elements which are equal to second argument:
+
+Replace 2 with 42 with underline:
+
+---------------------------------------------------------------------
+scc '*" ";  S'
+John Q Public  (XXX)XXXXXXX
+-----------------------------------------------------------------
 
 --- THIS SECTION IS INCOMPLETE ---
 
-///////////////////////////////////////////////
-Rn / x		-> it		// find(+Ct, -Ct, x)
-Rn % x		-> bool		// find(+Ct, -Ct, x) != -Ct
-Rn / f		-> it
-Rn % f		-> bool		// find(+Ct, -Ct, x) != -Ct
-Rn / Rn		-> Rn		// search(+Ct, -Ct, +Rg, -Rg) 
-Rn - it 			// Ct.eraze(it);
-Rn - Rn				// erase
-Rn = Rn2 			// with conversion
-
-src >> ct-dest
-ct-dest << src
-
-Rn  * f(x)	-> Rn		// transform	(map)
-Rn || f(x,y)	-> T 		// accumulate    (fold)
-Rn  | filter-t	-> Rn 		// filter
-
-////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////
-/*	 		Ct	string	A	c-str
-*	-------------+-------------------------------
-*	+Ct		+	+	-	-
-*	-Ct		+	+	-	-
-*	~Ct		+	+	-	-
-*	!Ct		+	+	-	-
-*	++Ct		+	+	-	-
-*	Ct++		+	+	-	-
-*	Ct << x		+	+	-	-
-*/
-/////////////////////////////////////////////////////////
 
 Available Functors
 ~~~~~~~~~~~~~~~~~~
