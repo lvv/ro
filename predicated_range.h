@@ -202,6 +202,9 @@ template<class Rg>		eIF<is_range<Rg>::value,  predicated_range<Rg&&,bool(*)(cons
 template<class Rg>		eIF<is_range<Rg>::value,  predicated_range<Rg&&,bool(*)(rg_elem_type<Rg>)                    >>	operator|  (Rg&& rg,  bool(pred)(rg_elem_type<Rg>)                     ){ return   predicated_range<Rg&&,bool(*)(rg_elem_type<Rg>)                   > (std::forward<Rg>(rg),  pred); };
 template<class Rg, class F>	eIF<is_range<Rg>::value && is_callable<F, bool(rg_elem_type<Rg>)>::value, 
 							  predicated_range<Rg&&, F>>						operator|  (Rg&& rg,  F pred)						{ return   predicated_range<Rg&&,F> (std::forward<Rg>(rg),  pred); };
+
+//  Rg1 | elem_type --> range
+template<class Rg>		eIF<is_range<Rg>::value,  predicated_range<Rg&&, std::function<bool(rg_elem_type<Rg>)>      >>	operator|  (Rg&& rg,  const rg_elem_type<Rg>& value)                    { return   predicated_range<Rg&&, std::function<bool(rg_elem_type<Rg>)>>       (std::forward<Rg>(rg),  [value](const rg_elem_type<Rg>& el){return el==value;}); };
 		// Overload is better than SFINAE selection. With OL we do not need to specify functor template arguments
 						};
 						#endif //  STO_MAPPED_RANGE_H
