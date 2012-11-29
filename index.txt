@@ -197,24 +197,22 @@ scc  'vint v;  auto r=range(v);  r = range(0,9);  r, v'
 Operation with C-strings 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-We first assign a c-string and then append another:
+We first assign a c-string, then append `"XYZ"` and then remove `"bc"` substring :
 
 -----------------------------------------
-scc 'char S[99];  range(S) = "abc";  __ S;   range(S) << " XYZ"'
-abc
-abc XYZ
+scc 'char s[99];  range(s) = "abc";  (range(s) << "XYZ") - "bc"'
+aXYZ
 ------------------------------------------
 
 Note that we can not define overloaded operations if arguments are only POD types (like c-string).
-+++C++ +++ do not allow this. This is a reason why we have to wrap `S` with `range()`. For binary
++++C++ +++ do not allow this. This is a reason why we have to wrap `s` with `range()`. For binary
 ops, we need to wrap at least one of operands in a class.
 
 Same example, but for `str::string` (without range-wrapping):
 
 -----------------------------------------
-scc 'str s;  s = "abc";  __ s;   s << " XYZ"'
-abc
-abc XYZ
+scc 'str s;  s = "abc";  (s << "XYZ") - "bc"'
+aXYZ
 ------------------------------------------
 
 
@@ -327,14 +325,26 @@ quotes conflict).
 
 Filter `operator|(Range, range_elem_type)` selects only elements which are equal to second argument:
 
-Replace 2 with 42 with underline:
+Replace 2 with 42:
 
 ---------------------------------------------------------------------
-scc '*" ";  S'
-John Q Public  (XXX)XXXXXXX
+scc 'vint V;  V<<range(5);  V | 2 = 42; V'
+{0, 1, 42, 3, 4, 5}
 -----------------------------------------------------------------
 
---- THIS SECTION IS INCOMPLETE ---
+
+Pipe-stl-algorithm
+^^^^^^^^^^^^^^^^^^
+
+Simple `operator|(Range, void(*)(It1,It2))` matches STL algorithm which have 2 arguments iterators:
+
+-----------------------------------------------------------------
+scc 'vint{3,1,2,3} | sort | unique | reverse'
+{3, 2, 1}
+-----------------------------------------------------------------
+
+
+
 
 
 Available Functors

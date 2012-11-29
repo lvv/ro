@@ -136,7 +136,7 @@ struct  predicated_range : basic_range<Rg> {
 
 	// non-STL
 	typedef		rg_elem_type<Rg>  				elem_type;
-	typedef		predicated_range					self_type;
+	typedef		predicated_range				self_type;
 
 
 	// MEMBERS
@@ -147,7 +147,21 @@ struct  predicated_range : basic_range<Rg> {
 
 
 	////  ASSIGNMENT
-	using b::operator=;
+	self_type&   operator= (elem_type x) { std::fill(begin(), end(), x);  return *this; };
+
+	/*
+		template<class Rg2>			// TODO specialize for seq containers self-assignemet
+		eIF <have_same_elem<Rg,Rg2>::value, self_type>
+	operator= (const Rg2& rhs) { 			//std:: cout << " SSIGNMENT \n";
+		//sto::clear(rg);
+		
+		auto e = endz(rhs);
+		for (auto it = std::begin(rhs);   it != e;  ++it)  {
+			detail::append_elem(std::forward<Rg>(rg), *it);
+		}
+		return *this;
+	};
+	*/
 
 
 	////  ITERATOR
