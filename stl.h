@@ -108,7 +108,8 @@ operator << (Rg&& rg1, X&& x)            {  detail::append_elem(std::forward<Rg>
 	// Rg << Cl2
 	template<class Rg, class Rg2> 
 	eIF <have_same_elem<Rg,Rg2>::value,  Rg&&>
-operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), rg_elem_fwd<Rg2>(*i));   return  std::forward<Rg>(rg1); };
+//operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), rg_elem_fwd<Rg2>(*i));   return  std::forward<Rg>(rg1); };
+operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), std::move(*i));   return  std::forward<Rg>(rg1); };
 
 
 //////  T >> Rg 

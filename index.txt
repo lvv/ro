@@ -175,13 +175,13 @@ Iterator range is simple wrapper for for a range defined by first and last itera
 Assign `42` to elements `2..4` of vector `{0,1,2,3,4,5,6,7,8,9}`:
 
 ------------------------------------
-scc 'vint v;  v << range(0,9);   range(v/2, v/5) = 42;  v'
+scc 'vint V=range(0,9);   range(V/2, V/5) = 42;  V'
 {0, 1, 42, 42, 42, 5, 6, 7, 8, 9}
 ------------------------------------
 
-Expression `range(0,9)` constructs numeric range which initialize `v`.  
-Expression `v/2` returns iterator to 1st element with value `2`.  Expression
-`range(v/2,v/5)` constructs iterator range from pair of iterators.
+Expression `range(0,9)` constructs numeric range which initialize `V`.  
+Expression `V/2` returns iterator to 1st element with value `2`.  Expression
+`range(V/2,V/5)` constructs iterator range from pair of iterators.
 
 
 Ranges can be assigned to another range even if they have different underlying
@@ -189,7 +189,7 @@ containers.  Here is simplest expression range, which shows that it just
 a reference to underlying container:
 
 ------------------------------------------
-scc  'vint v;  auto r=range(v);  r = range(0,9);  r, v'
+scc  'vint V;  auto R=range(V);  R=range(0,9);  R, V'
 {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 -------------------------------------------------
 
@@ -328,7 +328,7 @@ Filter `operator|(Range, range_elem_type)` selects only elements which are equal
 Replace 2 with 42:
 
 ---------------------------------------------------------------------
-scc 'vint V;  V<<range(5);  V | 2 = 42; V'
+scc 'vint V=range(5);  V | 2 = 42; V'
 {0, 1, 42, 3, 4, 5}
 -----------------------------------------------------------------
 
@@ -343,6 +343,12 @@ scc 'vint{3,1,2,3} | sort | unique | reverse'
 {3, 2, 1}
 -----------------------------------------------------------------
 
+Unlike STO ranges, this is not lazy evaluated and equivalent to:
+
+-----------------------------------------------------------------
+scc 'vint V{3,1,2,3};  sort(+V,-V);  auto e=unique(+V, -V);  V.erase(e,-V);  reverse(+V,-V);  V'
+{3, 2, 1}
+-----------------------------------------------------------------
 
 
 

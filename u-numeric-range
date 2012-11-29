@@ -24,4 +24,7 @@ scc 'range(0,10) | is_even'
 # random access
 #scc                       'auto nr=range(10);auto i=+nr;  nr[0], nr[1], *(i+=3), i[3]'
 
+# conversion 
+scc 'vint V = range(5);  set<int> S = range(5); unordered_set<int> U = range(5);  V, S, U'
+
 : '- - - - - - - - - - - - - - - - - - - - - -  U-NUMERIC_RANGE passed   - -- - - - - - - - - - - - - - - - - - - - -'
