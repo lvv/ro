@@ -71,8 +71,9 @@ struct basic_range_iterator {
 	basic_range_iterator ( parent_t* parent_p,  const org_iterator current) 
 							: parent_p(parent_p), current(current)         {};
 
-	////// CONVERSION  non-const --> const
-	operator basic_range_iterator<Rg&&,true>() { return basic_range_iterator<Rg&&,true>(parent_p, current); };
+	////// CONVERSION 
+	/* to  const */	operator basic_range_iterator<Rg&&,true>() { return basic_range_iterator<Rg&&,true>(parent_p, current); };
+	/* to bool */	explicit operator bool() const	{ return  *this != parent_p->end(); }
 
 	////// IFACE
 	reference	operator*()  		{ return  *current; };

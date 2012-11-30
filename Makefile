@@ -30,7 +30,8 @@ include $(INCLUDE)
 index.txt: 
 	head -n-1 README.asciidoc > /tmp/t.ad
 show:
-	make -B index.html && google-chrome index.html
+	make -B index.html
+	google-chrome index.html &
 
 u-meta.cc: *.h
 

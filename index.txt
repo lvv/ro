@@ -76,7 +76,7 @@ fold, reduce, filter and arbitrary transformation of ranges.
 
 In table below are 1st group - simple shortcuts for container member functions.
 Unlike STL member functions they usually return result of operation (so it can
-be used in expressions), and are more generic (can work with any range).
+be used in expressions).
 
 ----------------------------------------------------------------
 +Rg			//  Rg.begin()
@@ -118,8 +118,8 @@ Rg = x 			//  fill(Rg.begin(), Rg.end(), x)
 
 Rg / x			// find(+Rg, -Rg, x)
 Rg % x			// find(+Rg, -Rg, x) != -Rg
-Rg / f		
-Rg % f			// find(+Rg, -Rg, x) != -Rg
+Rg / Pred		// find_if(+Rg, -Rg, pred) 	
+Rg % Pred		// find_if(+Rg, -Rg, pred) != -Rg
 Rg / Rg			// search(+Rg, -Rg, +Rg, -Rg) 
 
 
@@ -128,6 +128,7 @@ Rg / Rg			// search(+Rg, -Rg, +Rg, -Rg)
 Rg - x			// erase all elements equal to x
 Rg - pred		// erase all elements evaluated to 'true` 
 Rg - Rg2		// erase subrange 
+Rg - It			// erase at iterator
 
 ----------------------------------------------------------------
 
@@ -211,7 +212,7 @@ ops, we need to wrap at least one of operands in a class.
 Same example, but for `str::string` (without range-wrapping):
 
 -----------------------------------------
-scc 'str s;  s = "abc";  (s << "XYZ") - "bc"'
+scc 'str s("abc");  (s << "XYZ") - "bc"'
 aXYZ
 ------------------------------------------
 

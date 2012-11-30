@@ -243,7 +243,7 @@ operator-(Rg&& rg, bool(*f)(const typename rm_qualifier<Rg>::key_type&)) {
 	return  std::forward<Rg>(rg);
  };
 
-// rg - it
+// Rg - it
 	template<typename Rg>
 	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value,  Rg&&>
 operator-(Rg&& rg,  rg_iterator<Rg> it) {
@@ -251,15 +251,6 @@ operator-(Rg&& rg,  rg_iterator<Rg> it) {
 	return  std::forward<Rg>(rg);
  };
 
-// cstr - it
-/*
-	template<typename Rg>
-	eIF<is_range<Rg>::value  &&  is_cstr<Rg>::value,  Rg&&>
-operator-(Rg&& rg,  rg_iterator<Rg> it) {
-	std::copy(it+1, endz(rg), it);
-	return  std::forward<Rg>(rg);
- };
- */
 
 // rg - sub_rg
 	template<class Rg, class sub_Rg>

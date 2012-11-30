@@ -31,6 +31,7 @@ scc 'assert( 1 == (*(+rd9 += 1)  *  *(+rd9 + 1)  *   *(1 + +rd9)  *  *(-rd9-size
 scc 'assert(+rd9 < -rd9  &&  !(+rd9 < +rd9)  &&  !(-rd9 < +rd9)  &&  -rd9 >= +rd9  &&  -rd9 >= -rd9  &&  !(+rd9 >= -rd9));'
 scc 'vector<pair<int,double>>  V={{1,11.},{2,22}}; auto r=range(V); _ (-- ++ (+r +=1))->second;'
 scc 'auto i=+rd9, ii=i+1; *i, *ii'
+scc ' if (rv9/3)  *(rv9/3) = 33; rv9'
 
 # rg = value_type
 scc 'range(a9)=42;  a9'
