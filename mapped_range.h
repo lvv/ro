@@ -227,6 +227,33 @@ MK_TUPLE_OVERLOAD(1,)
 MK_TUPLE_OVERLOAD(1,const)
 
 
+/*
+#define MK_PAIR_OVERLOAD(N,CONST)       	                                                              	\
+													\
+	template<											\
+		class Rg,										\
+		class E=rg_elem_type<Rg>,								\
+		class O=typename std::tuple_element<N,E>::type						\
+	>												\
+													\
+	eIF <												\
+		is_range<Rg>::value  &&  ( N==0  || 							\
+			!std::is_same<typename std::tuple_element<0,E>::type, typename std::tuple_element<N,E>::type>::value  \
+		), 											\
+		mapped_range<Rg&&, O CONST&(*)(E CONST&), O>					\
+	>												\
+													\
+	operator*	(Rg&& rg, typename std::tuple_element<N,E>::type CONST &(*f)(E CONST &))    { 	\
+		return   mapped_range<Rg&&, O CONST& (*)(E CONST&), O> (std::forward<Rg>(rg), f);	\
+	};
+
+
+MK_PAIR_OVERLOAD(0,)
+MK_PAIR_OVERLOAD(0,const)
+MK_PAIR_OVERLOAD(1,)
+MK_PAIR_OVERLOAD(1,const)
+*/
+
 //// non-converting overload  (O == E),   needed for functions like std::abs()
 
 	template<	

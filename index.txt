@@ -224,7 +224,10 @@ Operators: Map, Reduce, Filter
 Map/Transform
 ~~~~~~~~~~~~~
 
-Operator `sto::operator* (Range,Functor)` is map/transform operator.
+Operator `sto::operator* (Range,Functor)` is map/transform operator,
+
+where `Functor` have signature compatible with `return_type(*)(range_elem_type)`.
+Examples where `return_type` is the same as `elem_type`:
 
 ------------------------------------------
 scc 'range("abc") * toupper'
@@ -242,6 +245,22 @@ Expression `V * abs` is equivalent to:
 std::transform(V.begin(), V.end(), V.begin(), std::abs<int>)'
 ----------------------------------------------
 
+More examples with arbitatry `return_type`:
+
+----------------------------------------------------------------------
+scc 'vector<const char*> V{"ab", "cdf"};  V * strlen'
+{2, 3}
+
+scc 'vector<str> V{"ab", "cdf"};  V * size'
+{2, 3}
+----------------------------------------------------------------------
+
+Functor `size_t sto::size(Range)`, is generic functor with can work with any Range. 
+
+
+
+
+
 
 Reduce/Fold
 ~~~~~~~~~~~
@@ -252,10 +271,10 @@ Operator `sto::operator|| (Range,Functor)` is fold operator.
 scc 'vint V{1,2,3};  V || plus<int>()'
 6
 
-scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<int>()
+scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<T>(),  T - deduced
 6
 
-scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplyes<int>()
+scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplyes<T>()
 6
 
 scc 'vint V{1,2,3};  V || min'		// uses std::min
@@ -329,7 +348,7 @@ Filter `operator|(Range, range_elem_type)` selects only elements which are equal
 Replace 2 with 42:
 
 ---------------------------------------------------------------------
-scc 'vint V=range(5);  V | 2 = 42; V'
+scc 'vint V=range(5);  V | 2 = 42;  V'
 {0, 1, 42, 3, 4, 5}
 -----------------------------------------------------------------
 
@@ -337,20 +356,33 @@ scc 'vint V=range(5);  V | 2 = 42; V'
 Pipe-stl-algorithm
 ^^^^^^^^^^^^^^^^^^
 
-Simple `operator|(Range, void(*)(It1,It2))` matches STL algorithm which have 2 arguments iterators:
+Simple `operator|(Range, void(*)(It,It))` matches STL algorithm which have 2 arguments iterators:
 
 -----------------------------------------------------------------
-scc 'vint{3,1,2,3} | sort | unique | reverse'
+scc 'vint{3,1,2} | sort | reverse'
 {3, 2, 1}
 -----------------------------------------------------------------
 
 Unlike STO ranges, this is not lazy evaluated and equivalent to:
 
 -----------------------------------------------------------------
-scc 'vint V{3,1,2,3};  sort(+V,-V);  auto e=unique(+V, -V);  V.erase(e,-V);  reverse(+V,-V);  V'
+scc 'vint V{3,1,2};  sort(+V,-V);  reverse(+V,-V);  V'
 {3, 2, 1}
 -----------------------------------------------------------------
 
+Another signature which can be matched is  `operator|(Range, It(*)(It,It))` - this can match `std::unique`:
+
+-----------------------------------------------------------------
+scc 'vint{3,1,2,3} | sort | unique'
+{1, 2, 3}
+-----------------------------------------------------------------
+
+Which is equivalent to: 
+
+-----------------------------------------------------------------
+scc 'vint V{3,1,2,3};  sort(+V,-V);  auto e=unique(+V, -V);  V.erase(e,-V);  V'
+{1, 2, 3}
+-----------------------------------------------------------------
 
 
 
@@ -358,7 +390,17 @@ Available Functors
 ~~~~~~~~~~~~~~~~~~
 
 Functors are function object, lambdas and
-plain functions. Unfortunately many functions inherited from C are not usable
+plain functions. 
+
+All STO operators are templated. Specifying concrete type for temlated
+operators is impractical, and its concrete types must be deduced. And unfortunetly
++++C++ +++ can not deduce function type if it is overloaded. 
+
+
+
+
+
+Unfortunately many functions inherited from C are not usable
 with STO.  STO relies on fact that functor have argument of the same type as
 range element type.  But for examples `ctype.h` functions, which work with
 c-strings, have not `char` but `int` as parameter and they can be defined as macros.  And
