@@ -262,6 +262,8 @@ Functor `size_t sto::size(Range)`, is generic functor with can work with any Ran
 
 
 
+
+
 Reduce/Fold
 ~~~~~~~~~~~
 
@@ -398,8 +400,6 @@ operators is impractical, and its concrete types must be deduced. And unfortunet
 
 
 
-
-
 Unfortunately many functions inherited from C are not usable
 with STO.  STO relies on fact that functor have argument of the same type as
 range element type.  But for examples `ctype.h` functions, which work with
@@ -407,6 +407,15 @@ c-strings, have not `char` but `int` as parameter and they can be defined as mac
 what makes it even worse,  they are randomly injected into default namespace by +++ LIBSTDC++ +++.
 As workaround STO put equivalent functions with correct signatures into `sto`
 namespace.
+
+...
+
+Only CLANG: only 1st != 2nd:
+
+----------------------------------------------------------------------------
+scc 'map<int,str> M{{1,"one"},{2,"two"}};  M * get\<0>'
+{1, 2}
+-----------------------------------------------------------------------------
 
 
 Simple IO
