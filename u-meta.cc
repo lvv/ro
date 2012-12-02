@@ -169,9 +169,10 @@ CHECK(   (is_same<vector_erasable,decltype(erasable_category(v9))>::value))
 
 // pair / tuple
 CHECK( ! (is_pair<void>::value))
-CHECK( ! (is_pair<int>::value'))
-CHECK( ! (is_pair<tuple<int,int>>::value))
-CHECK(   (is_pair<pair<int,int>>::value))
+CHECK( ! (is_pair<int>::value))
+CHECK( ! (is_pair<std::tuple<int,int>>::value))
+CHECK(   (is_pair<std::pair<int,int>>::value))
+CHECK(   (is_tuple<std::tuple<int,int>>::value))
 
 
 					CHECK_EXIT;

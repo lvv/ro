@@ -237,11 +237,11 @@ template<class T>		struct  is_pair_t			: std::false_type {};
 template<class T1, class T2>	struct  is_pair_t <std::pair<T1,T2>>	: std::true_type  {};
 template<class T>	struct  is_pair { enum { value = is_pair_t<rm_qualifier<T>>::value };};
 
-/*
-template<class ... Ts>	struct  is_tuple_t				: std::false_type {};
+
+template<class T>	struct  is_tuple_t				: std::false_type {};
 template<class ... Ts>	struct  is_tuple_t <std::tuple<Ts...>>		: std::true_type  {};
 template<class T>	struct  is_tuple { enum { value = is_tuple_t<rm_qualifier<T>>::value };};
-*/
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////  IS_IOABLE

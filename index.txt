@@ -79,56 +79,56 @@ Unlike STL member functions they usually return result of operation (so it can
 be used in expressions).
 
 ----------------------------------------------------------------
-+Rg			//  Rg.begin()
--Rg			//  Rg.end()
-++Rg			//  Rg.front()
-Rg++			//  Rg.back()
---Rg			//  Rg.pop_front()
-Rg--			//  Rg.pop_back()
++rg			//  rg.begin()
+-rg			//  rg.end()
+++rg			//  rg.front()
+rg++			//  rg.back()
+--rg			//  rg.pop_front()
+rg--			//  rg.pop_back()
 
-Rg << x			//  Rg.push_back(x)
-x >> Rg			//  Rg.push_front(x)
-Rg >> x			//  x = Rg.back(x);   Rg.pop_back();
-x << Rg			//  x = Rg.front(x);  Rg.pop_front();
-Rg1 << Rg2		//  copy(Rg2.begin(), Rg2.end(), back_inserter(Rg1));
-Rg1 >> Rg2		//  copy(Rg1.rbegin(), Rg1.rend(), front_inserter(Rg2)); 
+rg << value		//  rg.push_back(value)
+value >> rg		//  rg.push_front(value)
+rg >> value		//  value = rg.back(value);   rg.pop_back();
+value << rg		//  value = rg.front(value);  rg.pop_front();
+rg1 << rg2		//  copy(rg2.begin(), rg2.end(), back_inserter(rg1));
+rg1 >> rg2		//  copy(rg1.rbegin(), rg1.rend(), front_inserter(rg2)); 
 
-++Pair			//  Pair.first
-Pair++			//  Pair.second
+++pair			//  pair.first
+pair++			//  pair.second
 
-++Tuple			//  get\<0>(Tuple)
-Tuple++			//  get<tuple_size<tuple<Types...> >::value-1>(Tuple)
+++tuple			//  get\<0>(tuple)
+tuple++			//  get<tuple_size<tuple<Types...> >::value-1>(tuple)
 
 
-Stack << x		//  Stack.push(x)
-Stack++ 		//  Stack.top(x)
-Stack >> x		//  x = Stack.top(x);  Stack.pop()
-Stack-- 		//  Stack.pop()
+stack << value		//  stack.push(value)
+stack++ 		//  stack.top(value)
+stack >> value		//  value = stack.top(value);  stack.pop()
+stack-- 		//  stack.pop()
 		
-Queue++ 		//  Queue.back(x)
-++Queue 		//  Queue.front(x)
---Queue 		//  Queue.pop(x)
-Queue << x		//  Queue.push(x)
-x << Queue		//  x = Queue.front(x);  Queue.pop()
+Queue++ 		//  Queue.back(value)
+++Queue 		//  Queue.front(value)
+--Queue 		//  Queue.pop(value)
+Queue << value		//  Queue.push(value)
+value << Queue		//  value = Queue.front(value);  Queue.pop()
 
-Rg = Rg2 		//  undelying contanainers can be of different type
-Rg = x 			//  fill(Rg.begin(), Rg.end(), x)
+rg = rg2 		//  undelying contanainers can be of different type
+rg = value 			//  fill(rg.begin(), rg.end(), value)
 
 // SEARCH
 
-Rg / x			// find(+Rg, -Rg, x)
-Rg % x			// find(+Rg, -Rg, x) != -Rg
-Rg / Pred		// find_if(+Rg, -Rg, pred) 	
-Rg % Pred		// find_if(+Rg, -Rg, pred) != -Rg
-Rg / Rg			// search(+Rg, -Rg, +Rg, -Rg) 
+rg / value		// find(+rg, -rg, value)
+rg % value		// find(+rg, -rg, value) != -rg
+rg / Pred		// find_if(+rg, -rg, pred) 	
+rg % Pred		// find_if(+rg, -rg, pred) != -rg
+rg / rg			// search(+rg, -rg, +rg, -rg) 
 
 
 // GENERIC ERASE
 
-Rg - x			// erase all elements equal to x
-Rg - pred		// erase all elements evaluated to 'true` 
-Rg - Rg2		// erase subrange 
-Rg - It			// erase at iterator
+rg - value		// erase all elements equal to value
+rg - pred		// erase all elements for wich pred evaluated to 'true` 
+rg - rg2		// erase subrange 
+rg - it			// erase at iterator
 
 ----------------------------------------------------------------
 
