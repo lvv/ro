@@ -13,7 +13,7 @@ SCC
 ---
 
 STO was originally part of SCC (+++ C++ +++ snippet evaluator at shell prompt).
-It does not depands on SCC but we will use it in examples, so we need to
+It does not depends on SCC but we will use it in examples, so we need to
 tell about SCC first.  Without SCC, minimal complete example for 
 `operator*(Range,Functor)` would be:
 
@@ -31,7 +31,7 @@ int main() {
 }
 ----------------------------------------------------------------------------
 
-With SCC, equavalent which also shows output, would be much shorter: 
+With SCC, equivalent which also shows output, would be much shorter: 
 
 ----------------------------------------------------------------------------
 scc "str s = "Hello World!";  s * toupper'
@@ -39,14 +39,14 @@ HELLO WORLD!
 ----------------------------------------------------------------------------
 
 1st line in above is what you type at your shell prompt.  2nd line is output.
-SCC includes all standard libraries inlcudes; and it sends last
-statement-expresion, if not terminated by semi-colon, to `std::cout`.  Typedef
+SCC includes all standard libraries includes; and it sends last
+statement-expression, if not terminated by semi-colon, to `std::cout`.  Typedef
 `str` is shortcut for `std::string`, similarly `vint` (in examples that will
 follow) is `std::vector<int>`.
 
 SCC printer can print almost any STL objects (containers, tuples, etc)
 directly.  Items in print operator (and last expression which will be printed)
-are seperated by `,` not by `<<`. 
+are separated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
 scc 'auto r = range(0, 1, 0.1);  r, endl, r * sin'
@@ -62,7 +62,8 @@ scc '__ range(0, 1, 0.1);  __ range(0, 1, 0.1) * sin;'
 -----------------------------------------------------------------------------
 
 
-This is all you need to know about SCC, you can read more on http://volnitsky.com/project/scc[SCC page].  
+This is all you need to know about SCC. You can read more, if you wish  on
+http://volnitsky.com/project/scc[SCC page].  
 
 
 Range Operators
@@ -75,8 +76,8 @@ extensions. Second is more complex operations like
 fold, reduce, filter and arbitrary transformation of ranges.
 
 In table below are 1st group - simple shortcuts for container member functions.
-Unlike STL member functions they usually return result of operation (so it can
-be used in expressions).
+Unlike STL member functions (which often return `void`), they usually return
+result of operation (so it can be used in expressions).
 
 ----------------------------------------------------------------
 +rg			//  rg.begin()
@@ -105,14 +106,14 @@ stack++ 		//  stack.top(value)
 stack >> value		//  value = stack.top(value);  stack.pop()
 stack-- 		//  stack.pop()
 		
-Queue++ 		//  Queue.back(value)
-++Queue 		//  Queue.front(value)
---Queue 		//  Queue.pop(value)
-Queue << value		//  Queue.push(value)
-value << Queue		//  value = Queue.front(value);  Queue.pop()
+queue++ 		//  queue.back(value)
+++queue 		//  queue.front(value)
+--queue 		//  queue.pop(value)
+queue << value		//  queue.push(value)
+value << queue		//  value = queue.front(value);  queue.pop()
 
-rg = rg2 		//  undelying contanainers can be of different type
-rg = value 			//  fill(rg.begin(), rg.end(), value)
+rg = rg2 		//  underlying containers can be of different type
+rg = value 		//  fill(rg.begin(), rg.end(), value)
 
 // SEARCH
 
@@ -126,7 +127,7 @@ rg / rg			// search(+rg, -rg, +rg, -rg)
 // GENERIC ERASE
 
 rg - value		// erase all elements equal to value
-rg - pred		// erase all elements for wich pred evaluated to 'true` 
+rg - pred		// erase all elements for which pred evaluated to 'true` 
 rg - rg2		// erase subrange 
 rg - it			// erase at iterator
 
@@ -137,16 +138,19 @@ rg - it			// erase at iterator
 Ranges
 ------
 
-_Ranges_ are numeric ranges,  iterator ranges,  expression ranges, STL
+_Ranges_ are numeric ranges,  iterator ranges,  lazy-expression ranges, STL
 containers, C-arrays and C-strings.  STO defines C-strings as zero terminated
-arrays of `char` (not `signed char` or `unsigned chars`).  Expression ranges
-are result of range expression (fold/reduce/filter). 
+arrays of `char` (not `signed char` or `unsigned chars`).  Lazy-expression ranges
+are result of most range expressions (fold/reduce/filter). 
 
-Subset of Ranges are _STO Ranges_:  iterator ranges, expression ranges and numeric
-ranges.  STO ranges do not contain data, they refer to an existing STL
-container or generate its elements.  Particular type of the range often is not
-important and it is result of range expression or `range()` convenience
-function.
+
+_STO Ranges_ are subset of Ranges. They are:  iterator ranges, lazy-expression ranges and
+numeric ranges.  STO ranges do not contain data, they refer to an existing STL
+container or generate its elements.  Lazy means that its elements are
+calculated at the moment when particular element is accessed.  Exact type of
+the range often is not important - these are types mostly of temporaries.  If STO
+range need to be assigned to a variable,  `auto var = ...` should be used. 
+
 
 
 Numeric range
@@ -186,7 +190,7 @@ Expression `V/2` returns iterator to 1st element with value `2`.  Expression
 
 
 Ranges can be assigned to another range even if they have different underlying
-containers.  Here is simplest expression range, which shows that it just
+containers.  Here is simple lazy-expression range, which shows that it just
 a reference to underlying container:
 
 ------------------------------------------
@@ -225,7 +229,6 @@ Map/Transform
 ~~~~~~~~~~~~~
 
 Operator `sto::operator* (Range,Functor)` is map/transform operator,
-
 where `Functor` have signature compatible with `return_type(*)(range_elem_type)`.
 Examples where `return_type` is the same as `elem_type`:
 
@@ -245,23 +248,21 @@ Expression `V * abs` is equivalent to:
 std::transform(V.begin(), V.end(), V.begin(), std::abs<int>)'
 ----------------------------------------------
 
-More examples with arbitatry `return_type`:
+Example with arbitrary `return_type`:
 
 ----------------------------------------------------------------------
-scc 'vector<const char*> V{"ab", "cdf"};  V * strlen'
+scc 'vector<const char*> V{"aa", "bbb"};  V * strlen'
 {2, 3}
+---------------------------------------------------------------------
 
-scc 'vector<str> V{"ab", "cdf"};  V * size'
-{2, 3}
+Length of longest string:
+
+---------------------------------------------------------------------
+scc 'vector<str> V{"aa", "bbb", "c"};  V * size || max'
+3
 ----------------------------------------------------------------------
 
-Functor `size_t sto::size(Range)`, is generic functor with can work with any Range. 
-
-
-
-
-
-
+Functor `size_t sto::size(Range)` is similar to `strlen` but will work  with any Range. 
 
 
 Reduce/Fold
@@ -276,7 +277,7 @@ scc 'vint V{1,2,3};  V || plus<int>()'
 scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<T>(),  T - deduced
 6
 
-scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplyes<T>()
+scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplies<T>()
 6
 
 scc 'vint V{1,2,3};  V || min'		// uses std::min
@@ -345,34 +346,37 @@ Expression `*"X"` is the same thing as `'X'` (as work around for Bash/+++C++ +++
 quotes conflict).
 
 
-Filter `operator|(Range, range_elem_type)` selects only elements which are equal to second argument:
-
-Replace 2 with 42:
+Filter `operator|(Range, range_elem_type)` selects only elements which are
+equal to second argument.  Replace 2 with 42:
 
 ---------------------------------------------------------------------
-scc 'vint V=range(5);  V | 2 = 42;  V'
-{0, 1, 42, 3, 4, 5}
+scc 'vint V{1,2,3,2};  V | 2 = 42;  V'
+{1, 42, 3, 42}
 -----------------------------------------------------------------
 
 
 Pipe-stl-algorithm
 ^^^^^^^^^^^^^^^^^^
 
-Simple `operator|(Range, void(*)(It,It))` matches STL algorithm which have 2 arguments iterators:
+Simple `operator|(Range, void(*)(It,It)) -> Range` matches STL algorithm which have 2 arguments iterators:
 
 -----------------------------------------------------------------
 scc 'vint{3,1,2} | sort | reverse'
 {3, 2, 1}
 -----------------------------------------------------------------
 
-Unlike STO ranges, this is not lazy evaluated and equivalent to:
+
+Unlike other operators, it does not return lazy-expression range, but the same
+input range that was first argument, modified in place by corresponding
+stl-algorithm. Above example is equivalent to:
 
 -----------------------------------------------------------------
 scc 'vint V{3,1,2};  sort(+V,-V);  reverse(+V,-V);  V'
 {3, 2, 1}
 -----------------------------------------------------------------
 
-Another signature which can be matched is  `operator|(Range, It(*)(It,It))` - this can match `std::unique`:
+Another signature which can be matched is  `operator|(Range, It(*)(It,It))` -
+this can match algorithms like `std::unique`:
 
 -----------------------------------------------------------------
 scc 'vint{3,1,2,3} | sort | unique'
@@ -391,16 +395,14 @@ scc 'vint V{3,1,2,3};  sort(+V,-V);  auto e=unique(+V, -V);  V.erase(e,-V);  V'
 Available Functors
 ~~~~~~~~~~~~~~~~~~
 
-Functors are function object, lambdas and
-plain functions. 
+Functors are function object, lambdas and plain functions. 
 
-All STO operators are templated. Specifying concrete type for temlated
-operators is impractical, and its concrete types must be deduced. And unfortunetly
+All STO operators are templated. Specifying concrete type for templated
+operators is impractical, and its concrete types must be deduced. Unfortunately
 +++C++ +++ can not deduce function type if it is overloaded. 
+...
 
-
-
-Unfortunately many functions inherited from C are not usable
+Also many functions inherited from C are not usable
 with STO.  STO relies on fact that functor have argument of the same type as
 range element type.  But for examples `ctype.h` functions, which work with
 c-strings, have not `char` but `int` as parameter and they can be defined as macros.  And

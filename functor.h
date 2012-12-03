@@ -5,6 +5,8 @@
 				namespace sto {
 
 //  CTYPE.H
+//  TODO locale ctype: http://www.boost.org/doc/libs/1_52_0/libs/bind/bind.html#err_modeling_stl_function_object_concepts
+//  	http://stackoverflow.com/questions/13676507/how-do-i-display-special-characters-in-c-with-linux
 char	toupper (char c) { return std::toupper((int)c); }
 char	tolower (char c) { return std::tolower((int)c); }
 

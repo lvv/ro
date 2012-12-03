@@ -4,7 +4,7 @@ STO — STL Template Operators
 :compact-option: compact
 
 STO is +++C++ +++ headers only library, which provides alternative
-interface to STL by providing ranges and map/reduce/filter expressions.
+interface to STL and map/reduce/filter/range expressions capabilities.
 
 
 See full docs at http://volnitsky.com/project/sto[]
