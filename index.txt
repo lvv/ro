@@ -1,4 +1,4 @@
-include::/tmp/t.ad[]
+include:/tmp/t.ad[]
 
 +++ <small> +++
 
@@ -49,21 +49,21 @@ directly.  Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
-scc 'auto r = range(0, 1, 0.1);  r, endl, r * sin'
-{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1}
- {0, 0.0998334, 0.198669, 0.29552, 0.389418, 0.479426, 0.564642, 0.644218, 0.717356, 0.783327, 0.841471}
+scc 'auto r = range(0,1,.2);  r, endl, r * sin'
+{0, 0.2, 0.4, 0.6, 0.8, 1}
+{0, 0.198669, 0.389418, 0.564642, 0.717356, 0.841471}
 -----------------------------------------------------------------------------
 
 Print operator are `_` and `__`.  Longer one terminates output with `endl`.
 With these, previous example would be:
 
 -----------------------------------------------------------------------------
-scc '__ range(0, 1, 0.1);  __ range(0, 1, 0.1) * sin;'
+scc '__ range(0,1,.2);  __ range(0,1,.2) * sin;'
 -----------------------------------------------------------------------------
 
 
 This is all you need to know about SCC. You can read more, if you wish  on
-http://volnitsky.com/project/scc[SCC page].  
+	http://volnitsky.com/project/scc[SCC page].  To be able to run examples you need to <<_install, install STO>> and http://volnitsky.com/project/scc/#_install[SCC] 
 
 
 Range Operators
@@ -134,7 +134,6 @@ rg - it			// erase at iterator
 ----------------------------------------------------------------
 
 
-
 Ranges
 ------
 
@@ -149,8 +148,7 @@ numeric ranges.  STO ranges do not contain data, they refer to an existing STL
 container or generate its elements.  Lazy means that its elements are
 calculated at the moment when particular element is accessed.  Exact type of
 the range often is not important - these are types mostly of temporaries.  If STO
-range need to be assigned to a variable,  `auto var = ...` should be used. 
-
+range need to be assigned to a variable,  `auto var = ...` should be used.  
 
 
 Numeric range
@@ -171,6 +169,7 @@ scc 'range(1,5,0.5)'
 scc 'range(10,0,-1.5)'
 {10, 8.5, 7, 5.5, 4, 2.5, 1}
 -----------------------------------
+
 
 Iterator range
 ~~~~~~~~~~~~~~
@@ -335,30 +334,43 @@ ABC123XYZ
 Hide digits:
 
 ---------------------------------------------------------------------
-scc 'str S="John Q Public  (650)1234567";  S|isdigit=*"X";  S'
+scc "str S=\"John Q Public  (650)1234567\";  S|isdigit='X';  S"
 John Q Public  (XXX)XXXXXXX
 -----------------------------------------------------------------
 
 Expression `S | isdigit`, produce a filtered range,  where `isdigit` is
 predicate for filtering.  This is lazy-evaluated, it does not creates
 temporary container and should be as efficient as hand written for-loop.
-Expression `*"X"` is the same thing as `'X'` (as work around for Bash/+++C++ +++
-quotes conflict).
-
 
 Filter `operator|(Range, range_elem_type)` selects only elements which are
-equal to second argument.  Replace 2 with 42:
+equal to second argument. 
+
+Count number of  `2`, then replace `2` with `42`:
 
 ---------------------------------------------------------------------
+scc 'vint V{1,2,3,2};   size(V|2)'
+2
+
 scc 'vint V{1,2,3,2};  V | 2 = 42;  V'
 {1, 42, 3, 42}
 -----------------------------------------------------------------
+
+Something interesting:
+
+---------------------------------------
+scc 'vint V{1,2,3,2};  (V | 2 = 42)'
+{}
+---------------------------------------
+
+Why empty range? Because this is range with all elements in `V` equal to `2`.
+But all `2` were replaced.  Underling container `V` is now `{1, 42, 3, 42}`,
+and  `{1, 42, 3, 42} | 2` is empty range.
 
 
 Pipe-stl-algorithm
 ^^^^^^^^^^^^^^^^^^
 
-Simple `operator|(Range, void(*)(It,It)) -> Range` matches STL algorithm which have 2 arguments iterators:
+Simple `operator|(Range, void(*)(It,It)) -> Range` matches STL algorithm which have 2 argument iterators:
 
 -----------------------------------------------------------------
 scc 'vint{3,1,2} | sort | reverse'
@@ -366,9 +378,9 @@ scc 'vint{3,1,2} | sort | reverse'
 -----------------------------------------------------------------
 
 
-Unlike other operators, it does not return lazy-expression range, but the same
-input range that was first argument, modified in place by corresponding
-stl-algorithm. Above example is equivalent to:
+Unlike other operators, it does not return new object of lazy-expression range,
+but the same range that was on input, already modified in place by
+corresponding stl-algorithm. Above example is equivalent to:
 
 -----------------------------------------------------------------
 scc 'vint V{3,1,2};  sort(+V,-V);  reverse(+V,-V);  V'
@@ -391,33 +403,43 @@ scc 'vint V{3,1,2,3};  sort(+V,-V);  auto e=unique(+V, -V);  V.erase(e,-V);  V'
 -----------------------------------------------------------------
 
 
-
 Available Functors
 ~~~~~~~~~~~~~~~~~~
 
 Functors are function object, lambdas and plain functions. 
 
+///////////////////////////////////
 All STO operators are templated. Specifying concrete type for templated
 operators is impractical, and its concrete types must be deduced. Unfortunately
 +++C++ +++ can not deduce function type if it is overloaded. 
 ...
+///////////////////////////////////
 
-Also many functions inherited from C are not usable
-with STO.  STO relies on fact that functor have argument of the same type as
+Regrettably not all function, are usable with STO. 
+For example STO relies on fact that functor have argument of the same type as
 range element type.  But for examples `ctype.h` functions, which work with
 c-strings, have not `char` but `int` as parameter and they can be defined as macros.  And
 what makes it even worse,  they are randomly injected into default namespace by +++ LIBSTDC++ +++.
 As workaround STO put equivalent functions with correct signatures into `sto`
 namespace.
 
-...
+Also compiler have its own picularities.  Following compiles with CLANG, but not with GCC:
 
-Only CLANG: only 1st != 2nd:
-
-----------------------------------------------------------------------------
-scc 'map<int,str> M{{1,"one"},{2,"two"}};  M * get\<0>'
+-----------------------------------------------------
+scc 'map<int,int> M{{1,11}, {2,22}}; M * get\<0>'
 {1, 2}
------------------------------------------------------------------------------
+-----------------------------------------------------
+
+
+STO also defines some generic helper functions:
+
+* `size(range) -> size_t` 
+* `empty(range) -> bool`
+* `endz(range) -> It` -- like `std::end(StlContainer)`, but will work with C-string too
+* `clear(range) -> void`
+* all `ctype` functions reimplemented 
+* `is_odd`, `is_even`
+* `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`
 
 
 Simple IO
@@ -581,22 +603,44 @@ int main() {
 Includes `simple.h`, `cj.h` and `stl.h` can also be used independently.
 
 
+Install
+-------
+
+-----------------------------------------
+git clone http://github.com/lvv/sto /PATH/TO/INSTALL/STO/
+
+echo '
+	#include <sto/sto.h> 
+	using namespace sto;
+	int main() {
+		return range(10) || add;
+	}
+' > /tmp/sto-test.cc
+
+# test compile
+CXXFLAGS+='-I/PATH/TO/INSTALL/ -std=c++11' make /tmp/sto-test  &&  /tmp/sto-test
+---------------------------------------
+
+If you install in includes default-searchable directory (like `/usr/include` or
+`/usr/local/include`), you do not need to specify `-I /path/to/install/` compiler option.
+
+For CLANG use following options:
+
+--------------------------------------------------
+CXX=clang++
+CXXFLAGS+="-D__STRICT_ANSI__  -std=c++0x "
+----------------------------------------------------
+
+To be able to run examples you need to http://volnitsky.com/project/scc/#_install[install SCC] too. 
 
 
 Status 
 ------
 
-STO uses +++ C++11 +++ extensively.  Because no complier yet
-implemented +++ C++11 +++ fully and each implemented different subset, 
-STO very picky about compiler.  See GCC, CLANG sections below. 
+STO was tested with GCC-4.7.2/4.8-pre-release and CLANG-3.2-pre-release.
 
 
-GCC 
-~~~
- 
-SCC was mostly tested with GCC-4.7.2/4.8-pre-release and CLANG-3.2-pre-release.
-If you need to use SCC with older compiler - use commit tagged as `v0.1`.
-
+///////////////////////////////////////////
 In course of development several GCC bugs were encountered.
 Luckily, GCC team is pretty quick to fix things after you will file a but report.
 
@@ -607,19 +651,16 @@ Luckily, GCC team is pretty quick to fix things after you will file a but report
 - httpx://gcc.gnu.org/bugzilla/show_bug.cgi?id=53858[Bug 53858 (fixed)  -- (4.8 Regression) template aliases used in template parameters default expression]
 - httpx://gcc.gnu.org/bugzilla/show_bug.cgi?id=54648[Bug 54648 -- constexpr function rejected as non const]
 - httpx://gcc.gnu.org/bugzilla/show_bug.cgi?id=54859[Bug 54859 -- constexpr in template aliase rejected as non-constant]
+///////////////////////////////////////////
 
 
-CLANG 
-~~~~~
 
-CLANG-3.2 is fully supported. 
-
-
+/////////////////////////////////////////////////
 Corresponding CLANG bugs:
 
 - httpx://http://llvm.org/bugs/show_bug.cgi?id=11851[Bug 11851 - constexpr bug ]
 - httpx://http://llvm.org/bugs/show_bug.cgi?id=13970[Bug 13970 - constexpr function rejected as non const(dup of 11851)]
-
+/////////////////////////////////////////////////
 
 
 

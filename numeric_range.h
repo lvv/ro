@@ -3,7 +3,8 @@
 
 						#include <sto/meta.h>
 						#include <sto/functor.h>
-						// why we need this? #include <sto/iterator_range.h>
+					
+						#include <cassert>
 
 						namespace sto {
 
@@ -21,14 +22,13 @@ struct	numeric_range_iterator {
 	{};
 
 	// NON-STL 
-	typedef		numeric_range_iterator		const_iterator;
-	typedef		numeric_range_iterator		iterator;
 	typedef		numeric_range_iterator		self_type;
-	typedef		numeric_range_iterator		type;
 
 
 	// STL TYPES
 	typedef		rm_ref<T>		value_type;
+	typedef		numeric_range_iterator	const_iterator;
+	typedef		numeric_range_iterator	iterator;
 	typedef		size_t			difference_type ;
 	typedef		size_t			size_type;
 	typedef		const value_type*	const_pointer;
@@ -82,7 +82,7 @@ struct	numeric_range_iterator {
 	template<typename T>
 struct  numeric_range {
 
-	// STL TYPES
+	// STL IFACE
 	typedef		rm_ref<T>				value_type;
 	typedef		size_t					difference_type;
 	typedef		size_t					size_type;
@@ -95,16 +95,15 @@ struct  numeric_range {
 
 
 	// NON-STL 
-	typedef		numeric_range					self_type;
-	typedef		self_type					type;
+	typedef		numeric_range				self_type;
 
 	// MEMBERS
-	T from, to, step;
-	size_t range_end;
+	T 	from, to, step;
+	size_t 	range_end;
 
 	// CTOR
 	numeric_range()  			: from(T()),  to(T()), step(T())  {};
-	numeric_range(T from, T to, T step)	: from(from), to(to),  step(step),  range_end((to-from)/step+1)  { assert((to-from)*step >= 0);};
+	numeric_range(T from, T to, T step)	: from(from), to(to),  step(step),  range_end((to-from)/step + 1)  { assert((to-from)*step >= 0);};
 
 	// ITERATOR
 	const_iterator	cbegin() const	{ return const_iterator(this, 0); };

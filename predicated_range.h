@@ -3,6 +3,7 @@
 						#define  STO_PREDICATED_RANGE_H
 
 						#include <sto/basic_range.h>
+						#include <cassert>
 
 						namespace sto {
 

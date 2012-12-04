@@ -5,6 +5,8 @@
 						#include <sto/meta.h>
 						#include <sto/stl.h>
 
+						#include <cassert>
+
 						/*
 						#ifndef NDEBUG
 						#include <iostream>
