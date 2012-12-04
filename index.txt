@@ -279,8 +279,14 @@ scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<T>(),  T -
 scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplies<T>()
 6
 
+scc 'vstr V{"aa", "bb", "cc"};  V || add'
+aabbcc
+
 scc 'vint V{1,2,3};  V || min'		// uses std::min
 1
+
+scc 'vstr V{"aaa", "bb", "cccc"};  V * size ||  min'
+2
 ------------------------------------------
 
 Expression  `V || min` is equivalent to:
@@ -307,7 +313,7 @@ Pipe
 ~~~~
 
 Pipe operator have much more freedom on what it can do with range. It can filter out,
-add, reorder and convert to different type. It has overloads for different right-hand-side objects.
+resize, reorder and convert to different type. Perfomed  operation depends on type of right-hand-side object.
 
 
 Pipe-filter
@@ -345,20 +351,20 @@ temporary container and should be as efficient as hand written for-loop.
 Filter `operator|(Range, range_elem_type)` selects only elements which are
 equal to second argument. 
 
-Count number of  `2`, then replace `2` with `42`:
+Count number of  `2` elements, then replace `2` with `42`:
 
 ---------------------------------------------------------------------
 scc 'vint V{1,2,3,2};   size(V|2)'
 2
 
-scc 'vint V{1,2,3,2};  V | 2 = 42;  V'
+scc 'vint V{1,2,3,2};  V|2 = 42;  V'
 {1, 42, 3, 42}
 -----------------------------------------------------------------
 
 Something interesting:
 
 ---------------------------------------
-scc 'vint V{1,2,3,2};  (V | 2 = 42)'
+scc 'vint V{1,2,3,2};  (V|2 = 42)'
 {}
 ---------------------------------------
 
@@ -378,8 +384,8 @@ scc 'vint{3,1,2} | sort | reverse'
 -----------------------------------------------------------------
 
 
-Unlike other operators, it does not return new object of lazy-expression range,
-but the same range that was on input, already modified in place by
+Unlike other operators, it does not return new lazy-expression-range object,
+but the same range that was on input, modified in place by
 corresponding stl-algorithm. Above example is equivalent to:
 
 -----------------------------------------------------------------
@@ -435,11 +441,11 @@ STO also defines some generic helper functions:
 
 * `size(range) -> size_t` 
 * `empty(range) -> bool`
-* `endz(range) -> It` -- like `std::end(StlContainer)`, but will work with C-string too
+* `endz(range) -> It` -- like `std::end(StlContainer)`, but will work with C-strings too
 * `clear(range) -> void`
 * all `ctype` functions reimplemented 
 * `is_odd`, `is_even`
-* `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`
+* `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`, etc
 
 
 Simple IO
