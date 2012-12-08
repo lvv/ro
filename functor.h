@@ -1,8 +1,10 @@
 				#ifndef  SCC_FUNCTOR_H
 				#define  SCC_FUNCTOR_H
 
+				#include <cctype>
 
 				namespace sto {
+
 
 //  CTYPE.H
 //  TODO locale ctype: http://www.boost.org/doc/libs/1_52_0/libs/bind/bind.html#err_modeling_stl_function_object_concepts

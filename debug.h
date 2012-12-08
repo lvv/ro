@@ -13,9 +13,6 @@
 
 				#include <cxxabi.h>
 
-				//#include "scc/simple.h"
-
-
 
 				namespace sto {
 
@@ -93,8 +90,8 @@ const char		__attribute__((unused))		cc9[99]	{"abc-123"},  cc23[]{"bc"},  cc1='A
 std::string		__attribute__((unused))		s9	{"abc-123"},  s0, s23{"bc"},  s1="a";
 std::vector<std::string>__attribute__((unused))		vs9	{"", "a", "bb", "ccc", "dddd", "eeeee", "ffffff", "ggggggg", "hhhhhhhh", "kkkkkkkkk"};
 std::vector<const char*>__attribute__((unused))		vc9	{"", "a", "bb", "ccc", "dddd", "eeeee", "ffffff", "ggggggg", "hhhhhhhh", "kkkkkkkkk"};
-vector<tuple<int,str>>  __attribute__((unused))		vt9	{MT(1, "a"), MT(2,"bb"), MT(3,"ccc"), MT(4,"dddd"), MT(5,"eeeee"), MT(6,"ffffff"), MT(7,"ggggggg"), MT(8,"hhhhhhhh"), MT(9,"kkkkkkkkk")};
-std::map<int,str>  __attribute__((unused))		m9	{{1, "a"}, {2,"bb"}, {3,"ccc"}, {4,"dddd"}, {5,"eeeee"}, {6,"ffffff"}, {7,"ggggggg"}, {8,"hhhhhhhh"}, {9,"kkkkkkkkk"}};
+std::vector<std::tuple<int,std::string>>  __attribute__((unused))		vt9	{std::tuple<int,std::string>(1, "a"), std::tuple<int,std::string>(2,"bb"), std::tuple<int,std::string>(3,"ccc"), std::tuple<int,std::string>(4,"dddd"), std::tuple<int,std::string>(5,"eeeee"), std::tuple<int,std::string>(6,"ffffff"), std::tuple<int,std::string>(7,"ggggggg"), std::tuple<int,std::string>(8,"hhhhhhhh"), std::tuple<int,std::string>(9,"kkkkkkkkk")};
+std::map<int,std::string>  __attribute__((unused))		m9	{{1, "a"}, {2,"bb"}, {3,"ccc"}, {4,"dddd"}, {5,"eeeee"}, {6,"ffffff"}, {7,"ggggggg"}, {8,"hhhhhhhh"}, {9,"kkkkkkkkk"}};
 std::set<int>  __attribute__((unused))			st9	{0,1,2,3,4,5,6,7,8,9};
 // rvalues
 //static std::vector<int>	__attribute__((unused))		mk_v9()	{ return  v9; };

@@ -46,8 +46,10 @@ operator<<      (ostream& os, const IT& it) { std::cout << &*it << " "; return o
 
 
 
-#define		_    out()   ,
-#define		__   outln() ,
+#undef		_
+#define		_    sto::out()   ,
+#undef		__
+#define		__   sto::outln() ,
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template<typename Rg >
