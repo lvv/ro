@@ -1,4 +1,5 @@
-include:/tmp/t.ad[]
+
+include::/tmp/t.ad[]
 
 +++ <small> +++
 
@@ -20,10 +21,10 @@ tell about SCC first.  Without SCC, minimal complete example for
 ----------------------------------------------------------------------------
 #include <iostream>
 #include <string>
-	using namespace std;
+using namespace std;
 
 #include <sto/sto.h>
-	using namespace sto;
+using namespace sto;
 
 int main() {
 	string s = "Hello World!";
@@ -31,7 +32,7 @@ int main() {
 }
 ----------------------------------------------------------------------------
 
-With SCC, equivalent which also shows output, would be much shorter: 
+With SCC, equivalent which also shows output, is much shorter: 
 
 ----------------------------------------------------------------------------
 scc "str s = "Hello World!";  s * toupper'
@@ -44,7 +45,7 @@ statement-expression, if not terminated by semi-colon, to `std::cout`.  Typedef
 `str` is shortcut for `std::string`, similarly `vint` (in examples that will
 follow) is `std::vector<int>`.
 
-SCC printer can print almost any STL objects (containers, tuples, etc)
+STO print operator can print almost any STL objects (containers, tuples, etc)
 directly.  Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
 
@@ -102,13 +103,13 @@ tuple++			//  get<tuple_size<tuple<Types...> >::value-1>(tuple)
 
 
 stack << value		//  stack.push(value)
-stack++ 		//  stack.top(value)
-stack >> value		//  value = stack.top(value);  stack.pop()
+stack++ 		//  stack.top()
 stack-- 		//  stack.pop()
+stack >> value		//  value = stack.top(value);  stack.pop()
 		
-queue++ 		//  queue.back(value)
-++queue 		//  queue.front(value)
---queue 		//  queue.pop(value)
+queue++ 		//  queue.back()
+++queue 		//  queue.front()
+--queue 		//  queue.pop()
 queue << value		//  queue.push(value)
 value << queue		//  value = queue.front(value);  queue.pop()
 

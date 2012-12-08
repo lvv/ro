@@ -27,11 +27,16 @@ endif
 
 include $(INCLUDE)
 
-index.txt: 
+/tmp/t.ad:  README.asciidoc
 	head -n-1 README.asciidoc > /tmp/t.ad
-show:
-	make -B index.html
-	google-chrome index.html &
+
+index.html:  /tmp/t.ad
+
+#show:	index.html
+#	google-chrome index.html &
+
+#	head -n-1 README.asciidoc > /tmp/t.ad
+#	make -B index.html
 
 u-meta.cc: *.h
 
