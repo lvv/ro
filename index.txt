@@ -158,17 +158,34 @@ Numeric range
 Numeric range is simple numeric sequence generator :
 
 -----------------------------------
+// [0,N)  open-ended range. Only 1-arg CTOR are open-ended.
 scc 'range(5)'
-{0, 1, 2, 3, 4, 5}
+{0, 1, 2, 3, 4}
 
+// [0,N]  closed range
 scc 'range(1,5)'
 {1, 2, 3, 4, 5}
 
+// floating point 
 scc 'range(1,5,0.5)'
 {1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5}
 
+// negative step
 scc 'range(10,0,-1.5)'
 {10, 8.5, 7, 5.5, 4, 2.5, 1}
+
+// any arithmetic type
+scc 'range('a','z')'
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+// no need for verbose iota
+scc 'vint V = range(5);   V' 
+{0, 1, 2, 3, 4}
+
+// is lazy
+scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
+5
+
 -----------------------------------
 
 
