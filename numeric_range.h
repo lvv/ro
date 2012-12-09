@@ -51,9 +51,6 @@ struct	numeric_range_iterator {
 	bool		operator==(const const_iterator &rhs)	const	{ return   rhs.current == current; }
 	bool		operator!=(const const_iterator &rhs)	const	{ return   ! (*this == rhs); }
 
-	#ifdef NR_INPUT_ITERATOR
-	typedef		std::input_iterator_tag			iterator_category;
-	#else 
 	typedef		std::random_access_iterator_tag		iterator_category;
 		
 	// bidi iter 
@@ -69,8 +66,6 @@ struct	numeric_range_iterator {
 	bool		operator<= (const self_type& other)	const	{ return current <= other.current; } 
 	bool		operator>  (const self_type& other)	const	{ return current >  other.current; } 
 	bool		operator>= (const self_type& other)	const	{ return current >= other.current; } 
-	#endif
-
 
 	// MEMBERS
 	const numeric_range<T>*		range;
