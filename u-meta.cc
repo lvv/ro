@@ -1,6 +1,7 @@
 				#include <scc/simple.h>
 				#include <sto/debug.h>
 				#include <lvv/check.h>
+				#include <sto/sto.h>
 				using namespace sto;
 
 				int main () {

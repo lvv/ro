@@ -25,7 +25,7 @@ struct	numeric_range_iterator {
 	typedef		numeric_range_iterator		self_type;
 
 
-	// STL TYPES
+	// STL IFACE
 	typedef		rm_ref<T>		value_type;
 	typedef		numeric_range_iterator	const_iterator;
 	typedef		numeric_range_iterator	iterator;
@@ -36,9 +36,10 @@ struct	numeric_range_iterator {
 	typedef		value_type		const_reference;
 	typedef		value_type		reference;
 
+
 	// 
-	
 	T get_value(int i) 		const	{  assert( 0 <= i && i <= range->range_end);  return range->from  +  i * range->step; }
+
 
 	// forward  iter
 	const_reference	operator*()	const	{ return   get_value(current); }
@@ -46,6 +47,7 @@ struct	numeric_range_iterator {
 	const_iterator&	operator++()		{ ++current;   return *this; }
 	const_iterator&	operator++(int)		{ auto tmp=*this;  ++current;  return tmp; }
 
+			// we make assumpation that comparission is done only with  end()
 	bool		operator==(const const_iterator &rhs)	const	{ return   rhs.current == current; }
 	bool		operator!=(const const_iterator &rhs)	const	{ return   ! (*this == rhs); }
 
@@ -53,7 +55,7 @@ struct	numeric_range_iterator {
 	typedef		std::input_iterator_tag			iterator_category;
 	#else 
 	typedef		std::random_access_iterator_tag		iterator_category;
-			// we make assumpation that comparission is done only with  end()
+		
 	// bidi iter 
 	const_iterator&	operator--()					{ --current;   assert(current>=0); return *this; }
 	const_iterator&	operator--(int)					{ auto tmp=*this;  --current;   assert(current>=0); return tmp; }
@@ -126,11 +128,11 @@ struct  numeric_range {
 
 	// CONVERTABILITY TO STD-CONTAINERS
 	
-		template<class A, template<class,class> class Ct> 			//  std sequence containers
+		template<class A, template<class,class> class Ct> 		//  std sequence containers
 	operator Ct<value_type,A>(){
 		Ct<value_type,A>  C(size());
 		C.clear();
-		C << *this;
+		C << *this;							// TOFIX: remove dependance on STO
 
 		return std::move(C);
 	}
@@ -144,14 +146,12 @@ struct  numeric_range {
 
 		
 		template<class H, class KE, class A, template<class, class, class, class> class Ct> 
-	operator Ct<value_type,H,KE,A>() {						//  std::unordered_set
+	operator Ct<value_type,H,KE,A>() {					//  std::unordered_set
 		Ct<value_type,H,KE,A>  C;
 		C << *this;
 		return std::move(C);
 	}
-
-									// is it possilble to make it for c-array?
-
+								// is it possilble to convert to c-array?
  };
 
 
@@ -179,7 +179,7 @@ range(T1 from,  T2 to,  T3 step) { return numeric_range<T>(from, to, step); };
 
 	template<class T>
 	eIF<std::is_arithmetic<T>::value,  numeric_range<T>>
-range(T to) { return numeric_range<T>(0, to, 1); };
+range(T to) { return numeric_range<T>(0, to-1, 1); };
 
 
 
