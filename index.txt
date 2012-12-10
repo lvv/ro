@@ -15,8 +15,9 @@ SCC
 
 STO was originally part of SCC (+++ C++ +++ snippet evaluator at shell prompt).
 It does not depends on SCC but we will use it in examples, so we need to
-tell about SCC first.  Without SCC, minimal complete example for 
-`operator*(Range,Functor)` would be:
+tell about SCC first. 
+
+Without SCC, minimal complete example for `operator*(Range,Functor)` would be:
 
 ----------------------------------------------------------------------------
 #include <iostream>
@@ -64,11 +65,13 @@ scc '__ range(0,1,.2);  __ range(0,1,.2) * sin;'
 
 
 This is all you need to know about SCC. You can read more, if you wish  on
-	http://volnitsky.com/project/scc[SCC page].  To be able to run examples you need to <<_install, install STO>> and http://volnitsky.com/project/scc/#_install[SCC] 
+http://volnitsky.com/project/scc[SCC page].  To be able to run examples you
+need to <<_install, install STO>> and
+http://volnitsky.com/project/scc/#_install[SCC] 
 
 
 Range Operators
-~~~~~~~~~~~~~~~
+---------------
 
 Ranges are generalization of STL containers.
 STO defines operators to work with ranges (and STL containers). 
@@ -135,8 +138,8 @@ rg - it			// erase at iterator
 ----------------------------------------------------------------
 
 
-Ranges
-------
+STO Ranges
+----------
 
 _Ranges_ are numeric ranges,  iterator ranges,  lazy-expression ranges, STL
 containers, C-arrays and C-strings.  STO defines C-strings as zero terminated
@@ -144,12 +147,15 @@ arrays of `char` (not `signed char` or `unsigned chars`).  Lazy-expression range
 are result of most range expressions (fold/reduce/filter). 
 
 
-_STO Ranges_ are subset of Ranges. They are:  iterator ranges, lazy-expression ranges and
-numeric ranges.  STO ranges do not contain data, they refer to an existing STL
-container or generate its elements.  Lazy means that its elements are
-calculated at the moment when particular element is accessed.  Exact type of
-the range often is not important - these are types mostly of temporaries.  If STO
-range need to be assigned to a variable,  `auto var = ...` should be used.  
+_STO Ranges_ are subset of Ranges. Plain Ranges assumed to have STL compliant
+interface.  STO Ranges have extended STL interface. And they do not contain
+data, they refer to an existing STL container or generate its elements.  Lazy
+means that its elements are calculated at the moment when particular element is
+accessed.  
+
+STO Ranges are:  iterator ranges, lazy-expression ranges and numeric ranges.
+Exact type of the range often is not important - these are types mostly of
+temporaries.
 
 
 Numeric range
@@ -158,7 +164,7 @@ Numeric range
 Numeric range is simple numeric sequence generator :
 
 -----------------------------------
-// [0,N)  open-ended range. Only 1-arg CTOR are open-ended.
+// [0,N)  open-ended range. Only range from 1-arg  range() is open-ended.
 scc 'range(5)'
 {0, 1, 2, 3, 4}
 
@@ -192,7 +198,7 @@ scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
 Iterator range
 ~~~~~~~~~~~~~~
 
-Iterator range is simple wrapper for for a range defined by first and last iterator.
+Iterator range is simple wrapper pair of iterators.
 
 Assign `42` to elements `2..4` of vector `{0,1,2,3,4,5,6,7,8,9}`:
 
