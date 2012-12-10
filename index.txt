@@ -70,10 +70,13 @@ need to <<_install, install STO>> and
 http://volnitsky.com/project/scc/#_install[SCC] 
 
 
-Range Operators
----------------
+Ranges and Range Operators
+--------------------------
 
 Ranges are generalization of STL containers.
+They are STO ranges, STL containers, C-arrays and C-strings.  STO defines
+C-strings as zero terminated arrays of `char` (not `signed char` or `unsigned chars`). 
+
 STO defines operators to work with ranges (and STL containers). 
 It have two groups of operators.  First is shortcuts for containers' member functions and simple
 extensions. Second is more complex operations like
@@ -141,22 +144,14 @@ rg - it			// erase at iterator
 STO Ranges
 ----------
 
-_Ranges_ are numeric ranges,  iterator ranges,  lazy-expression ranges, STL
-containers, C-arrays and C-strings.  STO defines C-strings as zero terminated
-arrays of `char` (not `signed char` or `unsigned chars`).  Lazy-expression ranges
-are result of most range expressions (fold/reduce/filter). 
-
-
-_STO Ranges_ are subset of Ranges. Plain Ranges assumed to have STL compliant
-interface.  STO Ranges have extended STL interface. And they do not contain
-data, they refer to an existing STL container or generate its elements.  Lazy
-means that its elements are calculated at the moment when particular element is
-accessed.  
+_STO Ranges_ are  ranges that have extended STL compliant interface.  They also
+do not contain range elemets data, they refer to an existing STL container or generate its
+elements. 
 
 STO Ranges are:  iterator ranges, lazy-expression ranges and numeric ranges.
-Exact type of the range often is not important - these are types mostly of
-temporaries.
-
+Lazy means that its elements are calculated at the moment when particular
+element is accessed.  Exact type of the range often is not important - these
+are types mostly of temporaries.
 
 Numeric range
 ~~~~~~~~~~~~~
@@ -198,16 +193,16 @@ scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
 Iterator range
 ~~~~~~~~~~~~~~
 
-Iterator range is simple wrapper pair of iterators.
+Iterator range is simple wrapper for pair of iterators.
 
-Assign `42` to elements `2..4` of vector `{0,1,2,3,4,5,6,7,8,9}`:
+Assign `42` to elements `2..4` of vector `{1,2,3,4,5,6,7,8,9,10}`:
 
 ------------------------------------
-scc 'vint V=range(0,9);   range(V/2, V/5) = 42;  V'
-{0, 1, 42, 42, 42, 5, 6, 7, 8, 9}
+scc 'vint V=range(1,10);   range(V/2, V/5) = 42;  V'
+{1, 42, 42, 42, 5, 6, 7, 8, 9, 10}
 ------------------------------------
 
-Expression `range(0,9)` constructs numeric range which initialize `V`.  
+Expression `range(1,10)` constructs numeric range which initialize `V`.  
 Expression `V/2` returns iterator to 1st element with value `2`.  Expression
 `range(V/2,V/5)` constructs iterator range from pair of iterators.
 
@@ -217,8 +212,8 @@ containers.  Here is simple lazy-expression range, which shows that it just
 a reference to underlying container:
 
 ------------------------------------------
-scc  'vint V;  auto R=range(V);  R=range(0,9);  R, V'
-{0, 1, 2, 3, 4, 5, 6, 7, 8, 9} {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+scc  'vint V;  auto R=range(V);  R=range(1,10);  R, V'
+{1, 2, 3, 4, 5, 6, 7, 8, 9, 10} {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 -------------------------------------------------
 
 
@@ -340,12 +335,12 @@ Pipe operator have much more freedom on what it can do with range. It can filter
 resize, reorder and convert to different type. Perfomed  operation depends on type of right-hand-side object.
 
 
-Pipe-filter
-^^^^^^^^^^^
+Filter:  `range|predicate`
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Pipe-filter are defined with `operators|(Range, Predicate)` and `operator|(Range, range_elem_type)`. 
+Filter are defined with `operators|(Range, Predicate)` and `operator|(Range, elem_type)`. 
 
-Predicate is functor with signature `bool(*)(range_elem_type)`. If such is used
+Predicate is functor with signature `bool(*)(elem_type)`. If such is used
 with pipe operator, all elements which evaluate to `false` with predicate - are
 filtered out:
 
@@ -397,8 +392,8 @@ But all `2` were replaced.  Underling container `V` is now `{1, 42, 3, 42}`,
 and  `{1, 42, 3, 42} | 2` is empty range.
 
 
-Pipe-stl-algorithm
-^^^^^^^^^^^^^^^^^^
+Evaluate:  `range|stl-algorithm`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Simple `operator|(Range, void(*)(It,It)) -> Range` matches STL algorithm which have 2 argument iterators:
 
