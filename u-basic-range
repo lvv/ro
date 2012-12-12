@@ -47,6 +47,8 @@ scc '__ (vint{1,5} || function<int(int,int)>(std::plus<int>()));'
 scc '__ v9 || std::plus<int>();'
 scc '__ v9 || [](int a, int b){return min(a,b);};'
 scc 'vs9 * size || plus<int>()'
+scc  'range(0) || add, range(3) || add'
+scc  'range(0) || mul, range(3) || mul'
 
 #######################################   FUNCTORS
 scc 'v9||add'

@@ -13,7 +13,7 @@ include::/tmp/t.ad[]
 SCC
 ---
 
-STO was originally part of SCC (+++ C++ +++ snippet evaluator at shell prompt).
+STO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++ snippet evaluator at shell prompt).
 It does not depends on SCC but we will use it in examples, so we need to
 tell about SCC first. 
 

@@ -31,9 +31,7 @@ template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }
 
 // FOLDING OPS
 
-//template<class T> 	auto add(T a, T b) -> decltype(a+b)  { return  a+b; }
 template<class T> 	auto sub(T a, T b) -> decltype(a-b)  { return  a-b; }
-//template<class T> 	auto mul(T a, T b) -> decltype(a*b)  { return  a*b; }
 template<class T> 	auto div(T a, T b) -> decltype(a/b)  { return  a/b; }
 
 
@@ -46,7 +44,8 @@ struct  {
 struct {
 	template<class T> auto operator()(T a, T b) -> decltype(a*b)  { return  a*b; }
 	template<class T> static T fold_init(T) { return T(1); }
- } mul;
+ } mul  __attribute__((unused));
+
 
 
 // PREDICATE
