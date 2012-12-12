@@ -295,7 +295,7 @@ scc 'vint V{1,2,3};  V || plus<int>()'
 scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<T>(),  T - deduced
 6
 
-scc 'vint V{1,2,3};  V || mul'		// mul -  STO shortcut for std::multiplies<T>()
+scc 'range(1,3) || mul'			// fuctorial;   mul -  STO shortcut for std::multiplies<T>()
 6
 
 scc 'vstr V{"aa", "bb", "cc"};  V || add'

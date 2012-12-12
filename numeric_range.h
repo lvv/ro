@@ -100,7 +100,7 @@ struct  numeric_range {
 
 	// CTOR
 	numeric_range()  			: from(T()),  to(T()), step(T())  {};
-	numeric_range(T from, T to, T step)	: from(from), to(to),  step(step),  range_end((to-from)/step + 1)  { assert((to-from)*step >= 0);};
+	numeric_range(T from, T to, T step)	: from(from), to(to),  step(step),  range_end((to-from)/step + 1)  { assert(range_end >= 0);};
 
 	// ITERATOR
 	const_iterator	cbegin() const	{ return const_iterator(this, 0); };

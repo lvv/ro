@@ -175,6 +175,10 @@ CHECK( ! (is_pair<std::tuple<int,int>>::value))
 CHECK(   (is_pair<std::pair<int,int>>::value))
 CHECK(   (is_tuple<std::tuple<int,int>>::value))
 
+// is_fold_functor
+CHECK(   (is_fold_functor<add_t>::value))
+CHECK( ! (is_fold_functor<std::plus<int>>::value))
+CHECK( ! (is_fold_functor<int>::value))
 
 					CHECK_EXIT;
 					}

@@ -253,25 +253,31 @@ range(Rg&& rg)  {
 // Rg || F   ---  accumulate(+C+1,-C, ++C, F) -> D  		 
 
 	template< typename Rg, typename T = rg_elem_type<Rg>, typename R = T > 
-	eIF <is_range<Rg>::value, R>					// const T&(cont T&,cont T&) -- plain functions
+	eIF <is_range<Rg>::value, R>					// const T&(cont T&, cont T&) -- plain functions
 operator ||       (Rg&& rg, const R& (*f)(const T&, const T&) )    {
 	auto i = std::next(std::begin(rg));
 	return  std::accumulate(i, endz(rg), front(rg), f);
  };
 	
 	template< typename Rg, typename T = rg_elem_type<Rg>, typename R = T > 
-	eIF <is_range<Rg>::value, R>					// T(cont T&,cont T&) -- plain functions
+	eIF <is_range<Rg>::value, R>					// T(const T&, const T&) -- plain functions
 operator ||       (Rg&& rg, R (*f)(const T&, const T&) )    {
 	auto i = std::next(std::begin(rg));
 	return  std::accumulate(i, endz(rg), front(rg), f);
  }
 	
 	template< typename Rg, typename T = rg_elem_type<Rg>, typename R = T > 
-	eIF <is_range<Rg>::value, R>							// overload for: lambda, std::plus
+	eIF <is_range<Rg>::value, R>					// overload for: lambda, std::plus, func-obj
 operator ||       (Rg&& rg, identity<std::function<T(const T&, const T&)>> f )    {
 	auto i = std::next(std::begin(rg));
 	const T init = front(rg);
 	return  std::accumulate(i, endz(rg), init, f);
+ }
+
+	template< class Rg, class F, class T = rg_elem_type<Rg>, class R = T > 
+	eIF <is_range<Rg>::value  &&  is_fold_functor<F>::value, R>	// overload for: fold-functor
+operator ||       (Rg&& rg, F f )    {
+	return  std::accumulate(std::begin(rg), endz(rg), f.fold_init(T()), f);
  }
 
 //////////////////////////////////////////////////////////////////////////////////////////  SIMPLE PIPE

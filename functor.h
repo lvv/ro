@@ -27,10 +27,27 @@ bool	isxdigit(char c) { return std::isxdigit((int)c); }
 
 // MATH
 template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }
-template<class T> 	auto add(T a, T b) -> decltype(a+b)  { return  a+b; }
+
+
+// FOLDING OPS
+
+//template<class T> 	auto add(T a, T b) -> decltype(a+b)  { return  a+b; }
 template<class T> 	auto sub(T a, T b) -> decltype(a-b)  { return  a-b; }
-template<class T> 	auto mul(T a, T b) -> decltype(a*b)  { return  a*b; }
+//template<class T> 	auto mul(T a, T b) -> decltype(a*b)  { return  a*b; }
 template<class T> 	auto div(T a, T b) -> decltype(a/b)  { return  a/b; }
+
+
+struct  {
+	template<class T> auto operator()(T a, T b) -> decltype(a+b)  { return  a+b; }
+	template<class T> static T fold_init(T) { return T(); }
+ } add  __attribute__((unused));
+
+
+struct {
+	template<class T> auto operator()(T a, T b) -> decltype(a*b)  { return  a*b; }
+	template<class T> static T fold_init(T) { return T(1); }
+ } mul;
+
 
 // PREDICATE
 template<class T> 	bool is_odd (const T& t) { return  t%2; }
