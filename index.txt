@@ -84,7 +84,8 @@ fold, reduce, filter and arbitrary transformation of ranges.
 
 In table below are 1st group - simple shortcuts for container member functions.
 Unlike STL member functions (which often return `void`), they usually return
-result of operation (so it can be used in expressions).
+result of operation (so it can be used in expressions).  In comments shown
+semantic, not exact operation which will be prefomed - these might  be very differenct for different type of range.
 
 ----------------------------------------------------------------
 +rg			//  rg.begin()
@@ -94,7 +95,7 @@ rg++			//  rg.back()
 --rg			//  rg.pop_front()
 rg--			//  rg.pop_back()
 
-rg << value		//  rg.push_back(value)
+rg << value		//  rg.push_back(value)  or similar in semantic operators
 value >> rg		//  rg.push_front(value)
 rg >> value		//  value = rg.back(value);   rg.pop_back();
 value << rg		//  value = rg.front(value);  rg.pop_front();
@@ -283,10 +284,11 @@ scc 'vector<str> V{"aa", "bbb", "c"};  V * size || max'
 Functor `size_t sto::size(Range)` is similar to `strlen` but will work  with any Range. 
 
 
-Reduce/Fold
-~~~~~~~~~~~
+Fold
+~~~~
 
-Operator `sto::operator|| (Range,Functor)` is fold operator.
+Operator `sto::operator|| (Range,Functor)` is *fold* operator (aka reduce,
+accumulate, compress, catamorphisms, or inject).
 
 ------------------------------------------
 scc 'vint V{1,2,3};  V || plus<int>()'
@@ -706,13 +708,22 @@ Corresponding CLANG bugs:
 RANGES
 	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3350.html
 
-	random iterator
-		Take arbitrary integer number P that GCD(P, N) == 1 where GCD(P, N) is greatest common divisor of P and N (e.g. GCD(70, 42) == 14, GCD(24, 35) == 1).
-		Get sequence K[i] ::= (P * i) mod N + 1, i from 1 to N
-		It's proven that sequence K[i] enumerates all numbers between 1 and N with no repeats (actually K[N + 1] == K[1] but that is not a problem because we need only first N numbers).
-		If you can efficiently generate such numbers P with uniform distribution (e.g. with a good random function) with using Euclidean algorithm to calculate GCD in O(log(N)) complexity you'll get what you want.
+	for random order filter:
+		Take arbitrary integer number P that GCD(P, N) == 1 where
+		GCD(P, N) is greatest common divisor of P and N (e.g. GCD(70,
+		42) == 14, GCD(24, 35) == 1).
 
-	linq -- http://stackoverflow.com/questions/8910045/template-argument-deduction
+		Get sequence K[i] ::= (P * i) mod N + 1, i from 1 to N
+
+		It's proven that sequence K[i] enumerates all numbers between 1
+		and N with no repeats (actually K[N + 1] == K[1] but that is
+		not a problem because we need only first N numbers).
+
+		If you can efficiently generate such numbers P with uniform
+		distribution (e.g. with a good random function) with using
+		Euclidean algorithm to calculate GCD in O(log(N)) complexity
+		you'll get what you want.
+
 
 MAP
 	TRIE
@@ -729,6 +740,10 @@ MAP
 
 STL
 	map adapter: https://github.com/krig/k11/blob/master/src/tests/iter.cpp
+
+TABLE 
+	http://en.wikipedia.org/wiki/Language_Integrated_Query
+	linq -- http://stackoverflow.com/questions/8910045/template-argument-deduction
 
 SIMILAR PROJECTS
 

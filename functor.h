@@ -26,11 +26,12 @@ bool	isxdigit(char c) { return std::isxdigit((int)c); }
 
 
 // MATH
-template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }
+template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }	// cstdlib is bad 
 
 
 // FOLDERS
 
+			// initial value for folding -- http://en.wikipedia.org/wiki/Identity_element
 
 struct  {
 	template<class T> auto operator()(T a, T b) -> decltype(a+b)  { return  a+b; }
