@@ -145,7 +145,7 @@ STO Ranges
 ----------
 
 _STO Ranges_ are  ranges that have extended and STL compliant interface.  They also
-do not contain range elemets data, they refer to an existing STL container or generate its
+do not contain range elements data, they refer to an existing STL container or generate its
 elements. 
 
 STO Ranges are:  iterator ranges, lazy-expression ranges and numeric ranges.
@@ -292,10 +292,10 @@ Operator `sto::operator|| (Range,Functor)` is fold operator.
 scc 'vint V{1,2,3};  V || plus<int>()'
 6
 
-scc 'vint V{1,2,3};  V || add'  	// add -  STO shortcut for std::plus<T>(),  T - deduced
+scc 'vint V{1,2,3};  V || add'  	// add -  similar to std::plus<T>(),  T - deduced
 6
 
-scc 'range(1,3) || mul'			// fuctorial;   mul -  STO shortcut for std::multiplies<T>()
+scc 'range(1,3) || mul'			// fuctorial;   mul -  similar std::multiplies<T>()
 6
 
 scc 'vstr V{"aa", "bb", "cc"};  V || add'
@@ -404,8 +404,8 @@ scc 'vint{3,1,2} | sort | reverse'
 
 
 Unlike other operators, it does not return new lazy-expression-range object,
-but the same range that was on input, modified in place by
-corresponding stl-algorithm. Above example is equivalent to:
+but the same range that was on input, modified in place (and requires mutable
+range) by corresponding stl-algorithm. Above example is equivalent to:
 
 -----------------------------------------------------------------
 scc 'vint V{3,1,2};  sort(+V,-V);  reverse(+V,-V);  V'
@@ -441,14 +441,21 @@ operators is impractical, and its concrete types must be deduced. Unfortunately
 ///////////////////////////////////
 
 Regrettably not all function, are usable with STO. 
+
 For example STO relies on fact that functor have argument of the same type as
 range element type.  But for examples `ctype.h` functions, which work with
-c-strings, have not `char` but `int` as parameter and they can be defined as macros.  And
-what makes it even worse,  they are randomly injected into default namespace by +++ LIBSTDC++ +++.
-As workaround STO put equivalent functions with correct signatures into `sto`
-namespace.
+c-strings, have not `char` but `int` as parameter and they can be defined as
+macros.  And what makes it even worse,  they are randomly injected into default
+namespace by +++ LIBSTDC++ +++.  As workaround STO put equivalent functions
+with correct signatures into `sto` namespace.
 
-Also compiler have its own picularities.  Following compiles with CLANG, but not with GCC:
+Also, even if we do not use using-directive or using-declaration, +++C++11+++
+inject into default namespace old C names.  +++C++11+++ comity made this
+compiler defect a standard.  For example: `<string>` includes `<cstdlib>` which
+define in default namespace `div`.  So we are forced to use our `div` functor
+with `sto::`.
+
+Also compiler have its own peculiarities.  Following compiles with CLANG, but not with GCC:
 
 -----------------------------------------------------
 scc 'map<int,int> M{{1,11}, {2,22}};  M * get\<0>'
