@@ -144,7 +144,7 @@ rg - it			// erase at iterator
 STO Ranges
 ----------
 
-_STO Ranges_ are  ranges that have extended STL compliant interface.  They also
+_STO Ranges_ are  ranges that have extended and STL compliant interface.  They also
 do not contain range elemets data, they refer to an existing STL container or generate its
 elements. 
 
@@ -726,6 +726,7 @@ STL
 SIMILAR PROJECTS
 
 	http://yapb-soc.blogspot.com/2012/10/fmap-in-c-part-1.html
+	http://www.ibm.com/developerworks/aix/library/au-learningfc/index.html
 
 vim: ft=asciidoc
 ///////////////////////////////////

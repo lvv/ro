@@ -47,12 +47,14 @@ scc '__ (vint{1,5} || function<int(int,int)>(std::plus<int>()));'
 scc '__ v9 || std::plus<int>();'
 scc '__ v9 || [](int a, int b){return min(a,b);};'
 scc 'vs9 * size || plus<int>()'
+
+# empty ranges
 scc  'range(0) || add, range(3) || add'
 scc  'range(0) || mul, range(3) || mul'
+scc  'range(0) || sub, range(3) || sub'
+scc  'range(0) || sto::div, range(1,3) || sto::div'
 
 #######################################   FUNCTORS
-scc 'v9||add'
-scc 'vfloat v{1,5,9}; v||add'
 
 # stl algorithms
 scc 'vint{3,1,2} | sort | reverse'
