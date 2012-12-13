@@ -34,25 +34,26 @@ template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }
 
 struct  {
 	template<class T> auto operator()(T a, T b) -> decltype(a+b)  { return  a+b; }
-	template<class T> T fold_init(T) { return T(); }
+	template<class T> T fold_init_value(T) { return T(); }	// T() - correct value for std::string too.
  } add  __attribute__((unused));
 
 
 struct  {
 	template<class T> auto operator()(T a, T b) -> decltype(a-b)  { return  a-b; }
-	template<class T> T fold_init(T) { return T(); }
+	template<class T> T fold_init_value(T) { return T(); }
  } sub  __attribute__((unused));
 
 
 struct {
 	template<class T> auto operator()(T a, T b) -> decltype(a*b)  { return  a*b; }
-	template<class T> T fold_init(T) { return T(1); }
+	template<class T> T fold_init_value(T) { return T(1); }
  } mul  __attribute__((unused));
 
 struct {
 	template<class T> auto operator()(T a, T b) -> decltype(a/b)  { return  a/b; }
-	template<class T> T fold_init(T) { return T(1); }
+	template<class T> T fold_init_value(T) { return T(1); }
  } div  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
+ 						// http://stackoverflow.com/questions/10445586/c11-includes-cstdlib-at-times-when-c03-will-not
 
 
 
