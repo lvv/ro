@@ -330,11 +330,25 @@ scc 'range(8, 9, 0.01) * cos  || max'
 ------------------------------------------
 
 
+Integrate `sin(x)` from `0` to `pi`
+(compare with httpx://www.wolframalpha.com/input/?i=integrate+sin%28x%29+from+0+to+pi[WolframAlpha]):
+
+-------------------------------------------------------
+scc 'auto d=0.001;  (range(0,pi,d) * sin || add) * d'
+2
+-------------------------------------------------------
+
+
+Fold evaluated as left-fold where init value is
+httpx://en.wikipedia.org/wiki/Identity_element[identity element] for performed
+operation. 
+
+
 Pipe
 ~~~~
 
 Pipe operator have much more freedom on what it can do with range. It can filter out,
-resize, reorder and convert to different type. Perfomed  operation depends on type of right-hand-side object.
+resize, reorder and convert to different type. Performed  operation depends on type of right-hand-side object.
 
 
 Filter:  `range|predicate`

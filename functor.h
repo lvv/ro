@@ -90,6 +90,12 @@ operator<(Ph ph, T n) {
 
 	
 
+	template<class T, class Ph>
+	eIF<std::is_placeholder<Ph>::value == 1, cmp_t<T,std::greater<T>>>
+operator>(Ph ph, T n) {
+	return  cmp_t<T,std::greater<T>>(n);
+ };
+
 
 				};
 
