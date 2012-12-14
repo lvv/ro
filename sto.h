@@ -3,6 +3,7 @@
 #ifndef  STO_H
 #define  STO_H
 
+#include <sto/meta.h>
 #include <sto/functor.h>
 #include <sto/range.h>
 #include <sto/stl.h>

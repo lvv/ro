@@ -369,73 +369,70 @@ is_const_iterator() {	// does not answer if this is CI, but if IT is const or no
 
 // see also http://stackoverflow.com/questions/5100015/c-metafunction-to-determine-whether-a-type-is-callable
 
-		template<typename F, typename Signature>
-	struct is_callable {
-		static const bool value = false;
-	 };
+template<class F, class Sig> struct is_callable; 
 
-		template<typename F, typename R, typename... Args>
+		template<class F, class R, class... Args>
 struct is_callable<F, R(Args...)> {					// plain callable
 
-		template<typename>   static int8_t
-	test(...);
+		template<class>   static int8_t
+	test(...){return int8_t();};
 
-		template<typename U> static
+		template<class U> static
 		eIF<
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>
-	test(int);
+	test(int){return int16_t();};
 
-	static const bool value = (sizeof(test<F>(0)) == sizeof(int16_t));
+	enum { value = (sizeof(test<F>(0)) == sizeof(int16_t)) } ;
 };
 
-		template<typename F, typename R, typename... Args>
+		template<class F, class R, class... Args>
 struct is_callable<F, R(*)(Args...)> {					// pointer to callable
 
-		template<typename>   static int8_t
+		template<class>   static int8_t
 	test(...);
 
-		template<typename U> static
+		template<class U> static
 		eIF<
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>
 	test(int);
 
-	static const bool value = (sizeof(test<F>(0)) == sizeof(int16_t));
+	enum { value = (sizeof(test<F>(0)) == sizeof(int16_t)) } ;
 };
 
-		template<typename F, typename R, typename... Args>
+		template<class F, class R, class... Args>
 struct is_callable<F, R(&)(Args...)> {					// ref to callable
 
-		template<typename>   static int8_t
+		template<class>   static int8_t
 	test(...);
 
-		template<typename U> static
+		template<class U> static
 		eIF<
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>
 	test(int);
 
-	static const bool value = (sizeof(test<F>(0)) == sizeof(int16_t));
+	enum { value = (sizeof(test<F>(0)) == sizeof(int16_t)) } ;
 };
 
-		template<typename F, typename R, typename... Args>
+		template<class F, class R, class... Args>
 struct is_callable<F, R(&&)(Args...)> {					// rval-ref to callable
 
-		template<typename>   static int8_t
+		template<class>   static int8_t
 	test(...);
 
-		template<typename U> static
+		template<class U> static
 		eIF<
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>
 	test(int);
 
-	static const bool value = (sizeof(test<F>(0)) == sizeof(int16_t));
+	enum { value = (sizeof(test<F>(0)) == sizeof(int16_t)) } ;
 };
 
 
@@ -443,7 +440,7 @@ struct is_callable<F, R(&&)(Args...)> {					// rval-ref to callable
 									// not really a meta functions
 
 /////  ENDZ - like std::end() but type const char[] is assumed to be C-string and its corresponding correct end (at '\0') is returned
-template<typename Rg>	auto  endz(Rg&& rg)                  -> decltype(std::end(rg))    { return  std::end(rg); };
+template<class Rg>	auto  endz(Rg&& rg)                  -> decltype(std::end(rg))    { return  std::end(rg); };
 template<size_t N>	auto  endz( const char (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
 template<size_t N>	auto  endz(       char (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
 
