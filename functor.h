@@ -2,6 +2,7 @@
 				#define  SCC_FUNCTOR_H
 
 				#include <cctype>
+				#include <sto/meta.h>
 
 				namespace sto {
 
@@ -62,13 +63,33 @@ struct div_t {
 template<class T> 	bool is_odd (const T& t) { return  t%2; }
 template<class T> 	bool is_even(const T& t) { return  !bool(t%2); }
 
-// equal, less, greater
+// equal, less, greater  (will be depricated)
 template<class T> 	struct  eq_t { T t; eq_t (const T& t):t(t){};  bool operator()(const T& x) { return  x==t; } };
 template<class T> 	struct  gt_t { T t; gt_t (const T& t):t(t){};  bool operator()(const T& x) { return  x>t; } };
 template<class T> 	struct  ls_t { T t; ls_t (const T& t):t(t){};  bool operator()(const T& x) { return  x<t; } };
 template<class T> 	eq_t<T> eq(T t)  { return eq_t<T>(t); } 
 template<class T> 	gt_t<T> gt(T t)  { return gt_t<T>(t); } 
 template<class T> 	ls_t<T> ls(T t)  { return ls_t<T>(t); } 
+
+
+
+//  PLACEHOLDER PREDICATE
+
+	template<class T, class Cmp> 
+struct  cmp_t {
+	const T t;
+	cmp_t (const T& t) : t(t) {}; 
+	bool operator()(const T& x) { return  Cmp()(x,t); }
+ };
+
+	template<class T, class Ph>
+	eIF<std::is_placeholder<Ph>::value == 1, cmp_t<T,std::less<T>>>
+operator<(Ph ph, T n) {
+	return  cmp_t<T,std::less<T>>(n);
+ };
+
+	
+
 
 				};
 
