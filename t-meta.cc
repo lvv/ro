@@ -1,12 +1,16 @@
 
 #include "scc/simple.h"
-#include "scc/allocator.h"
-#include "scc/scc.h"
 
 #include <type_traits>
 #include <typeinfo>
 #include <functional>
 using namespace std;
+
+
+#include "sto/meta.h"
+#include "sto/range.h"
+#include "scc/fld.h"
+using namespace sto;
 
 
 /////////////////////////////////////////////////////////////////////////  IS_PRINTABLE
@@ -46,7 +50,6 @@ typedef decltype(lam) lam_t;
 
 int main() {
 
-	//setw(20)<<""        <<   "\tCt\th_cIt\tIt\tinIt\tStack\tQueue\tIoable\tisF\trmpF\trmrF\tisPTR\tisREF\tisMFP\tiFCT\tiFN\n";
 	cout <<  endl <<   left 
 		<< setw(26)<<""        <<   " is  is  has  is  is      is      is     \n"
 		<< setw(26)<<""        <<   " Co  Rg  cns  IT inpt    Queue   call    \n"
@@ -55,16 +58,17 @@ int main() {
 		<< setw(26)<<""        <<   "                             able     2  \n";
 
 	#define for_T(name)  __ setw(26) << name \
-		<<  "  " <<  (is_collection<T>()                                   ? "+" : "\u2219")\
+/*		<<  "  " <<  (is_collection<T>()                                   ? "+" : "\u2219") */\
 		<<  "  " <<  (is_range<T>::value                                   ? "+" : "\u2219")\
 		<<  "   " << (has_const_iterator<T>()                             ? "+" : "\u2219")\
 		<<  "   " << (is_iterator<T>::value                                    ? "+" : "\u2219")\
-		<<  "   " << (is_input_iterator<T>()                              ? "+" : "\u2219")	/* incorrect*/ \
+		<<  "   " << (is_input_iterator<T>::value                              ? "+" : "\u2219")	/* incorrect*/ \
 		<<  "   " << (is_stack<T>::value                                       ? "+" : "\u2219")\
 		<<  "   " << (is_queue<T>::value                                       ? "+" : "\u2219")\
 		<<  "   " << (is_ioable_t<T>::value                                      ? "+" : "\u2219")\
 		<<  "   " << (is_callable<T, bool(int)>::value                         ? "+" : "\u2219")\
 		<<  "   " << (is_callable<T, bool(int, int)>::value                    ? "+" : "\u2219")\
+		<< endl
 	;
 
 
@@ -140,8 +144,8 @@ cout << "STRING ----------------------------------------------------------------
 	{ typedef fld  T;
 	for_T(   "fld"); }
 
-	{ typedef std::basic_string<char, std::char_traits<char>, nd_allocator<char>> T;
-	for_T(   "basic_string<T,....>"); }
+	//{ typedef std::basic_string<char, std::char_traits<char>, nd_allocator<char>> T;
+	//for_T(   "basic_string<T,....>"); }
 
 	{ typedef int	T[5];
 	for_T(   "int[5]"); }

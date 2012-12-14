@@ -4,6 +4,14 @@
 				#include <sto/sto.h>
 				using namespace sto;
 
+		///// func types (for testing is_callable)
+		bool   f(int )                         { return true; };
+		struct fo_t	{ bool operator()(int) { return true; }; };
+		struct mfo_t	{ bool mf(int)         { return true; }; };
+		struct empty_t  {};
+		auto lam = [](int x)->bool { return x==0; };
+		typedef decltype(lam) lam_t;
+
 				int main () {
 
 
@@ -179,6 +187,41 @@ CHECK(   (is_tuple<std::tuple<int,int>>::value))
 CHECK(   (is_fold_functor<add_t>::value))
 CHECK( ! (is_fold_functor<std::plus<int>>::value))
 CHECK( ! (is_fold_functor<int>::value))
+
+// is_callable
+	//{ typedef bool T(int);
+	//for_T(   "bool T(int)");  }
+		
+CHECK( ! (is_callable<int,   bool(int)>::value))
+CHECK( ! (is_callable<void*, bool(int)>::value))
+
+CHECK(   (is_callable<bool(int), bool(int)>::value))
+CHECK(   (is_callable<bool(int), bool(*)(int)>::value))
+CHECK(   (is_callable<bool(int), bool(&)(int)>::value))
+CHECK(   (is_callable<bool(int), bool(char)>::value))
+CHECK( ! (is_callable<bool(int), int (int)>::value))
+CHECK( ! (is_callable<bool(int), int ()>::value))
+CHECK(   (is_callable<bool(int), bool(const int)>::value))
+CHECK(   (is_callable<bool(int), bool(const int&)>::value))
+CHECK(   (is_callable<bool(int), bool(int&)>::value))
+CHECK(   (is_callable<bool(int), bool(int&&)>::value))
+
+
+CHECK( ! (is_callable<bool(int&), bool(int)>::value))
+CHECK( ! (is_callable<bool(int&), bool(const int)>::value))
+CHECK( ! (is_callable<bool(int&), bool(const int&)>::value))
+CHECK(   (is_callable<bool(int&), bool(int&)>::value))
+CHECK( ! (is_callable<bool(int&), bool(int&&)>::value))
+
+CHECK(   (is_callable<decltype(::sin), double(double)>::value))
+CHECK(   (is_callable<decltype(f),              bool(int)>::value))
+CHECK(   (is_callable<fo_t,                     bool(int)>::value))
+CHECK(   (is_callable<std::function<bool(int)>, bool(int)>::value))
+CHECK( ! (is_callable<std::function<bool()>,	bool(int)>::value))
+//CHECK(   (is_callable<std::function<bool(*)(int)>, bool(int)>::value))
+//CHECK(   (is_callable<std::function<lam_t>, bool(int)>::value)) 	// ??????????????????????????
+CHECK(   (is_callable<std::negate<int>,		int(int)>::value))
+CHECK(   (is_callable<std::less<int>,		bool(int,int)>::value))
 
 					CHECK_EXIT;
 					}

@@ -75,11 +75,11 @@ template<class T> 	ls_t<T> ls(T t)  { return ls_t<T>(t); }
 
 //  PLACEHOLDER PREDICATE
 
-	template<class T, class Cmp> 
+	template<class T, class CmpOp> 
 struct  cmp_t {
 	const T t;
 	cmp_t (const T& t) : t(t) {}; 
-	bool operator()(const T& x) { return  Cmp()(x,t); }
+	bool operator()(const T& x) { return  CmpOp()(x,t); }
  };
 
 	template<class T, class Ph>
@@ -95,6 +95,7 @@ operator<(Ph ph, T n) {
 operator>(Ph ph, T n) {
 	return  cmp_t<T,std::greater<T>>(n);
  };
+
 
 
 				};
