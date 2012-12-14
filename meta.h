@@ -176,7 +176,7 @@ DEF_HAS_MEMBER(has_iterator_category,iterator_category)
 DEF_HAS_MEMBER(has_result_type,result_type)
 DEF_HAS_MEMBER(is_map,mapped_type)
 
-DEF_HAS_METHOD(is_fold_functor,fold_init(T()))
+DEF_HAS_METHOD(is_fold_functor,fold_init_value(T()))
 DEF_HAS_METHOD(has_push_front,push_front(typename T::value_type()))
 DEF_HAS_METHOD(has_push_back,push_back(typename T::value_type()))
 DEF_HAS_METHOD(has_push,push(typename rm_ref<T>::value_type()))

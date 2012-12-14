@@ -33,24 +33,24 @@ template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }	// cstdlib is bad
 
 			// initial value for folding -- http://en.wikipedia.org/wiki/Identity_element
 
-struct  {
+struct  add_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a+b)  { return  a+b; }
 	template<class T> T fold_init_value(T) { return T(); }	// T() - correct value for std::string too.
  } add  __attribute__((unused));
 
 
-struct  {
+struct  sub_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a-b)  { return  a-b; }
 	template<class T> T fold_init_value(T) { return T(); }
  } sub  __attribute__((unused));
 
 
-struct {
+struct mul_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a*b)  { return  a*b; }
 	template<class T> T fold_init_value(T) { return T(1); }
  } mul  __attribute__((unused));
 
-struct {
+struct div_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a/b)  { return  a/b; }
 	template<class T> T fold_init_value(T) { return T(1); }
  } div  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
