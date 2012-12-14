@@ -367,11 +367,12 @@ is_const_iterator() {	// does not answer if this is CI, but if IT is const or no
 
 ////////////////////////////////////////////////////////////////////////////////////////  IS_CALLABLE
 
-// to check  ---  http://stackoverflow.com/questions/5100015/c-metafunction-to-determine-whether-a-type-is-callable
+// see also http://stackoverflow.com/questions/5100015/c-metafunction-to-determine-whether-a-type-is-callable
 
-template<typename F, typename Signature> struct is_callable {
-	static const bool value = false;
- };
+		template<typename F, typename Signature>
+	struct is_callable {
+		static const bool value = false;
+	 };
 
 		template<typename F, typename R, typename... Args>
 struct is_callable<F, R(Args...)> {					// plain callable
@@ -388,8 +389,6 @@ struct is_callable<F, R(Args...)> {					// plain callable
 
 	static const bool value = (sizeof(test<F>(0)) == sizeof(int16_t));
 };
-	// can not make is_foo<R(Args...)>()  constexpr func - needs partial specialization
-	// see also http://stackoverflow.com/questions/5100015/c-metafunction-to-determine-whether-a-type-is-callable
 
 		template<typename F, typename R, typename... Args>
 struct is_callable<F, R(*)(Args...)> {					// pointer to callable

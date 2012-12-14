@@ -75,19 +75,18 @@ template<class T> 	ls_t<T> ls(T t)  { return ls_t<T>(t); }
 
 //  PLACEHOLDER PREDICATE
 
-	template<class T, class CmpOp> 
-struct  cmp_t {
-	const T t;
-	cmp_t (const T& t) : t(t) {}; 
-	bool operator()(const T& x) { return  CmpOp()(x,t); }
- };
+		template<class T, class CmpOp> 
+	struct  cmp_t {
+		const T t;
+		cmp_t (const T& t) : t(t) {}; 
+		bool operator()(const T& x) { return  CmpOp()(x,t); }
+	 };
 
 	template<class T, class Ph>
 	eIF<std::is_placeholder<Ph>::value == 1, cmp_t<T,std::less<T>>>
 operator<(Ph ph, T n) {
 	return  cmp_t<T,std::less<T>>(n);
  };
-
 	
 
 	template<class T, class Ph>
