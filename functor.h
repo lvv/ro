@@ -80,13 +80,11 @@ template<class T> 	ls_t<T> ls(T t)  { return ls_t<T>(t); }
 
 	template<class T, class CmpOp> 
 struct  ph_pred_t {
+	typedef 	T	arg_type;
+	const arg_type 	rhs;
 
-	typedef 	T		value_type;
-	typedef		int		is_pred; 
-	const T 	t;
-
-	ph_pred_t (const T& t) : t(t) {}; 
-	bool operator()(const T& x) { return  CmpOp()(x,t); }
+	ph_pred_t (const arg_type& arg) : rhs(arg) {}; 
+	bool operator()(const arg_type& lhs) { return  CmpOp()(lhs,rhs); }
  };
 
 #define MK_PH_PRED_T(OP,CMP_OP_CLASS)							\
@@ -116,20 +114,17 @@ struct logical_exp_t {
 };
 
 
-	//template<class Exp1, class Exp2, class T=int>
-	template<class Exp1, class Exp2, class T=typename Exp1::value_type, class=typename Exp1::is_pred, class=typename Exp2::is_pred >
+	template<class Exp1, class Exp2, class T=typename Exp1::arg_type>
 	eIF<
-		//is_callable<Exp1, bool(T)>::value &&
-		//is_callable<Exp2, bool(T)>::value &&
-		std::is_same<typename Exp1::value_type, typename Exp2::value_type>::value 
+		is_callable<Exp1, bool(T)>::value *	// we can't use && when overloading && (or will inf recurse)
+		is_callable<Exp2, bool(T)>::value *
+		std::is_same<typename Exp1::arg_type, typename Exp2::arg_type>::value 
 		,
 		logical_exp_t<T, Exp1, std::logical_and<T>,  Exp2>
 	>
 operator && (Exp1 e1, Exp2 e2) {
 	return   logical_exp_t<T, Exp1, std::logical_and<T>,  Exp2>(e1,e2);
 };
-/*
-*/
 
 
 				};
