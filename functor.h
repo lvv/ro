@@ -87,29 +87,31 @@ struct  ph_pred_t {
 	bool operator()(const argument_type& lhs) { return  CmpOp()(lhs,rhs); }
  };
 
-#define MK_PH_PRED_T(OP,CMP_OP_CLASS)							\
+#define MK_PH_PRED_T(OP,OP_CLASS, SWAP_OP_CLASS)							\
 											\
 		template<class T, class Ph>						\
-		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,CMP_OP_CLASS<T>>>	\
+		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,OP_CLASS<T>>>	\
 	operator OP (Ph ph, T n) {							\
-		return  ph_pred_t<T,CMP_OP_CLASS<T>>(n);				\
+		return  ph_pred_t<T,OP_CLASS<T>>(n);				\
 	};										\
 											\
 		template<class T, class Ph>						\
-		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,CMP_OP_CLASS<T>>>	\
+		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,SWAP_OP_CLASS<T>>>	\
 	operator OP (T n, Ph ph) {							\
-		return  ph_pred_t<T,CMP_OP_CLASS<T>>(n);				\
+		return  ph_pred_t<T,SWAP_OP_CLASS<T>>(n);				\
 	};
 
 
-MK_PH_PRED_T(<, std::less)
-MK_PH_PRED_T(>, std::greater)
-MK_PH_PRED_T(>=,std::greater_equal)
-MK_PH_PRED_T(<=,std::less_equal)
-MK_PH_PRED_T(==,std::equal_to)
-MK_PH_PRED_T(!=,std::not_equal_to)
+MK_PH_PRED_T(< ,	std::less		,std::greater_equal	)
+MK_PH_PRED_T(> ,	std::greater		,std::less_equal	)
+MK_PH_PRED_T(>=,	std::greater_equal	,std::less		)
+MK_PH_PRED_T(<=,	std::less_equal		,std::greater		)
+MK_PH_PRED_T(==,	std::equal_to		,std::equal_to		)
+MK_PH_PRED_T(!=,	std::not_equal_to	,std::not_equal_to	)
 
 //// expression template
+
+// 2-ary
 
 		template<class T, class Exp1, class LogicOp,  class Exp2>
 	struct logical_exp2_t {
