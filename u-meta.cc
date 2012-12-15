@@ -192,28 +192,31 @@ CHECK( ! (is_fold_functor<int>::value))
 	//{ typedef bool T(int);
 	//for_T(   "bool T(int)");  }
 		
+CHECK( ! (is_callable<bool,  bool(int)>::value))		// is not
 CHECK( ! (is_callable<int,   bool(int)>::value))
 CHECK( ! (is_callable<void*, bool(int)>::value))
+CHECK( ! (is_callable<void,  bool(int)>::value))
+CHECK( ! (is_callable<bool(),bool(int)>::value))
+CHECK( ! (is_callable<bool(int), int (int)>::value))
+CHECK( ! (is_callable<bool(int), int ()>::value))
 
-CHECK(   (is_callable<bool(int), bool(int)>::value))
+CHECK(   (is_callable<bool(int), bool(int)>::value))		// is
 CHECK(   (is_callable<bool(int), bool(*)(int)>::value))
 CHECK(   (is_callable<bool(int), bool(&)(int)>::value))
 CHECK(   (is_callable<bool(int), bool(char)>::value))
-CHECK( ! (is_callable<bool(int), int (int)>::value))
-CHECK( ! (is_callable<bool(int), int ()>::value))
 CHECK(   (is_callable<bool(int), bool(const int)>::value))
 CHECK(   (is_callable<bool(int), bool(const int&)>::value))
 CHECK(   (is_callable<bool(int), bool(int&)>::value))
 CHECK(   (is_callable<bool(int), bool(int&&)>::value))
 
 
-CHECK( ! (is_callable<bool(int&), bool(int)>::value))
+CHECK( ! (is_callable<bool(int&), bool(int)>::value))		// ref
 CHECK( ! (is_callable<bool(int&), bool(const int)>::value))
 CHECK( ! (is_callable<bool(int&), bool(const int&)>::value))
 CHECK(   (is_callable<bool(int&), bool(int&)>::value))
 CHECK( ! (is_callable<bool(int&), bool(int&&)>::value))
 
-CHECK(   (is_callable<decltype(::sin), double(double)>::value))
+CHECK(   (is_callable<decltype(::sin), 	        double(double)>::value))
 CHECK(   (is_callable<decltype(f),              bool(int)>::value))
 CHECK(   (is_callable<fo_t,                     bool(int)>::value))
 CHECK(   (is_callable<std::function<bool(int)>, bool(int)>::value))

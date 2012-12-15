@@ -75,19 +75,26 @@ template<class T> 	ls_t<T> ls(T t)  { return ls_t<T>(t); }
 
 //  PLACEHOLDER PREDICATE
 
-		template<class T, class CmpOp> 
-	struct  ph_pred_t {
-		const T t;
-		ph_pred_t (const T& t) : t(t) {}; 
-		bool operator()(const T& x) { return  CmpOp()(x,t); }
-	 };
+//struct is_pred_tag {};
 
-#define MK_PH_PRED_T(OP,OP_CLASS)							\
+
+	template<class T, class CmpOp> 
+struct  ph_pred_t {
+
+	typedef 	T		value_type;
+	typedef		int		is_pred; 
+	const T 	t;
+
+	ph_pred_t (const T& t) : t(t) {}; 
+	bool operator()(const T& x) { return  CmpOp()(x,t); }
+ };
+
+#define MK_PH_PRED_T(OP,CMP_OP_CLASS)							\
 											\
 		template<class T, class Ph>						\
-		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,OP_CLASS<T>>>	\
+		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,CMP_OP_CLASS<T>>>	\
 	operator OP (Ph ph, T n) {							\
-		return  ph_pred_t<T,OP_CLASS<T>>(n);					\
+		return  ph_pred_t<T,CMP_OP_CLASS<T>>(n);				\
 	};
 
 
@@ -98,6 +105,31 @@ MK_PH_PRED_T(<=,std::less_equal)
 MK_PH_PRED_T(==,std::equal_to)
 MK_PH_PRED_T(!=,std::not_equal_to)
 
+//// expression template
+
+	template<class T, class Exp1, class LogicOp,  class Exp2>
+struct logical_exp_t {
+	Exp1 e1;
+	Exp2 e2;
+	logical_exp_t (const Exp1& e1, const Exp2& e2) : e1(e1), e2(e2) {}; 
+	bool operator()(const T& x) { return  LogicOp()(e1(x),e2(x)); }
+};
+
+
+	//template<class Exp1, class Exp2, class T=int>
+	template<class Exp1, class Exp2, class T=typename Exp1::value_type, class=typename Exp1::is_pred, class=typename Exp2::is_pred >
+	eIF<
+		//is_callable<Exp1, bool(T)>::value &&
+		//is_callable<Exp2, bool(T)>::value &&
+		std::is_same<typename Exp1::value_type, typename Exp2::value_type>::value 
+		,
+		logical_exp_t<T, Exp1, std::logical_and<T>,  Exp2>
+	>
+operator && (Exp1 e1, Exp2 e2) {
+	return   logical_exp_t<T, Exp1, std::logical_and<T>,  Exp2>(e1,e2);
+};
+/*
+*/
 
 
 				};
