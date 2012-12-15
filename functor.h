@@ -114,9 +114,9 @@ struct logical_exp_t {
 };
 
 
-	template<class Exp1, class Exp2, class T=typename Exp1::arg_type>
+	template<class Exp1, class Exp2, class T=typename Exp1::arg_type>		// &&
 	eIF<
-		is_callable<Exp1, bool(T)>::value *	// we can't use && when overloading && (or will inf recurse)
+		is_callable<Exp1, bool(T)>::value *	// '*' - we can't use && when overloading && (or will inf recurse)
 		is_callable<Exp2, bool(T)>::value *
 		std::is_same<typename Exp1::arg_type, typename Exp2::arg_type>::value 
 		,
@@ -126,6 +126,17 @@ operator && (Exp1 e1, Exp2 e2) {
 	return   logical_exp_t<T, Exp1, std::logical_and<T>,  Exp2>(e1,e2);
 };
 
+	template<class Exp1, class Exp2, class T=typename Exp1::arg_type>		// ||
+	eIF<
+		is_callable<Exp1, bool(T)>::value *	
+		is_callable<Exp2, bool(T)>::value *
+		std::is_same<typename Exp1::arg_type, typename Exp2::arg_type>::value 
+		,
+		logical_exp_t<T, Exp1, std::logical_or<T>,  Exp2>
+	>
+operator || (Exp1 e1, Exp2 e2) {
+	return   logical_exp_t<T, Exp1, std::logical_or<T>,  Exp2>(e1,e2);
+};
 
 				};
 
