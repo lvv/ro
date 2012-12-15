@@ -5,6 +5,7 @@
 
 #include <sto/meta.h>
 #include <sto/functor.h>
+#include <sto/expression.h>
 #include <sto/range.h>
 #include <sto/stl.h>
 #include <sto/io.h>
