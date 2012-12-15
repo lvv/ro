@@ -76,24 +76,27 @@ template<class T> 	ls_t<T> ls(T t)  { return ls_t<T>(t); }
 //  PLACEHOLDER PREDICATE
 
 		template<class T, class CmpOp> 
-	struct  cmp_t {
+	struct  ph_pred_t {
 		const T t;
-		cmp_t (const T& t) : t(t) {}; 
+		ph_pred_t (const T& t) : t(t) {}; 
 		bool operator()(const T& x) { return  CmpOp()(x,t); }
 	 };
 
-	template<class T, class Ph>
-	eIF<std::is_placeholder<Ph>::value == 1, cmp_t<T,std::less<T>>>
-operator<(Ph ph, T n) {
-	return  cmp_t<T,std::less<T>>(n);
- };
-	
+#define MK_PH_PRED_T(OP,OP_CLASS)							\
+											\
+		template<class T, class Ph>						\
+		eIF<std::is_placeholder<Ph>::value == 1, ph_pred_t<T,OP_CLASS<T>>>	\
+	operator OP (Ph ph, T n) {							\
+		return  ph_pred_t<T,OP_CLASS<T>>(n);					\
+	};
 
-	template<class T, class Ph>
-	eIF<std::is_placeholder<Ph>::value == 1, cmp_t<T,std::greater<T>>>
-operator>(Ph ph, T n) {
-	return  cmp_t<T,std::greater<T>>(n);
- };
+
+MK_PH_PRED_T(<, std::less)
+MK_PH_PRED_T(>, std::greater)
+MK_PH_PRED_T(>=,std::greater_equal)
+MK_PH_PRED_T(<=,std::less_equal)
+MK_PH_PRED_T(==,std::equal_to)
+MK_PH_PRED_T(!=,std::not_equal_to)
 
 
 
