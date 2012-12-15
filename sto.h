@@ -5,7 +5,11 @@
 
 #include <sto/meta.h>
 #include <sto/functor.h>
-#include <sto/expression.h>
+
+#ifndef scc_BOOST_LAMBDA
+	#include <sto/lambda.h>
+#endif
+
 #include <sto/range.h>
 #include <sto/stl.h>
 #include <sto/io.h>
