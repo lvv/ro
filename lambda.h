@@ -1,10 +1,12 @@
-//  PLACEHOLDER EXPRESSIONS
+//  LAMBDA EXPRESSIONS
 				#ifndef  STO_EXP_H
 				#define  STO_EXP_H
 
 				#include <sto/meta.h>
 
 				namespace sto {
+
+				// http://acts.nersc.gov/formertools/pete/documents/Tutorials.pdf
 
 // PREDICATE
 
