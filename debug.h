@@ -80,6 +80,7 @@ operator<<      (std::ostream& os, const to& o) { std::cout << "to{" << o.id << 
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////// DEBUG VARS
+
 std::vector<int>	__attribute__((unused)) 	v9      {0,1,2,3,4,5,6,7,8,9},  v0, v23{2,3};
 std::deque<int>		__attribute__((unused)) 	d9      {0,1,2,3,4,5,6,7,8,9},  d0, d23{2,3};
 std::list<int>		__attribute__((unused)) 	l9      {0,1,2,3,4,5,6,7,8,9},  l0, l23{2,3};
@@ -100,6 +101,13 @@ static std::vector<int>	__attribute__((unused))		mk_v23(){ return  v23; };
 static std::vector<int>	__attribute__((unused))		mk_v0()	{ return  v0; };
 static std::deque<int>	__attribute__((unused))		mk_d9()	{ return  d9; };
 
+//  range
+auto __attribute__((unused))		rv9	= range(v9); 
+auto __attribute__((unused))		rd9	= range(d9); 
+auto __attribute__((unused))		rl9	= range(l9); 
+auto __attribute__((unused))		rd9r	= range(mk_d9()); 
+auto __attribute__((unused))		rrd9	= range(rd9); 
+auto __attribute__((unused))		n9	= range(9); 
 
 				};	// namespace sto
 				#endif  // STO_DEBUG_H
