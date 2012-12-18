@@ -13,6 +13,10 @@
 
 				#include <cxxabi.h>
 
+				#ifdef scc_STO
+				#include <sto/range.h>
+				#endif
+
 
 				namespace sto {
 
@@ -84,7 +88,6 @@ operator<<      (std::ostream& os, const to& o) { std::cout << "to{" << o.id << 
 std::vector<int>	__attribute__((unused)) 	v9      {0,1,2,3,4,5,6,7,8,9},  v0, v23{2,3};
 std::deque<int>		__attribute__((unused)) 	d9      {0,1,2,3,4,5,6,7,8,9},  d0, d23{2,3};
 std::list<int>		__attribute__((unused)) 	l9      {0,1,2,3,4,5,6,7,8,9},  l0, l23{2,3};
-std::forward_list<int>	__attribute__((unused)) 	fl9	{0,1,2,3,4,5,6,7,8,9},  fl0, fl23{2,3};
 int			__attribute__((unused))		a9[]    {0,1,2,3,4,5,6,7,8,9},  a23[]{2,3};
 char			__attribute__((unused))		c9[99]	{"abc-123"},   c23[]{"BC"},   c1='A',  c0='0', cz='\0', ca='a';
 const char		__attribute__((unused))		cc9[99]	{"abc-123"},  cc23[]{"bc"},  cc1='A', cc0='0';
@@ -94,12 +97,13 @@ std::vector<const char*>__attribute__((unused))		vc9	{"", "a", "bb", "ccc", "ddd
 std::vector<std::tuple<int,std::string>>  __attribute__((unused))		vt9	{std::tuple<int,std::string>(1, "a"), std::tuple<int,std::string>(2,"bb"), std::tuple<int,std::string>(3,"ccc"), std::tuple<int,std::string>(4,"dddd"), std::tuple<int,std::string>(5,"eeeee"), std::tuple<int,std::string>(6,"ffffff"), std::tuple<int,std::string>(7,"ggggggg"), std::tuple<int,std::string>(8,"hhhhhhhh"), std::tuple<int,std::string>(9,"kkkkkkkkk")};
 std::map<int,std::string>  __attribute__((unused))		m9	{{1, "a"}, {2,"bb"}, {3,"ccc"}, {4,"dddd"}, {5,"eeeee"}, {6,"ffffff"}, {7,"ggggggg"}, {8,"hhhhhhhh"}, {9,"kkkkkkkkk"}};
 std::set<int>  __attribute__((unused))			st9	{0,1,2,3,4,5,6,7,8,9};
-// rvalues
-//static std::vector<int>	__attribute__((unused))		mk_v9()	{ return  v9; };
 static std::vector<int>	__attribute__((unused))		mk_v9()	{ return  std::vector<int>{0,1,2,3,4,5,6,7,8,9}; };
 static std::vector<int>	__attribute__((unused))		mk_v23(){ return  v23; };
 static std::vector<int>	__attribute__((unused))		mk_v0()	{ return  v0; };
 static std::deque<int>	__attribute__((unused))		mk_d9()	{ return  d9; };
+
+#ifdef scc_STO
+std::forward_list<int>	__attribute__((unused)) 	fl9	{0,1,2,3,4,5,6,7,8,9},  fl0, fl23{2,3};
 
 //  range
 auto __attribute__((unused))		rv9	= range(v9); 
@@ -108,6 +112,7 @@ auto __attribute__((unused))		rl9	= range(l9);
 auto __attribute__((unused))		rd9r	= range(mk_d9()); 
 auto __attribute__((unused))		rrd9	= range(rd9); 
 auto __attribute__((unused))		n9	= range(9); 
+#endif
 
 				};	// namespace sto
 				#endif  // STO_DEBUG_H

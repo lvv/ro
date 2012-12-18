@@ -2,7 +2,7 @@
 set -o errexit
 set -v 
 
-make -B u-meta && ./u-meta && exit
+make -B u-meta && ./u-meta || exit
 . u-stl
 . u-in
 . u-regex

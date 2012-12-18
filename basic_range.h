@@ -7,15 +7,7 @@
 
 						#include <cassert>
 
-						/*
-						#ifndef NDEBUG
-						#include <iostream>
-						#include <sto/debug.h>
-						#endif
-						*/
-
 						namespace sto {
-						//template<class Ch> class basic_string<Ch>;
 
 /////////////////////////////////////////////////////////////////////////////////////////  CHAIN_RANGE_ITERATOR
 	template<class Rg>  struct  basic_range;
