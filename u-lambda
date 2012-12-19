@@ -1,0 +1,10 @@
+
+set -o errexit
+set -v
+
+
+scc 'int i=1;  (+ _1)(i)'
+scc 'int i=1;  (+ + _1)(i)'
+
+
+: '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
