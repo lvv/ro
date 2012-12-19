@@ -16,7 +16,7 @@
 
 // -- artihmetic ----------------------
 
-class plus_action {};
+ class plus_action {};
 class minus_action {};
 class multiply_action {};
 class divide_action {};
@@ -34,26 +34,50 @@ template <class Action> class unary_arithmetic_action;
 template <class Action> class pre_increment_decrement_action;
 template <class Action> class post_increment_decrement_action;
 
+//-------------------------
+struct plus1{};
+struct plus1{};
 	
 	
-	template<class Arg>
-struct  functor_t;
+	template<class Op, Opnd1=void, Opnd2=void>
+class  functor_t;
 
-	template<>
-struct  functor_t <unary_arithmetic_action<plus_action>> {
-	//functor_t(T t) : t(t) {};
-	//T t;
+	template<int N>
+struct  ph_wrap{ enum {value=N}; };
+
+	template<int N>
+struct  functor_t <ph_wrap<N>> {
+	typedef void is_functor;
+	enum { value=N };
 	template<class Arg>
 	Arg operator() (Arg arg) { return arg; }
  };
 
+	template<class F>
+struct  functor_t <plus1,F> {
+	typedef void is_functor;
+	functor_t(F f) : f(f) {};
+	F f;
+	template<class Arg>
+	Arg operator() (Arg arg) { return +F(arg); }
+ };
+
 	
-	template<class Ph>
-	eIF<std::is_placeholder<Ph>::value, functor_t<unary_arithmetic_action<plus_action>>>
+	// + Ph 
+	template<class Ph, int N=std::is_placeholder<Ph>::value>
+	eIF<N, functor_t<plus1>>
 operator+(Ph ph) {
-	return functor_t<unary_arithmetic_action<plus_action>>();
+	return  functor_t<plus1, functor_t<ph_wrap<N>>(
+	   	functor_t<ph_wrap<N>() 
+	);
  }
 
+	// + Func
+	template<class F, class=F::is_functor>
+	functor_t<plus1,F>
+operator+(F f) {
+	return  functor_t<plus1,F>(F);
+ }
 
 
 
