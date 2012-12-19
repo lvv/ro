@@ -35,7 +35,8 @@ template <class Action> class pre_increment_decrement_action;
 template <class Action> class post_increment_decrement_action;
 
 //-------------------------
-struct plus1{};
+struct  plus1   {};
+struct  minus1  {};
 	
 	
 	template<int N>
@@ -43,12 +44,12 @@ struct  ph_wrap{ enum {value=N}; };
 
 //////////////////////////////////////////////////////////////   FUNCTOR_T
 
-// primary
+	// primary
 	template<class Op, class Opnd1, class Opnd2>
 struct  functor_t;
 
 
-// +Ph
+	//  conv Ph -> Fr
 	template<int N>
 struct  functor_t <void,ph_wrap<N>,void> {
 	typedef void is_functor;
@@ -57,7 +58,8 @@ struct  functor_t <void,ph_wrap<N>,void> {
 	Arg operator() (Arg arg) { return arg; }
  };
 
-// +Fr 
+
+	//  +Fr 
 	template<class Fr>
 struct  functor_t <plus1,Fr,void> {
 	typedef void is_functor;
@@ -68,16 +70,20 @@ struct  functor_t <plus1,Fr,void> {
  };
 
 
+	//  -Fr 
+	template<class Fr>
+struct  functor_t <minus1,Fr,void> {
+	typedef void is_functor;
+	functor_t(Fr fr) : fr(fr) {};
+	Fr fr;
+	template<class Arg>
+	Arg operator() (Arg arg) { return -fr(arg); }
+ };
+
+
 //////////////////////////////////////////////////////////////   OPERATORS
 	
-	// + Ph 
-	template<class Ph, int N=std::is_placeholder<Ph>::value>
-	eIF<N, functor_t<plus1,functor_t<void,ph_wrap<N>,void>,void>>
-operator+(Ph ph) {
-	return  functor_t<plus1, functor_t<void, ph_wrap<N>,void>,void>(
-	   	functor_t<void, ph_wrap<N>,void>() 
-	);
- }
+//// unary+
 
 	// + Fr
 	template<class Fr, class=typename Fr::is_functor>
@@ -86,11 +92,31 @@ operator+(Fr fr) {
 	return  functor_t<plus1,Fr,void>(fr);
  }
 
+	// + Ph 
+	template<class Ph, int N=std::is_placeholder<Ph>::value>
+	eIF<N, functor_t<plus1,functor_t<void,ph_wrap<N>,void>,void>>
+operator+(Ph ph) {
+	return  + functor_t<void, ph_wrap<N>,void>();
+ }
 
+//// unary-
 
+	// - Fr
+	template<class Fr, class=typename Fr::is_functor>
+	functor_t<minus1,Fr,void>
+operator-(Fr fr) {
+	return  functor_t<minus1,Fr,void>(fr);
+ }
+
+	// - Ph 
+	template<class Ph, int N=std::is_placeholder<Ph>::value>
+	eIF<N, functor_t<minus1,functor_t<void,ph_wrap<N>,void>,void>>
+operator-(Ph ph) {
+	return  - functor_t<void, ph_wrap<N>,void>();
+ }
+
+//// binary+
 
 
 				};	// namespace sto
-
-
 				#endif	// STO_LAMBDA_H
