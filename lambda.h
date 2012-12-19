@@ -36,11 +36,10 @@ template <class Action> class post_increment_decrement_action;
 
 //-------------------------
 struct plus1{};
-struct plus1{};
 	
 	
-	template<class Op, Opnd1=void, Opnd2=void>
-class  functor_t;
+	template<class Op, class Opnd1=void, class Opnd2=void>
+struct  functor_t;
 
 	template<int N>
 struct  ph_wrap{ enum {value=N}; };
@@ -59,24 +58,24 @@ struct  functor_t <plus1,F> {
 	functor_t(F f) : f(f) {};
 	F f;
 	template<class Arg>
-	Arg operator() (Arg arg) { return +F(arg); }
+	Arg operator() (Arg arg) { return +f(arg); }
  };
 
 	
 	// + Ph 
 	template<class Ph, int N=std::is_placeholder<Ph>::value>
-	eIF<N, functor_t<plus1>>
+	eIF<N, functor_t<plus1,functor_t<ph_wrap<N>>>>
 operator+(Ph ph) {
-	return  functor_t<plus1, functor_t<ph_wrap<N>>(
-	   	functor_t<ph_wrap<N>() 
+	return  functor_t<plus1, functor_t<ph_wrap<N>>>(
+	   	functor_t<ph_wrap<N>>() 
 	);
  }
 
 	// + Func
-	template<class F, class=F::is_functor>
+	template<class F, class=typename F::is_functor>
 	functor_t<plus1,F>
 operator+(F f) {
-	return  functor_t<plus1,F>(F);
+	return  functor_t<plus1,F>(f);
  }
 
 
