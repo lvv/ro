@@ -43,25 +43,28 @@ struct  ph_wrap{ enum {value=N}; };
 
 //////////////////////////////////////////////////////////////   FUNCTOR_T
 
-	template<class Op, class Opnd1=void, class Opnd2=void>
+// primary
+	template<class Op, class Opnd1, class Opnd2>
 struct  functor_t;
 
 
+// +Ph
 	template<int N>
-struct  functor_t <ph_wrap<N>> {
+struct  functor_t <void,ph_wrap<N>,void> {
 	typedef void is_functor;
 	enum { value=N };
 	template<class Arg>
 	Arg operator() (Arg arg) { return arg; }
  };
 
-	template<class F>
-struct  functor_t <plus1,F> {
+// +Fr 
+	template<class Fr>
+struct  functor_t <plus1,Fr,void> {
 	typedef void is_functor;
-	functor_t(F f) : f(f) {};
-	F f;
+	functor_t(Fr fr) : fr(fr) {};
+	Fr fr;
 	template<class Arg>
-	Arg operator() (Arg arg) { return +f(arg); }
+	Arg operator() (Arg arg) { return +fr(arg); }
  };
 
 
@@ -69,18 +72,18 @@ struct  functor_t <plus1,F> {
 	
 	// + Ph 
 	template<class Ph, int N=std::is_placeholder<Ph>::value>
-	eIF<N, functor_t<plus1,functor_t<ph_wrap<N>>>>
+	eIF<N, functor_t<plus1,functor_t<void,ph_wrap<N>,void>,void>>
 operator+(Ph ph) {
-	return  functor_t<plus1, functor_t<ph_wrap<N>>>(
-	   	functor_t<ph_wrap<N>>() 
+	return  functor_t<plus1, functor_t<void, ph_wrap<N>,void>,void>(
+	   	functor_t<void, ph_wrap<N>,void>() 
 	);
  }
 
-	// + Func
-	template<class F, class=typename F::is_functor>
-	functor_t<plus1,F>
-operator+(F f) {
-	return  functor_t<plus1,F>(f);
+	// + Fr
+	template<class Fr, class=typename Fr::is_functor>
+	functor_t<plus1,Fr,void>
+operator+(Fr fr) {
+	return  functor_t<plus1,Fr,void>(fr);
  }
 
 
