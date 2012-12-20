@@ -52,6 +52,8 @@ placeholder<1>	_1;
 placeholder<2>	_2;
 placeholder<3>	_3;
 
+template<class T> 	struct 	is_ph	 				: std::false_type  {};
+template<int N> 	struct 	is_ph<placeholder<N>>			: std::true_type  {};
 
 //////////////////////////////////////////////////////////////   FUNCTOR_T
 
