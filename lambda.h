@@ -22,7 +22,8 @@ struct  minus1  {};
 	template<int N>
 struct  placeholder {
 	typedef void is_functor;
-	typedef void is_placeholder;
+	typedef void is_ph;
+	enum {n=N};
 
 		// 1 arg
 		template<class Arg>
@@ -150,12 +151,15 @@ operator+(Fr fr) {
 	return  functor_t<plus1,Fr,void>(fr);
  }
 
+/*
 	// + Ph 
-	template<class Ph, int N=std::is_placeholder<Ph>::value>
-	eIF<N, functor_t<plus1,placeholder<N>,void>>
+	template<class Ph, int N=Ph::n>
+	//eIF<N, functor_t<plus1,placeholder<N>,void>>
+	functor_t<plus1,placeholder<N>,void>
 operator+(Ph ph) {
 	return  + placeholder<N>();
  }
+*/
 
 //// unary-
 
@@ -166,12 +170,14 @@ operator-(Fr fr) {
 	return  functor_t<minus1,Fr,void>(fr);
  }
 
+/*
 	// - Ph 
-	template<class Ph, int N=std::is_placeholder<Ph>::value>
-	eIF<N, functor_t<minus1,placeholder<N>,void>>
+	template<class Ph, int N=Ph::n>
+	functor_t<minus1,placeholder<N>,void>
 operator-(Ph ph) {
 	return  - placeholder<N>();
  }
+ */
 
 
 //// binary+
@@ -183,12 +189,15 @@ operator+(Fr1 fr1, Fr2 fr2) {
 	return  functor_t<plus2,Fr1,Fr2>(fr1,fr2);
  }
 
+/*
 	// Ph1 + Ph2
-	template<class Ph1, class Ph2, int N1=std::is_placeholder<Ph1>::value, int N2=std::is_placeholder<Ph2>::value>
-	eIF< N1 && N2, functor_t<plus2,placeholder<N1>, placeholder<N2> >>
+	template<class Ph1, class Ph2, int N1=Ph1::n, int N2=Ph2::n>
+	//eIF< N1 && N2, functor_t<plus2,placeholder<N1>, placeholder<N2> >>
+	functor_t<plus2,placeholder<N1>, placeholder<N2> >
 operator+(Ph1 ph1, Ph2 ph2) {
 	return  placeholder<N1>() + placeholder<N2>();
  }
+ */
 
 
 				};	// namespace sto
