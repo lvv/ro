@@ -20,7 +20,7 @@ struct  minus1  {};
 //struct  ph_wrap{ enum {value=N}; };
 
 	template<int N>
-struct  placeholder {
+struct  ph {
 	typedef void is_functor;
 	typedef void is_ph;
 	enum {n=N};
@@ -48,13 +48,13 @@ struct  placeholder {
 	operator() (Arg arg) { return std::get<N>(arg); }
 };
 
-placeholder<0>	_0;
-placeholder<1>	_1;
-placeholder<2>	_2;
-placeholder<3>	_3;
+ph<0>	_0;
+ph<1>	_1;
+ph<2>	_2;
+ph<3>	_3;
 
 template<class T> 	struct 	is_ph	 				: std::false_type  {};
-template<int N> 	struct 	is_ph<placeholder<N>>			: std::true_type  {};
+template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
 
 //////////////////////////////////////////////////////////////   FUNCTOR_T
 
@@ -62,36 +62,6 @@ template<int N> 	struct 	is_ph<placeholder<N>>			: std::true_type  {};
 	template<class Op, class Opnd1, class Opnd2>
 struct  functor_t;
 
-/*
-	//  conv Ph -> Fr
-	template<int N>
-struct  functor_t <void,ph_wrap<N>,void> {
-	typedef void is_functor;
-	enum { value=1 };
-
-		// 1 arg
-		template<class Arg>
-		eIF<!is_tuple<Arg>::value, Arg>
-	operator() (Arg arg) { static_assert(N==1, "bad placeholder number"); return arg; }
-
-		// 2 arg, N==1
-		template<class Arg1, class Arg2>
-		//eIF<(sizeof(Arg1),N==1), Arg1>			// this dosn't work, gcc bug
-		typename std::enable_if<(sizeof(Arg1),N==1), Arg1>::type
-	operator() (Arg1 arg1, Arg2 arg2) { return arg1; }
-
-		// 2 arg, N==2
-		template<class Arg1, class Arg2>
-		//eIF<(sizeof(Arg1), N==2), Arg2>			// this dosn't work, gcc bug
-		typename std::enable_if<(sizeof(Arg1),N==2), Arg2>::type
-	operator() (Arg1 arg1, Arg2 arg2) { return arg2; }
-
-		// tuple
-		template<class Arg>
-		eIF<is_tuple<Arg>::value, typename std::tuple_element<N,Arg>::type >
-	operator() (Arg arg) { return std::get<N>(arg); }
- };
-*/
 
 	//  +Fr 
 	template<class Fr>
@@ -151,15 +121,6 @@ operator+(Fr fr) {
 	return  functor_t<plus1,Fr,void>(fr);
  }
 
-/*
-	// + Ph 
-	template<class Ph, int N=Ph::n>
-	//eIF<N, functor_t<plus1,placeholder<N>,void>>
-	functor_t<plus1,placeholder<N>,void>
-operator+(Ph ph) {
-	return  + placeholder<N>();
- }
-*/
 
 //// unary-
 
@@ -169,15 +130,6 @@ operator+(Ph ph) {
 operator-(Fr fr) {
 	return  functor_t<minus1,Fr,void>(fr);
  }
-
-/*
-	// - Ph 
-	template<class Ph, int N=Ph::n>
-	functor_t<minus1,placeholder<N>,void>
-operator-(Ph ph) {
-	return  - placeholder<N>();
- }
- */
 
 
 //// binary+
@@ -189,15 +141,6 @@ operator+(Fr1 fr1, Fr2 fr2) {
 	return  functor_t<plus2,Fr1,Fr2>(fr1,fr2);
  }
 
-/*
-	// Ph1 + Ph2
-	template<class Ph1, class Ph2, int N1=Ph1::n, int N2=Ph2::n>
-	//eIF< N1 && N2, functor_t<plus2,placeholder<N1>, placeholder<N2> >>
-	functor_t<plus2,placeholder<N1>, placeholder<N2> >
-operator+(Ph1 ph1, Ph2 ph2) {
-	return  placeholder<N1>() + placeholder<N2>();
- }
- */
 
 
 				};	// namespace sto
