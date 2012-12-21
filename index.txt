@@ -497,13 +497,41 @@ STO also defines some generic helper functions:
 /////////////
 LAMBDA
 ------
-boost doc: 
 
+BOOST DOC: 
+
+By default, temporary const copies of the bound arguments are stored in the
+lambda functor. This means that the value of a bound argument is fixed at the
+time of the creation of the lambda function and remains constant during the
+lifetime of the lambda function object. For example:
+
+	int i = 1;
+	(_1 = 2, _1 + i)(i);
+
+The comma operator is overloaded to combine lambda expressions into a sequence;
+the resulting unary lambda functor first assigns 2 to its argument, then adds
+the value of i to it. The value of the expression in the last line is 3, not 4.
+
+Wrapping an argument with ref, or cref, instructs the library to store the
+argument as a reference, or as a reference to const 
+
+-- STO var uses lvalue ref for lvalues and for rvalues store value in functor (with  move-ctor).
+----------------------------------
 A general restriction for the actual arguments is that they cannot be non-const rvalues. For example:
 
 int i = 1; int j = 2; 
 (_1 + _2)(i, j); // ok
 (_1 + _2)(1, 2); // error (!)
+
+--- sto do not have such limitations
+
+------------
+The call constant(' ') creates a nullary lambda functor which stores the
+character constant ' ' and returns a reference to it when invoked. The function
+constant_ref is similar, except that it stores a constant reference to its
+argument.
+
+--- STO constant() always returns obj with  const T&
 
 
 /////////////
