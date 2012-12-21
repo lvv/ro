@@ -8,5 +8,6 @@ make -B u-meta && ./u-meta || exit
 . u-regex
 scc -f u-print.h
 . u-range
+. u-lamda
 
 : '= = = = = = = = = = = = = = = = = = = = = = = = ALL PASS = = = = = = = = = = = = = = = = = = = = = = = = ='

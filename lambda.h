@@ -25,27 +25,32 @@ struct  ph {
 	typedef void is_ph;
 	enum {n=N};
 
-		// 1 arg
+	////// 1-ARG
+
+		// non-tuple
 		template<class Arg>
 		eIF<!is_tuple<Arg>::value, Arg>
 	operator() (Arg arg) { static_assert(N==1, "bad placeholder number"); return arg; }
-
-		// 2 arg, N==1
-		template<class Arg1, class Arg2>
-		//eIF<(sizeof(Arg1),N==1), Arg1>			// this dosn't work, gcc bug
-		typename std::enable_if<(sizeof(Arg1),N==1), Arg1>::type
-	operator() (Arg1 arg1, Arg2 arg2) { return arg1; }
-
-		// 2 arg, N==2
-		template<class Arg1, class Arg2>
-		//eIF<(sizeof(Arg1), N==2), Arg2>			// this dosn't work, gcc bug
-		typename std::enable_if<(sizeof(Arg1),N==2), Arg2>::type
-	operator() (Arg1 arg1, Arg2 arg2) { return arg2; }
 
 		// tuple
 		template<class Arg>
 		eIF<is_tuple<Arg>::value, typename std::tuple_element<N,Arg>::type >
 	operator() (Arg arg) { return std::get<N>(arg); }
+
+	////// 2-ARG
+	
+		//  N==1
+		template<class Arg1, class Arg2>
+		//eIF<(sizeof(Arg1),N==1), Arg1>			// this dosn't work, gcc bug
+		typename std::enable_if<(sizeof(Arg1),N==1), Arg1>::type
+	operator() (Arg1 arg1, Arg2 arg2) { return arg1; }
+
+		//  N==2
+		template<class Arg1, class Arg2>
+		//eIF<(sizeof(Arg1), N==2), Arg2>			// this dosn't work, gcc bug
+		typename std::enable_if<(sizeof(Arg1),N==2), Arg2>::type
+	operator() (Arg1 arg1, Arg2 arg2) { return arg2; }
+
 };
 
 ph<0>	_0;
