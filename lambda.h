@@ -62,18 +62,18 @@ template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
 //////////////////////////////////////////////////////////////   VAR
 
 	template<class T>
-struct  var_t {
+struct  var_t : ref_container<T&&>{
 	typedef void is_functor;
 	typedef void is_var;
 
-	T t;
-	var_t(T t): t(t) {};
+	explicit var_t(T&& t)  : ref_container<T&&>(std::forward<T>(t))  {}; // this->value initialised
+	typedef typename ref_container<T&&>::value_type value_type;
 
-	T operator() (...) { return t; }
+	value_type operator() (...) { return std::forward<T>(this->value); }
 };
 
-	template<class T>
-var_t<T> var(T t) { return var_t<T>(t); }
+//	template<class T&&>
+//var_t<T&&> var(T&& t) { return var_t<T&&>(std::forward<T>(t)); }
 
 
 //////////////////////////////////////////////////////////////   FUNCTOR_T

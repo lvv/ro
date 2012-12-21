@@ -110,12 +110,6 @@ struct basic_range_iterator {
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////  REF CONTAINER
-
-template<class T>	struct  ref_container;
-template<class T>	struct  ref_container<T& >  { T& value;  explicit ref_container(T&  x) : value(x)            {} };
-template<class T>	struct  ref_container<T&&>  { rm_ref<T>  value;  explicit ref_container(T&& x) : value(x) {} };
-
 /////////////////////////////////////////////////////////////////////////////////////////  CHAIN_RANGE
 	template<class Rg>
 struct  basic_range : ref_container<Rg&&> {

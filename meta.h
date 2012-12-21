@@ -499,5 +499,25 @@ template<typename T, typename Rg>                 struct is_elem_of { enum { val
 //template<class Rg1, class Rg2>      constexpr bool  have_same_elem()      { return  is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value; }
   template<class Rg1, class Rg2>              struct  have_same_elem { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };
 
+
+/////////////////////////////////////////////////////////////////////////////////////////  REF CONTAINER
+
+template<class T>	struct  ref_container;
+
+template<class T>	struct  ref_container<T& >  {
+	typedef void is_lvalue; 
+	typedef T& value_type; 
+	T& value; 
+	explicit ref_container(T&  x) : value(x)         {}
+ };
+
+template<class T>	struct  ref_container<T&&>  {
+	typedef void is_rvalue;
+	typedef T&& value_type; 
+	rm_ref<T>  value;	
+	explicit ref_container(T&& x) : value(x) {}
+ };
+
+
 					};
 					#endif
