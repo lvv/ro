@@ -59,6 +59,8 @@ template<typename> void ttd();
 
 //////////////////////////////////////////////////////////////////////////////////////////////  TRACE_OBJ
 
+//  to - debug Temporary Object
+//  neg id - moved object;  id+1000 - id of moved out object 
 		template <typename T>
 	struct counter {
 		static int    created,   alive;
@@ -70,12 +72,13 @@ template<typename> void ttd();
 
 
 struct  to : counter<to> {
-	to() 			: id(this->created)	{ std::cout << "ctor ()    *"  << id << std::endl; }
-	to(const to& o)		: id(this->created)	{ std::cout << "ctor (cT&)  "  << id << "(" << o.id << ")"<< std::endl; }
-	to(to&& o)		: id(this->created) 	{ std::cout << "ctor (T&&)  "  << id << "(" << o.id << ")"<< std::endl; o.id = -o.id; }
-	~to()						{ std::cout << "dtor       ~"  << id                      << std::endl; }
-	to&  operator=(const to& o)			{ std::cout << "= cp        "  << id << " = " << o.id << std::endl;  return *this; }
-	to&  operator=(to&& o)				{ std::cout << "= mv        "  << id << " = " << o.id << std::endl;   o.id = -o.id;  return *this; }
+	to(int id) 	: id(id)		{ 						std::cout << "ctor (id)   " << "inst:"  << this->created  << "\tid:" << id << '\n'; }
+	to() 			 		{ 						std::cout << "ctor ()    *" << "inst:"  << this->created                << '\n'; }
+	to(const to& o): id(o.id ? o.id+1000: 0){ 						std::cout << "ctor (cT&)  " << "inst:"  << this->created  << "\tid:" << id << '\n'; }
+	to&  operator=(const to& o)		{ id=(o.id ? o.id+1000: id); 			std::cout << "= cp        " << "inst:"  << this->created  << "\tid:" << id << '\n';  return *this; }
+	~to()					{ 						std::cout << "dtor       ~" << "inst:"  << this->created  << "\tid:" << id << '\n'; }
+	to(to&& o): id(o.id ? o.id+1000: 0)	{ id=(o.id ? o.id+1000: id); 	o.id = -o.id; 	std::cout << "ctor (T&&)  " << "inst:"  << this->created  << "\tid:" << id << '\n';}
+	to&  operator=(to&& o)			{ id=(o.id ? o.id+1000: id); 	o.id = -o.id;	std::cout << "= mv        " << "inst:"  << this->created  << "\tid:" << id << '\n';  return *this; }
 	int id = 0;
 };
 
@@ -116,3 +119,4 @@ auto __attribute__((unused))		n9	= range(9);
 
 				};	// namespace sto
 				#endif  // STO_DEBUG_H
+				// vim:ts=8 smarttab
