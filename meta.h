@@ -175,7 +175,7 @@ DEF_HAS_MEMBER(has_iterator,iterator)
 DEF_HAS_MEMBER(has_iterator_category,iterator_category)
 DEF_HAS_MEMBER(has_result_type,result_type)
 DEF_HAS_MEMBER(is_map,mapped_type)
-
+DEF_HAS_MEMBER(is_functor,is_functor)						// lambda functor
 DEF_HAS_METHOD(is_fold_functor,fold_init_value(T()))
 DEF_HAS_METHOD(has_push_front,push_front(typename T::value_type()))
 DEF_HAS_METHOD(has_push_back,push_back(typename T::value_type()))
@@ -250,9 +250,9 @@ template<class T>	struct  is_tuple { enum { value = is_tuple_t<rm_qualifier<T>>:
 template<typename T>	struct  is_ioable_t 		: std::conditional<std::is_arithmetic<T>::value, std::true_type, std::false_type>::type  {};
 template<typename T,typename CT,typename AL>
 			struct  is_ioable_t <std::basic_string<T,CT,AL>>	: std::true_type  {};
-template<size_t N>	struct  is_ioable_t <char[N]>	: std::true_type  {};
-template<>		struct  is_ioable_t <char*>	: std::true_type  {};
-template<>		struct  is_ioable_t <const char*>	: std::true_type  {};
+template<size_t N>	struct  is_ioable_t <char[N]>				: std::true_type  {};
+template<>		struct  is_ioable_t <char*>				: std::true_type  {};
+template<>		struct  is_ioable_t <const char*>			: std::true_type  {};
 
 template<class T>	struct  is_ioable { enum { value = is_ioable_t<rm_qualifier<T>>::value };};
 //template<typename T>     constexpr bool   is_ioable()        { return  is_ioable_t<rm_qualifier<T>>::value; };

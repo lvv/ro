@@ -167,12 +167,25 @@ operator-(Fr fr) {
 //// binary+
 
 	// Fr + Fr
-	template<class Fr1, class Fr2, class d1=typename Fr1::is_functor, class d2=typename Fr2::is_functor>
+	template<class Fr1, class Fr2, class=typename Fr1::is_functor, class=typename Fr2::is_functor>
 	functor_t<plus2,Fr1,Fr2>
 operator+(Fr1 fr1, Fr2 fr2) {
 	return  functor_t<plus2,Fr1,Fr2>(fr1,fr2);
  }
 
+	// Fr + T
+	template<class Fr1, class T2, class=typename Fr1::is_functor>
+	eIF<!is_functor<T2>::value, functor_t<plus2,Fr1,var_t<T2>>>
+operator+(Fr1 fr1, T2&& t2) {
+	return  functor_t<plus2,Fr1,var_t<T2>>(fr1,var_t<T2>(std::forward<T2>(t2)));
+ }
+
+	// T + Fr
+	template<class T1, class Fr2, class=typename Fr2::is_functor>
+	eIF<!is_functor<T1>::value, functor_t<plus2,var_t<T1>,Fr2>>
+operator+(T1&& t1, Fr2 fr2) {
+	return  functor_t<plus2,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);
+ }
 
 
 				};	// namespace sto

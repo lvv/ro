@@ -10,12 +10,19 @@ scc '(_1 +_2)(1,2)'
 scc '(_1 +_2)(MT(1,2,3))'
 scc 'range(10) || (_1 +_2)'
 scc '(_1 +_1)(1)'
+
+# var
 scc 'var(11)(1, 2)'
 scc 'auto v=var(i); i=99; v(11)'
 scc 'to t(1); var(t)(99);'
 scc 'const to t(1); var(t)(99);'
 scc 'constant(to(1))(99);'
 scc 'var(to(1))(99);'
+
+# mixed types
+scc '(_1+5)(1)'
+scc '(5+_1)(1)'
+scc '(2+-_1+2)(10)'
 
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
