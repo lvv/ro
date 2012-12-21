@@ -515,7 +515,7 @@ template<class T>	struct  ref_container<T&&>  {
 	typedef void is_rvalue;
 	typedef T&& value_type; 
 	rm_ref<T>  value;	
-	explicit ref_container(T&& x) : value(x) {}
+	explicit ref_container(T&& x) : value(std::move(x)) {}
  };
 
 
