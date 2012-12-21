@@ -13,6 +13,7 @@ scc '(_1 +_1)(1)'
 scc 'var(11)(1, 2)'
 scc 'auto v=var(i); i=99; v(11)'
 scc 'to t(1); var(t)(99);'
+scc 'const to t(1); var(t)(99);'
 scc 'constant(to(1))(99);'
 scc 'var(to(1))(99);'
 

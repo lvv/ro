@@ -27,7 +27,7 @@ struct  ph {
 		// non-tuple
 		template<class Arg>
 		eIF<!is_tuple<Arg>::value, Arg>
-	operator() (Arg arg) { static_assert(N==1, "bad placeholder number"); return arg; }
+	operator() (Arg arg) { static_assert(N==1, "bad placeholder number");  return arg; }
 
 		// tuple
 		template<class Arg>
@@ -105,9 +105,8 @@ struct  functor_t <plus1,Fr,void> {
 	functor_t(Fr fr) : fr(fr) {};
 	Fr fr;
 	template<class Arg>
-	Arg operator() (Arg arg) { return +fr(arg); }
+	auto operator() (Arg arg) -> decltype(+arg) { return +fr(arg); }
  };
-
 
 	//  -Fr 
 	template<class Fr>
@@ -116,7 +115,7 @@ struct  functor_t <minus1,Fr,void> {
 	functor_t(Fr fr) : fr(fr) {};
 	Fr fr;
 	template<class Arg>
-	Arg operator() (Arg arg) { return -fr(arg); }
+	auto operator() (Arg arg)  -> decltype(-arg) { return -fr(arg); }
  };
 
 	//  Fr + Fr
@@ -128,20 +127,18 @@ struct  functor_t <plus2,Fr1,Fr2> {
 	Fr2 fr2;
 		//  Arity==2
 		template<class Arg1, class Arg2>
-		Arg1 
-	operator() (Arg1 arg1, Arg2 arg2) { return fr1(arg1,arg2) + fr2(arg1,arg2); }
+		auto 
+	operator() (Arg1 arg1, Arg2 arg2)  -> decltype(arg1+arg2)  { return fr1(arg1,arg2) + fr2(arg1,arg2); }
 
 		//  Arity==1
 		template<class Arg>
-		eIF<!is_tuple<Arg>::value, Arg>
-	operator() (Arg arg) { return fr1(arg) + fr2(arg); }
+		auto
+	operator() (Arg arg)  -> eIF<!is_tuple<Arg>::value,decltype(fr1(arg) + fr2(arg))> { return fr1(arg) + fr2(arg); }
 
 		//  Tuple
-		template<class Arg> auto
-	operator() (Arg arg) 
-	-> eIF<is_tuple<Arg>::value, decltype(fr1(arg) + fr2(arg))>
-	{ return fr1(arg) + fr2(arg); }
-
+		template<class Arg>
+		auto
+	operator() (Arg arg) -> eIF<is_tuple<Arg>::value, decltype(fr1(arg) + fr2(arg))> { return fr1(arg) + fr2(arg); }
  };
 
 
