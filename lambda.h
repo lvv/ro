@@ -16,9 +16,6 @@ struct  minus1  {};
 	
 //////////////////////////////////////////////////////////////   PLACEHOLDER
 
-//	template<int N>
-//struct  ph_wrap{ enum {value=N}; };
-
 	template<int N>
 struct  ph {
 	typedef void is_functor;
@@ -58,8 +55,26 @@ ph<1>	_1;
 ph<2>	_2;
 ph<3>	_3;
 
-template<class T> 	struct 	is_ph	 				: std::false_type  {};
+template<class T> 	struct 	is_ph	 			: std::false_type  {};
 template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
+
+
+//////////////////////////////////////////////////////////////   VAR
+
+	template<class T>
+struct  var_t {
+	typedef void is_functor;
+	typedef void is_var;
+
+	T t;
+	var_t(T t): t(t) {};
+
+	T operator() (...) { return t; }
+};
+
+	template<class T>
+var_t<T> var(T t) { return var_t<T>(t); }
+
 
 //////////////////////////////////////////////////////////////   FUNCTOR_T
 

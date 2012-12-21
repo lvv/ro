@@ -494,6 +494,20 @@ STO also defines some generic helper functions:
 * `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`, etc
 
 
+/////////////
+LAMBDA
+------
+boost doc: 
+
+A general restriction for the actual arguments is that they cannot be non-const rvalues. For example:
+
+int i = 1; int j = 2; 
+(_1 + _2)(i, j); // ok
+(_1 + _2)(1, 2); // error (!)
+
+
+/////////////
+
 Simple IO
 ---------
 
