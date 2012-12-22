@@ -10,10 +10,13 @@
 				namespace sto {
 
 
-struct  plus1   {};
-struct  plus2   {};
-struct  minus1  {};
-struct  call1   {};
+struct  plus1     {};
+struct  plus2     {};
+struct  minus1    {};
+struct  minus2    {};
+struct  multiply  {};
+struct  divide    {};
+struct  remainder {};
 
 	
 //////////////////////////////////////////////////////////////   PLACEHOLDER
@@ -122,6 +125,7 @@ struct  functor_t <minus1,Fr,void> {
 	auto operator() (Arg arg)  -> decltype(-arg) { return -fr(arg); }
  };
 
+/*
 	//  Fr + Fr
 	template<class Fr1, class Fr2>
 struct  functor_t <plus2,Fr1,Fr2> {
@@ -144,6 +148,40 @@ struct  functor_t <plus2,Fr1,Fr2> {
 		auto
 	operator() (Arg arg) -> eIF<is_tuple<Arg>::value, decltype(fr1(arg) + fr2(arg))> { return fr1(arg) + fr2(arg); }
  };
+ */
+
+#define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
+                                                                                                                \
+		template<class Fr1, class Fr2>                                                                  \
+	struct  functor_t <OP_CLASS,Fr1,Fr2> {                                                                  \
+		typedef void is_functor;                                                                        \
+		functor_t(Fr1 fr1, Fr2 fr2) : fr1(fr1), fr2(fr2) {};                                            \
+		Fr1 fr1;                                                                                        \
+		Fr2 fr2;                                                                                        \
+			/*  Arity==2 */                                                                         \
+			template<class Arg1, class Arg2>                                                        \
+			auto                                                                                    \
+		operator() (Arg1 arg1, Arg2 arg2)  -> decltype(arg1 OP arg2) {                                  \
+			return   fr1(arg1,arg2) OP fr2(arg1,arg2);                                              \
+		}                                                                                               \
+                                                                                                                \
+			/*  Arity==1 */                                                                         \
+			template<class Arg>                                                                     \
+			auto                                                                                    \
+		operator() (Arg arg)  -> eIF<!is_tuple<Arg>::value,decltype(fr1(arg) OP fr2(arg))> {            \
+			return fr1(arg) OP fr2(arg);                                                            \
+		}                                                                                               \
+                                                                                                                \
+			/*  Tuple    */                                                                         \
+			template<class Arg>                                                                     \
+			auto                                                                                    \
+		operator() (Arg arg) -> eIF<is_tuple<Arg>::value, decltype(fr1(arg) OP fr2(arg))> {             \
+			return fr1(arg) OP fr2(arg);                                                            \
+		}                                                                                               \
+	 };
+
+DEF_LAMBDA_FUNCTOR2(+,plus2) 		      							\
+DEF_LAMBDA_FUNCTOR2(-,minus2) 		      							\
 
 
 	
@@ -190,32 +228,8 @@ operator-(Fr fr) {
 	 }
 
 DEF_LAMBDA_OP2(+,plus2)
-//DEF_LAMBDA_OP2(-,minus2)
+DEF_LAMBDA_OP2(-,minus2)
 
-/*
-//// binary+
-
-	// Fr + Fr
-	template<class Fr1, class Fr2, class=typename Fr1::is_functor, class=typename Fr2::is_functor>
-	functor_t<plus2,Fr1,Fr2>
-operator+(Fr1 fr1, Fr2 fr2) {
-	return  functor_t<plus2,Fr1,Fr2>(fr1,fr2);
- }
-
-	// Fr + T
-	template<class Fr1, class T2, class=typename Fr1::is_functor>
-	eIF<!is_functor<T2>::value, functor_t<plus2,Fr1,var_t<T2>>>
-operator+(Fr1 fr1, T2&& t2) {
-	return  functor_t<plus2,Fr1,var_t<T2>>(fr1,var_t<T2>(std::forward<T2>(t2)));
- }
-
-	// T + Fr
-	template<class T1, class Fr2, class=typename Fr2::is_functor>
-	eIF<!is_functor<T1>::value, functor_t<plus2,var_t<T1>,Fr2>>
-operator+(T1&& t1, Fr2 fr2) {
-	return  functor_t<plus2,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);
- }
- */
 				};	// namespace sto
 
 
