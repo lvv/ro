@@ -81,10 +81,10 @@ struct  ph {
 
 		// non-tuple
 		template<class Arg>
-		eIF<!is_tuple<Arg>::value, Arg>
-	operator() (Arg arg) { static_assert(N==1, "bad placeholder number");  return arg; }
+		eIF<!is_tuple<Arg>::value, Arg&&>
+	operator() (Arg&& arg) { static_assert(N==1, "bad placeholder number");  return std::forward<Arg>(arg); }
 
-		// tuple
+		// tuple                                                     // FIXME: ref-correctness
 		template<class Arg>
 		eIF<is_tuple<Arg>::value, typename std::tuple_element<N,Arg>::type >
 	operator() (Arg arg) { return std::get<N>(arg); }
@@ -94,14 +94,14 @@ struct  ph {
 		//  N==1
 		template<class Arg1, class Arg2>
 		//eIF<(sizeof(Arg1),N==1), Arg1>			// this dosn't work, gcc bug
-		typename std::enable_if<(sizeof(Arg1),N==1), Arg1>::type
-	operator() (Arg1 arg1, Arg2 arg2) { return arg1; }
+		typename std::enable_if<(sizeof(Arg1),N==1), Arg1&&>::type
+	operator() (Arg1&& arg1, Arg2&& arg2) { return std::forward<Arg1>(arg1); }
 
 		//  N==2
 		template<class Arg1, class Arg2>
 		//eIF<(sizeof(Arg1), N==2), Arg2>			// this dosn't work, gcc bug
-		typename std::enable_if<(sizeof(Arg1),N==2), Arg2>::type
-	operator() (Arg1 arg1, Arg2 arg2) { return arg2; }
+		typename std::enable_if<(sizeof(Arg1),N==2), Arg2&&>::type
+	operator() (Arg1&& arg1, Arg2&& arg2) { return std::forward<Arg2>(arg2); }
 
 	operator typename std::_Placeholder<N> const () const { return std::_Placeholder<N>(); }	// non portable(?)
 
@@ -163,7 +163,7 @@ struct  functor_t;
 		functor_t(Fr fr) : fr(fr) {};                                                                   \
 		Fr fr;                                                                                          \
 		template<class Arg>                                                                             \
-		auto operator() (Arg arg) -> decltype(OP arg) { return  OP fr(arg); }                           \
+		auto operator() (Arg&& arg) -> decltype(OP arg) { return  OP fr(std::forward<Arg>(arg)); }                           \
 	 };
 
 	DEF_LAMBDA_FUNCTOR1(+,plus1_action)
