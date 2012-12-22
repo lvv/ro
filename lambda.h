@@ -54,10 +54,10 @@ struct  ph {
 
 };
 
-const ph<0>	_0;
-const ph<1>	_1;
-const ph<2>	_2;
-const ph<3>	_3;
+ph<0>	_0;
+ph<1>	_1;
+ph<2>	_2;
+ph<3>	_3;
 
 template<class T> 	struct 	is_ph	 			: std::false_type  {};
 template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
@@ -167,6 +167,32 @@ operator-(Fr fr) {
  }
 
 
+#define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
+		/* Fr OP Fr */											\
+		template<class Fr1, class Fr2, class=typename Fr1::is_functor, class=typename Fr2::is_functor>	\
+		functor_t<OP_CLASS,Fr1,Fr2>                                                                     \
+	operator OP(Fr1 fr1, Fr2 fr2) {                                                                         \
+		return  functor_t<OP_CLASS,Fr1,Fr2>(fr1,fr2);                                                   \
+	 }                                                                                                      \
+                                                                                                                \
+		/* Fr OP T */                                                                                   \
+		template<class Fr1, class T2, class=typename Fr1::is_functor>                                   \
+		eIF<!is_functor<T2>::value, functor_t<OP_CLASS,Fr1,var_t<T2>>>                                  \
+	operator OP(Fr1 fr1, T2&& t2) {                                                                         \
+		return  functor_t<OP_CLASS,Fr1,var_t<T2>>(fr1,var_t<T2>(std::forward<T2>(t2)));                 \
+	 }                                                                                                      \
+                                                                                                                \
+		/* T + Fr */											\
+		template<class T1, class Fr2, class=typename Fr2::is_functor>                                   \
+		eIF<!is_functor<T1>::value, functor_t<OP_CLASS,var_t<T1>,Fr2>>                                  \
+	operator OP(T1&& t1, Fr2 fr2) {                                                                         \
+		return  functor_t<OP_CLASS,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);                \
+	 }
+
+DEF_LAMBDA_OP2(+,plus2)
+//DEF_LAMBDA_OP2(-,minus2)
+
+/*
 //// binary+
 
 	// Fr + Fr
@@ -189,6 +215,7 @@ operator+(Fr1 fr1, T2&& t2) {
 operator+(T1&& t1, Fr2 fr2) {
 	return  functor_t<plus2,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);
  }
+ */
 				};	// namespace sto
 
 
