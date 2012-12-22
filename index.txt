@@ -85,9 +85,11 @@ fold, reduce, filter and arbitrary transformation of ranges.
 In table below are 1st group - simple shortcuts for container member functions.
 Unlike STL member functions (which often return `void`), they usually return
 result of operation (so it can be used in expressions).  In comments shown
-semantic, not exact operation which will be prefomed - these might  be very differenct for different type of range.
+semantic, not exact operation which will be performed - these might  be very
+different for different type of range.
 
 ----------------------------------------------------------------
+			//  This is just approximate semantic, not exact impl
 +rg			//  rg.begin()
 -rg			//  rg.end()
 ++rg			//  rg.front()

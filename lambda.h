@@ -9,6 +9,8 @@
 					#include <functional>
 				namespace sto {
 
+	#define  IS_FR(F)  sto::is_lambda_functor<F>::value
+
 //////////////////////////////////////////////////////////////   OPERATOR TYPES
 
 	// artihmetic
@@ -75,7 +77,7 @@
 
 	template<int N>
 struct  ph {
-	typedef void is_functor;
+	typedef void is_lambda_functor;
 	typedef void is_ph;
 	enum {n=N};
 
@@ -120,9 +122,9 @@ template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
 //////////////////////////////////////////////////////////////   VAR
 
 	template<class T>
-struct  var_t : ref_container<T&&>{
+struct  var_t : ref_container<T&&> {
 		using typename ref_container<T&&>::value_type;
-		typedef void is_functor;
+		typedef  void  is_lambda_functor;
 
 	explicit var_t(T&& t)  : ref_container<T&&>(FWD(T,t))  {}; // this->value initialised
 
@@ -137,7 +139,7 @@ var_t<T> var(T&& t) { return var_t<T>(FWD(T,t)); }
 
 	template<class T>
 struct  constant_t {
-		typedef void is_functor;
+		typedef void is_lambda_functor;
 		const T&  value_cref;
 
 	explicit constant_t(const T& t)  : value_cref(t)   {};
@@ -156,15 +158,16 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 struct  functor_t;
 
 
+
 #define  DEF_LAMBDA_FUNCTOR1(OP,OP_CLASS) 		      							\
                                                                                                                 \
 		template<class Fr>                                                                              \
-	struct  functor_t <OP_CLASS,Fr,void> {                                                                        \
-		typedef void is_functor;                                                                        \
-		functor_t(Fr fr) : fr(fr) {};                                                                   \
-		Fr fr;                                                                                          \
+	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
+			typedef void is_lambda_functor;                                                         \
+			using typename ref_container<Fr&&>::value_type;                                         \
+		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
 		template<class Arg>                                                                             \
-		auto operator() (Arg&& arg) -> decltype(OP arg) { return  OP fr(FWD(Arg,arg)); }                           \
+		auto operator() (Arg&& arg) -> decltype(OP arg) { return  OP this->value(FWD(Arg,arg)); }       \
 	 };
 
 	DEF_LAMBDA_FUNCTOR1(+,plus1_action)
@@ -174,30 +177,33 @@ struct  functor_t;
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
                                                                                                                 \
 		template<class Fr1, class Fr2>                                                                  \
-	struct  functor_t <OP_CLASS,Fr1,Fr2> {                                                                  \
-		typedef void is_functor;                                                                        \
-		functor_t(Fr1 fr1, Fr2 fr2) : fr1(fr1), fr2(fr2) {};                                            \
-		Fr1 fr1;                                                                                        \
-		Fr2 fr2;                                                                                        \
+	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
+		typedef void is_lambda_functor;                                                                 \
+		explicit functor_t(Fr1&& fr1, Fr2&& fr2) :							\
+			ref_container <Fr1&&>(FWD(Fr1,fr1)),							\
+			ref_container2<Fr2&&>(FWD(Fr2,fr2))							\
+		{};                                                                                             \
 			/*  Arity==2 */                                                                         \
 			template<class Arg1, class Arg2>                                                        \
 			auto                                                                                    \
-		operator() (Arg1 arg1, Arg2 arg2)  -> decltype(arg1 OP arg2) {                                  \
-			return   fr1(arg1,arg2) OP fr2(arg1,arg2);                                              \
+		operator() (Arg1&& arg1, Arg2&& arg2)  -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2)) {          \
+			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
+				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2));            			\
 		}                                                                                               \
                                                                                                                 \
 			/*  Arity==1 */                                                                         \
 			template<class Arg>                                                                     \
 			auto                                                                                    \
-		operator() (Arg&& arg)  -> eIF<!is_tuple<Arg>::value,decltype(fr1(FWD(Arg,arg)) OP fr2(FWD(Arg,arg)))> {            \
-			return fr1(arg) OP fr2(arg);                                                            \
+		operator() (Arg&& arg) 										\
+			-> eIF<!is_tuple<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> {            \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
 		}                                                                                               \
                                                                                                                 \
 			/*  Tuple    */                                                                         \
 			template<class Arg>                                                                     \
 			auto                                                                                    \
-		operator() (Arg arg) -> eIF<is_tuple<Arg>::value, decltype(fr1(arg) OP fr2(arg))> {             \
-			return fr1(arg) OP fr2(arg);                                                            \
+		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> { \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
 		}                                                                                               \
 	 };
 
@@ -213,10 +219,10 @@ struct  functor_t;
 
 #define  DEF_LAMBDA_OP1(OP,OP_CLASS)										\
                                                                                                                 \
-		template<class Fr, class=typename Fr::is_functor>                                               \
-		functor_t<OP_CLASS,Fr,void>                                                                     \
-	operator OP(Fr fr) {                                                                                    \
-		return  functor_t<OP_CLASS,Fr,void>(fr);                                                        \
+		template<class Fr>                                               \
+		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
+	operator OP(Fr&& fr) {                                                                                    \
+		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
 	 }
 
 	DEF_LAMBDA_OP1(+,plus1_action)
@@ -227,24 +233,24 @@ struct  functor_t;
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
                                                                                                                 \
 		/* Fr OP Fr */											\
-		template<class Fr1, class Fr2>	\
-		eIF<is_functor<Fr1>::value && is_functor<Fr2>::value, functor_t<OP_CLASS,Fr1&&,Fr2&&>>	\
+		template<class Fr1, class Fr2>	                                                                \
+		eIF<IS_FR(Fr1) && IS_FR(Fr2), functor_t<OP_CLASS,Fr1&&,Fr2&&>>					\
 	operator OP(Fr1&& fr1, Fr2&& fr2) {                                                                     \
-		return  functor_t<OP_CLASS,Fr1&&,Fr2&&> (FWD(Fr1,fr1), FWD(Fr2,fr2));                               \
+		return  functor_t<OP_CLASS,Fr1&&,Fr2&&> (FWD(Fr1,fr1), FWD(Fr2,fr2));                           \
 	 }                                                                                                      \
                                                                                                                 \
 		/* Fr OP T */                                                                                   \
-		template<class Fr1, class T2>                                   \
-		eIF<is_functor<Fr1>::value && !is_functor<T2>::value, functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                                  \
-	operator OP(Fr1&& fr1, T2&& t2) {                                                                         \
-		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));                \
+		template<class Fr1, class T2>                                   				\
+		eIF<IS_FR(Fr1) && !IS_FR(T2), functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
+	operator OP(Fr1&& fr1, T2&& t2) {                                                                      	\
+		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
 	 }                                                                                                      \
                                                                                                                 \
 		/* T + Fr */											\
-		template<class T1, class Fr2>                                   \
-		eIF<!is_functor<T1>::value && is_functor<Fr2>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                                  \
-	operator OP(T1&& t1, Fr2&& fr2) {                                                                         \
-		return  functor_t<OP_CLASS,var_t<T1>,Fr2> (var_t<T1>(FWD(T1,t1)), FWD(Fr2,fr2));                \
+		template<class T1, class Fr2>									\
+		eIF<!IS_FR(T1) && IS_FR(Fr2), functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
+		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
 	DEF_LAMBDA_OP2(+,plus_action)

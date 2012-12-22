@@ -177,7 +177,7 @@ DEF_HAS_MEMBER(has_iterator,iterator)
 DEF_HAS_MEMBER(has_iterator_category,iterator_category)
 DEF_HAS_MEMBER(has_result_type,result_type)
 DEF_HAS_MEMBER(is_map,mapped_type)
-DEF_HAS_MEMBER(is_functor,is_functor)						// lambda functor
+DEF_HAS_MEMBER(is_lambda_functor,is_lambda_functor)
 DEF_HAS_METHOD(is_fold_functor,fold_init_value(T()))
 DEF_HAS_METHOD(has_push_front,push_front(typename T::value_type()))
 DEF_HAS_METHOD(has_push_back,push_back(typename T::value_type()))
@@ -518,6 +518,23 @@ template<class T>	struct  ref_container<T&&>  {
 	typedef T&& value_type; 
 	rm_ref<T>  value;	
 	explicit ref_container(T&& x) : value(std::move(x)) {}
+ };
+
+// 2
+template<class T>	struct  ref_container2;
+
+template<class T>	struct  ref_container2<T& >  {
+	typedef void is_lvalue; 
+	typedef T& value_type; 
+	T& value2; 
+	explicit ref_container2(T&  x) : value2(x)         {}
+ };
+
+template<class T>	struct  ref_container2<T&&>  {
+	typedef void is_rvalue;
+	typedef T&& value_type; 
+	rm_ref<T>  value2;	
+	explicit ref_container2(T&& x) : value2(std::move(x)) {}
  };
 
 

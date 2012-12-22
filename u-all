@@ -1,6 +1,7 @@
 
 set -o errexit
 set -v 
+renice -n 20 -p $$
 
 make -B u-meta && ./u-meta || exit
 . u-stl
