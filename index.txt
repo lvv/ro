@@ -85,9 +85,11 @@ fold, reduce, filter and arbitrary transformation of ranges.
 In table below are 1st group - simple shortcuts for container member functions.
 Unlike STL member functions (which often return `void`), they usually return
 result of operation (so it can be used in expressions).  In comments shown
-semantic, not exact operation which will be prefomed - these might  be very differenct for different type of range.
+semantic, not exact operation which will be performed - these might  be very
+different for different type of range.
 
 ----------------------------------------------------------------
+			//  This is just approximate semantic, not exact impl
 +rg			//  rg.begin()
 -rg			//  rg.end()
 ++rg			//  rg.front()
@@ -168,7 +170,11 @@ scc 'range(5)'
 scc 'range(1,5)'
 {1, 2, 3, 4, 5}
 
-// floating point 
+// same thing, with explicit step
+scc 'range(1,5,1)'
+{1, 2, 3, 4, 5}
+
+// floating point; range type is result of type promotion on all range() arguments  
 scc 'range(1,5,0.5)'
 {1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5}
 
@@ -184,7 +190,7 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z
 scc 'vint V = range(5);   V' 
 {0, 1, 2, 3, 4}
 
-// is lazy
+// is lazy, O(1) storage
 scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
 5
 -----------------------------------
@@ -490,6 +496,55 @@ STO also defines some generic helper functions:
 * `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`, etc
 
 
+/////////////
+LAMBDA
+------
+
+BOOST DOC: 
+
+By default, temporary const copies of the bound arguments are stored in the
+lambda functor. This means that the value of a bound argument is fixed at the
+time of the creation of the lambda function and remains constant during the
+lifetime of the lambda function object. For example:
+
+	int i = 1;
+	(_1 = 2, _1 + i)(i);
+
+The comma operator is overloaded to combine lambda expressions into a sequence;
+the resulting unary lambda functor first assigns 2 to its argument, then adds
+the value of i to it. The value of the expression in the last line is 3, not 4.
+
+Wrapping an argument with ref, or cref, instructs the library to store the
+argument as a reference, or as a reference to const 
+
+-- STO var uses lvalue ref for lvalues and for rvalues store value in functor (with  move-ctor).
+----------------------------------
+A general restriction for the actual arguments is that they cannot be non-const rvalues. For example:
+
+int i = 1; int j = 2; 
+(_1 + _2)(i, j); // ok
+(_1 + _2)(1, 2); // error (!)
+
+--- sto do not have such limitations
+
+------------
+The call constant(' ') creates a nullary lambda functor which stores the
+character constant ' ' and returns a reference to it when invoked. The function
+constant_ref is similar, except that it stores a constant reference to its
+argument.
+
+--- STO constant() always returns obj with  const T&
+
+
+------------------------
+scc 'std::bind(sin,1.0)()'
+0.841471
+
+scc 'std::bind(sin,_1)(1.0)'
+<compiler error>
+
+/////////////
+
 Simple IO
 ---------
 
@@ -700,6 +755,7 @@ Luckily, GCC team is pretty quick to fix things after you will file a but report
 - httpx://gcc.gnu.org/bugzilla/show_bug.cgi?id=54648[Bug 54648 -- constexpr function rejected as non const]
 - httpx://gcc.gnu.org/bugzilla/show_bug.cgi?id=54859[Bug 54859 -- constexpr in template aliase rejected as non-constant]
 - http://gcc.gnu.org/bugzilla/show_bug.cgi?id=55694  -- ivalid
+ Bug 55766 - temlate alias is not equivalent (const-ness is not recognized)
 ///////////////////////////////////////////
 
 

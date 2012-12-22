@@ -1,0 +1,38 @@
+
+set -o errexit
+set -v
+
+
+scc 'int i=1;  (+ _1)(i)'
+scc 'int i=1;  (+ + _1)(i)'
+scc '(- _1)(3), (+ - - - + _1)(3)'
+scc '(_1 +_2)(1,2)'
+scc '(_1 +_2)(MT(1,2,3))'
+scc 'range(10) || (_1 +_2)'
+scc '(_1 +_1)(1)'
+
+# var
+scc 'var(11)(1, 2)'
+scc 'auto v=var(i); i=99; v(11)'
+scc 'to t(1); var(t)(99);'
+scc 'const to t(1); var(t)(99);'
+scc 'constant(to(1))(99);'
+scc 'var(to(1))(99);'
+
+# mixed types
+scc '(_1+5)(1)'
+scc '(5+_1)(1)'
+scc '(2+-_1+2)(10)'
+
+scc '(_1 -_2)(1,2)'
+scc 'assert((2*_1 + 20/_1 - 30%_1)(10)  == (2*10 + 20/10 - 30%10))'
+
+# ref-correctness
+scc 'to t(1); _1(t);'
+scc '_1(to(1));'
+scc ' *((+_1)(vint{11,22}))'
+scc 'vint v{11,22}; *((+_1)(v))'
+scc  'int i=1; (_1+=10)(i); i'
+
+
+: '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'

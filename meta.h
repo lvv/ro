@@ -47,7 +47,9 @@ template<class T>     typename std::add_lvalue_reference<const T>::type const   
 // shortcuts
 template<class Rg>     using	rm_qualifier     = typename std::remove_cv<typename std::remove_reference<Rg>::type>::type;
 template<class Rg>     using	rm_ref           = typename std::remove_reference<Rg>::type;
-#define 			mk_type(x)	typename std::integral_constant<int,x>
+
+#define        	mk_type(x)	typename std::integral_constant<int,x>
+#define  	FWD(T,t)  	std::forward<T>(t)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////  CL_TRAITS
@@ -68,11 +70,11 @@ template <typename T>		struct rg_traits      {
 
 		template <typename U, typename RF = typename rm_ref<U>::reference>	static RF       rf(rm_ref<U>* u);
 		template <typename U>                                          		static no_type  rf(...);
-	typedef     decltype(rf<T>(0))     reference ;
+	typedef   decltype(rf<T>(0))     reference ;
 
 		template <typename U, typename RF = typename rm_ref<U>::const_reference>static RF       crf(rm_ref<U>* u);
 		template <typename U>                                          		static no_type  crf(...);
-	typedef     decltype(crf<T>(0))     const_reference ;
+	typedef   decltype(crf<T>(0))     const_reference ;
 };
 
 
@@ -175,7 +177,7 @@ DEF_HAS_MEMBER(has_iterator,iterator)
 DEF_HAS_MEMBER(has_iterator_category,iterator_category)
 DEF_HAS_MEMBER(has_result_type,result_type)
 DEF_HAS_MEMBER(is_map,mapped_type)
-
+DEF_HAS_MEMBER(is_lambda_functor,is_lambda_functor)
 DEF_HAS_METHOD(is_fold_functor,fold_init_value(T()))
 DEF_HAS_METHOD(has_push_front,push_front(typename T::value_type()))
 DEF_HAS_METHOD(has_push_back,push_back(typename T::value_type()))
@@ -250,9 +252,9 @@ template<class T>	struct  is_tuple { enum { value = is_tuple_t<rm_qualifier<T>>:
 template<typename T>	struct  is_ioable_t 		: std::conditional<std::is_arithmetic<T>::value, std::true_type, std::false_type>::type  {};
 template<typename T,typename CT,typename AL>
 			struct  is_ioable_t <std::basic_string<T,CT,AL>>	: std::true_type  {};
-template<size_t N>	struct  is_ioable_t <char[N]>	: std::true_type  {};
-template<>		struct  is_ioable_t <char*>	: std::true_type  {};
-template<>		struct  is_ioable_t <const char*>	: std::true_type  {};
+template<size_t N>	struct  is_ioable_t <char[N]>				: std::true_type  {};
+template<>		struct  is_ioable_t <char*>				: std::true_type  {};
+template<>		struct  is_ioable_t <const char*>			: std::true_type  {};
 
 template<class T>	struct  is_ioable { enum { value = is_ioable_t<rm_qualifier<T>>::value };};
 //template<typename T>     constexpr bool   is_ioable()        { return  is_ioable_t<rm_qualifier<T>>::value; };
@@ -498,6 +500,43 @@ template<typename T, typename Rg>                 struct is_elem_of { enum { val
 
 //template<class Rg1, class Rg2>      constexpr bool  have_same_elem()      { return  is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value; }
   template<class Rg1, class Rg2>              struct  have_same_elem { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };
+
+
+/////////////////////////////////////////////////////////////////////////////////////////  REF CONTAINER
+
+template<class T>	struct  ref_container;
+
+template<class T>	struct  ref_container<T& >  {
+	typedef void is_lvalue; 
+	typedef T& value_type; 
+	T& value; 
+	explicit ref_container(T&  x) : value(x)         {}
+ };
+
+template<class T>	struct  ref_container<T&&>  {
+	typedef void is_rvalue;
+	typedef T&& value_type; 
+	rm_ref<T>  value;	
+	explicit ref_container(T&& x) : value(std::move(x)) {}
+ };
+
+// 2
+template<class T>	struct  ref_container2;
+
+template<class T>	struct  ref_container2<T& >  {
+	typedef void is_lvalue; 
+	typedef T& value_type; 
+	T& value2; 
+	explicit ref_container2(T&  x) : value2(x)         {}
+ };
+
+template<class T>	struct  ref_container2<T&&>  {
+	typedef void is_rvalue;
+	typedef T&& value_type; 
+	rm_ref<T>  value2;	
+	explicit ref_container2(T&& x) : value2(std::move(x)) {}
+ };
+
 
 					};
 					#endif

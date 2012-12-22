@@ -7,8 +7,8 @@ set -v
 # O == E
 scc '__ vint{-3,3} * abs,  str("Hello") * toupper, vint{-3,0,3,-1,10} * [](int x){return abs(x);};'
 scc '__ v9 * [](int x){return x+10;};'
-scc 'v9 * bind(std::plus<int>(),10,_1)'
-scc 'v9 * bind((const int& (*)(const int&, const int&))min, 5, _1)'
+#scc 'v9 * bind(std::plus<int>(),10,_1)'
+#scc 'v9 * bind((const int& (*)(const int&, const int&))min, 5, _1)'
 #
 # O != E    -- map with type convertion  
 scc 'vc9 * strlen || plus<int>()'

@@ -7,15 +7,7 @@
 
 						#include <cassert>
 
-						/*
-						#ifndef NDEBUG
-						#include <iostream>
-						#include <sto/debug.h>
-						#endif
-						*/
-
 						namespace sto {
-						//template<class Ch> class basic_string<Ch>;
 
 /////////////////////////////////////////////////////////////////////////////////////////  CHAIN_RANGE_ITERATOR
 	template<class Rg>  struct  basic_range;
@@ -117,12 +109,6 @@ struct basic_range_iterator {
  };
 
 
-
-/////////////////////////////////////////////////////////////////////////////////////////  REF CONTAINER
-
-template<class T>	struct  ref_container;
-template<class T>	struct  ref_container<T& >  { T& value;  explicit ref_container(T&  x) : value(x)            {} };
-template<class T>	struct  ref_container<T&&>  { rm_ref<T>  value;  explicit ref_container(T&& x) : value(x) {} };
 
 /////////////////////////////////////////////////////////////////////////////////////////  CHAIN_RANGE
 	template<class Rg>
