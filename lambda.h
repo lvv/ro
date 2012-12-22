@@ -125,30 +125,6 @@ struct  functor_t <minus1,Fr,void> {
 	auto operator() (Arg arg)  -> decltype(-arg) { return -fr(arg); }
  };
 
-/*
-	//  Fr + Fr
-	template<class Fr1, class Fr2>
-struct  functor_t <plus2,Fr1,Fr2> {
-	typedef void is_functor;
-	functor_t(Fr1 fr1, Fr2 fr2) : fr1(fr1), fr2(fr2) {};
-	Fr1 fr1;
-	Fr2 fr2;
-		//  Arity==2
-		template<class Arg1, class Arg2>
-		auto 
-	operator() (Arg1 arg1, Arg2 arg2)  -> decltype(arg1+arg2)  { return fr1(arg1,arg2) + fr2(arg1,arg2); }
-
-		//  Arity==1
-		template<class Arg>
-		auto
-	operator() (Arg arg)  -> eIF<!is_tuple<Arg>::value,decltype(fr1(arg) + fr2(arg))> { return fr1(arg) + fr2(arg); }
-
-		//  Tuple
-		template<class Arg>
-		auto
-	operator() (Arg arg) -> eIF<is_tuple<Arg>::value, decltype(fr1(arg) + fr2(arg))> { return fr1(arg) + fr2(arg); }
- };
- */
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
                                                                                                                 \
@@ -180,29 +156,22 @@ struct  functor_t <plus2,Fr1,Fr2> {
 		}                                                                                               \
 	 };
 
-DEF_LAMBDA_FUNCTOR2(+,plus2) 		      							\
-DEF_LAMBDA_FUNCTOR2(-,minus2) 		      							\
+	DEF_LAMBDA_FUNCTOR2(+,plus2) 		      							\
+	DEF_LAMBDA_FUNCTOR2(-,minus2) 		      							\
 
 
-	
-//// unary+
 
-	// + Fr
-	template<class Fr, class=typename Fr::is_functor>
-	functor_t<plus1,Fr,void>
-operator+(Fr fr) {
-	return  functor_t<plus1,Fr,void>(fr);
- }
+#define  DEF_LAMBDA_OP1(OP,OP_CLASS)										\
+                                                                                                                \
+		template<class Fr, class=typename Fr::is_functor>                                               \
+		functor_t<OP_CLASS,Fr,void>                                                                     \
+	operator OP(Fr fr) {                                                                                    \
+		return  functor_t<OP_CLASS,Fr,void>(fr);                                                        \
+	 }
 
+	DEF_LAMBDA_OP1(+,plus1)
+	DEF_LAMBDA_OP1(-,minus1)
 
-//// unary-
-
-	// - Fr
-	template<class Fr, class=typename Fr::is_functor>
-	functor_t<minus1,Fr,void>
-operator-(Fr fr) {
-	return  functor_t<minus1,Fr,void>(fr);
- }
 
 
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
@@ -227,8 +196,8 @@ operator-(Fr fr) {
 		return  functor_t<OP_CLASS,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);                \
 	 }
 
-DEF_LAMBDA_OP2(+,plus2)
-DEF_LAMBDA_OP2(-,minus2)
+	DEF_LAMBDA_OP2(+,plus2)
+	DEF_LAMBDA_OP2(-,minus2)
 
 				};	// namespace sto
 
