@@ -6,12 +6,14 @@
 				#include <sto/meta.h>
 
 
+					#include <functional>
 				namespace sto {
 
 
 struct  plus1   {};
 struct  plus2   {};
 struct  minus1  {};
+struct  call1   {};
 
 	
 //////////////////////////////////////////////////////////////   PLACEHOLDER
@@ -48,12 +50,14 @@ struct  ph {
 		typename std::enable_if<(sizeof(Arg1),N==2), Arg2>::type
 	operator() (Arg1 arg1, Arg2 arg2) { return arg2; }
 
+	operator typename std::_Placeholder<N> const () const { return std::_Placeholder<N>(); }	// non portable(?)
+
 };
 
-ph<0>	_0;
-ph<1>	_1;
-ph<2>	_2;
-ph<3>	_3;
+const ph<0>	_0;
+const ph<1>	_1;
+const ph<2>	_2;
+const ph<3>	_3;
 
 template<class T> 	struct 	is_ph	 			: std::false_type  {};
 template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
@@ -142,7 +146,6 @@ struct  functor_t <plus2,Fr1,Fr2> {
  };
 
 
-//////////////////////////////////////////////////////////////   OPERATORS
 	
 //// unary+
 
@@ -186,7 +189,13 @@ operator+(Fr1 fr1, T2&& t2) {
 operator+(T1&& t1, Fr2 fr2) {
 	return  functor_t<plus2,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);
  }
-
-
 				};	// namespace sto
+
+
+				namespace std {
+template<int N> 	struct 	is_placeholder<sto::ph<N>>		: std::integral_constant<int,N>  {};
+				};	// namespace std
+
+
 				#endif	// STO_LAMBDA_H
+				// vim:ts=8

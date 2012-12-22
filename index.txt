@@ -534,6 +534,13 @@ argument.
 --- STO constant() always returns obj with  const T&
 
 
+------------------------
+scc 'std::bind(sin,1.0)()'
+0.841471
+
+scc 'std::bind(sin,_1)(1.0)'
+<compiler error>
+
 /////////////
 
 Simple IO
