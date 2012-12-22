@@ -9,15 +9,65 @@
 					#include <functional>
 				namespace sto {
 
+//////////////////////////////////////////////////////////////   OPERATOR TYPES
 
-struct  plus1     {};
-struct  plus2     {};
-struct  minus1    {};
-struct  minus2    {};
-struct  multiply  {};
-struct  divide    {};
-struct  remainder {};
+// -- artihmetic ----------------------
 
+class plus1_action {};
+class plus_action {};
+class minus1_action {};
+class minus_action {};
+class multiply_action {};
+class divide_action {};
+class remainder_action {};
+
+	class plus_assign_action {};
+	class minus_assign_action {};
+	class multiply_assign_action {};
+	class divide_assign_action {};
+	class remainder_assign_action {};
+
+// -- bitwise  -------------------
+
+class leftshift_action {};
+class rightshift_action {};
+class xor_action {};
+
+	class leftshift_assign_action {};
+	class rightshift_assign_action {};
+	class xor_assign_action {};
+
+
+// -- bitwise/logical -------------------
+
+class and_action {};
+class or_action {};
+class not_action {};
+
+	class and_assign_action {};
+	class or_assign_action {};
+	class not_assign_action {};
+
+// -- relational -------------------------
+
+class less_action {};
+class greater_action {};
+class lessorequal_action {};
+class greaterorequal_action {};
+class equal_action {};
+class notequal_action {};
+
+// -- increment/decrement ------------------------------
+
+class increment_action {};
+class decrement_action {};
+
+	class postfix_increment_action {};
+	class postfix_decrement_action {};
+
+// -- other  ------------------------------
+
+class addressof_action {};
 	
 //////////////////////////////////////////////////////////////   PLACEHOLDER
 
@@ -116,8 +166,8 @@ struct  functor_t;
 		auto operator() (Arg arg) -> decltype(OP arg) { return  OP fr(arg); }                           \
 	 };
 
-	DEF_LAMBDA_FUNCTOR1(+,plus1)
-	DEF_LAMBDA_FUNCTOR1(-,minus1)
+	DEF_LAMBDA_FUNCTOR1(+,plus1_action)
+	DEF_LAMBDA_FUNCTOR1(-,minus1_action)
 
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
@@ -150,11 +200,11 @@ struct  functor_t;
 		}                                                                                               \
 	 };
 
-	DEF_LAMBDA_FUNCTOR2(+,plus2)
-	DEF_LAMBDA_FUNCTOR2(-,minus2)
-	DEF_LAMBDA_FUNCTOR2(*,multiply)
-	DEF_LAMBDA_FUNCTOR2(/,divide)
-	DEF_LAMBDA_FUNCTOR2(%,remainder)
+	DEF_LAMBDA_FUNCTOR2(+,plus_action)
+	DEF_LAMBDA_FUNCTOR2(-,minus_action)
+	DEF_LAMBDA_FUNCTOR2(*,multiply_action)
+	DEF_LAMBDA_FUNCTOR2(/,divide_action)
+	DEF_LAMBDA_FUNCTOR2(%,remainder_action)
 
 
 
@@ -166,8 +216,8 @@ struct  functor_t;
 		return  functor_t<OP_CLASS,Fr,void>(fr);                                                        \
 	 }
 
-	DEF_LAMBDA_OP1(+,plus1)
-	DEF_LAMBDA_OP1(-,minus1)
+	DEF_LAMBDA_OP1(+,plus1_action)
+	DEF_LAMBDA_OP1(-,minus1_action)
 
 
 
@@ -193,11 +243,11 @@ struct  functor_t;
 		return  functor_t<OP_CLASS,var_t<T1>,Fr2>(var_t<T1>(std::forward<T1>(t1)), fr2);                \
 	 }
 
-	DEF_LAMBDA_OP2(+,plus2)
-	DEF_LAMBDA_OP2(-,minus2)
-	DEF_LAMBDA_OP2(*,multiply)
-	DEF_LAMBDA_OP2(/,divide)
-	DEF_LAMBDA_OP2(%,remainder)
+	DEF_LAMBDA_OP2(+,plus_action)
+	DEF_LAMBDA_OP2(-,minus_action)
+	DEF_LAMBDA_OP2(*,multiply_action)
+	DEF_LAMBDA_OP2(/,divide_action)
+	DEF_LAMBDA_OP2(%,remainder_action)
 
 				};	// namespace sto
 
