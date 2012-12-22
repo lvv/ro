@@ -47,7 +47,9 @@ template<class T>     typename std::add_lvalue_reference<const T>::type const   
 // shortcuts
 template<class Rg>     using	rm_qualifier     = typename std::remove_cv<typename std::remove_reference<Rg>::type>::type;
 template<class Rg>     using	rm_ref           = typename std::remove_reference<Rg>::type;
-#define 			mk_type(x)	typename std::integral_constant<int,x>
+
+#define        	mk_type(x)	typename std::integral_constant<int,x>
+#define  	FWD(T,t)  	std::forward<T>(t)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////  CL_TRAITS
@@ -68,11 +70,11 @@ template <typename T>		struct rg_traits      {
 
 		template <typename U, typename RF = typename rm_ref<U>::reference>	static RF       rf(rm_ref<U>* u);
 		template <typename U>                                          		static no_type  rf(...);
-	typedef     decltype(rf<T>(0))     reference ;
+	typedef   decltype(rf<T>(0))     reference ;
 
 		template <typename U, typename RF = typename rm_ref<U>::const_reference>static RF       crf(rm_ref<U>* u);
 		template <typename U>                                          		static no_type  crf(...);
-	typedef     decltype(crf<T>(0))     const_reference ;
+	typedef   decltype(crf<T>(0))     const_reference ;
 };
 
 
