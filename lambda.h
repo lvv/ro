@@ -105,25 +105,19 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 struct  functor_t;
 
 
-	//  +Fr 
-	template<class Fr>
-struct  functor_t <plus1,Fr,void> {
-	typedef void is_functor;
-	functor_t(Fr fr) : fr(fr) {};
-	Fr fr;
-	template<class Arg>
-	auto operator() (Arg arg) -> decltype(+arg) { return +fr(arg); }
- };
+#define  DEF_LAMBDA_FUNCTOR1(OP,OP_CLASS) 		      							\
+                                                                                                                \
+		template<class Fr>                                                                              \
+	struct  functor_t <OP_CLASS,Fr,void> {                                                                        \
+		typedef void is_functor;                                                                        \
+		functor_t(Fr fr) : fr(fr) {};                                                                   \
+		Fr fr;                                                                                          \
+		template<class Arg>                                                                             \
+		auto operator() (Arg arg) -> decltype(OP arg) { return  OP fr(arg); }                           \
+	 };
 
-	//  -Fr 
-	template<class Fr>
-struct  functor_t <minus1,Fr,void> {
-	typedef void is_functor;
-	functor_t(Fr fr) : fr(fr) {};
-	Fr fr;
-	template<class Arg>
-	auto operator() (Arg arg)  -> decltype(-arg) { return -fr(arg); }
- };
+	DEF_LAMBDA_FUNCTOR1(+,plus1)
+	DEF_LAMBDA_FUNCTOR1(-,minus1)
 
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
@@ -156,8 +150,11 @@ struct  functor_t <minus1,Fr,void> {
 		}                                                                                               \
 	 };
 
-	DEF_LAMBDA_FUNCTOR2(+,plus2) 		      							\
-	DEF_LAMBDA_FUNCTOR2(-,minus2) 		      							\
+	DEF_LAMBDA_FUNCTOR2(+,plus2)
+	DEF_LAMBDA_FUNCTOR2(-,minus2)
+	DEF_LAMBDA_FUNCTOR2(*,multiply)
+	DEF_LAMBDA_FUNCTOR2(/,divide)
+	DEF_LAMBDA_FUNCTOR2(%,remainder)
 
 
 
@@ -198,6 +195,9 @@ struct  functor_t <minus1,Fr,void> {
 
 	DEF_LAMBDA_OP2(+,plus2)
 	DEF_LAMBDA_OP2(-,minus2)
+	DEF_LAMBDA_OP2(*,multiply)
+	DEF_LAMBDA_OP2(/,divide)
+	DEF_LAMBDA_OP2(%,remainder)
 
 				};	// namespace sto
 
