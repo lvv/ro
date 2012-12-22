@@ -213,6 +213,8 @@ struct  functor_t;
 	DEF_LAMBDA_FUNCTOR2(/,divide_action)
 	DEF_LAMBDA_FUNCTOR2(%,remainder_action)
 	DEF_LAMBDA_FUNCTOR2(+=,plus_assign_action)
+
+	//////  MEMBER FUNCTORS
 	//DEF_LAMBDA_FUNCTOR2(=,assign_action)
 
 

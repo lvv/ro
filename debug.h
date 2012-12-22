@@ -72,15 +72,23 @@ template<typename> void ttd();
 
 
 struct  to : counter<to> {
-	to(int id) 	: id(id)		{ 						std::cout << "ctor (id)   " << "inst:"  << this->created  << "\tid:" << id << '\n'; }
-	to() 			 		{ 						std::cout << "ctor ()    *" << "inst:"  << this->created                << '\n'; }
-	to(const to& o): id(o.id ? o.id+1000: 0){ 						std::cout << "ctor (cT&)  " << "inst:"  << this->created  << "\tid:" << id << '\n'; }
-	to&  operator=(const to& o)		{ id=(o.id ? o.id+1000: id); 			std::cout << "= cp        " << "inst:"  << this->created  << "\tid:" << id << '\n';  return *this; }
-	~to()					{ 						std::cout << "dtor       ~" << "inst:"  << this->created  << "\tid:" << id << '\n'; }
-	to(to&& o): id(o.id ? o.id+1000: 0)	{ id=(o.id ? o.id+1000: id); 	o.id = -o.id; 	std::cout << "ctor (T&&)  " << "inst:"  << this->created  << "\tid:" << id << '\n';}
-	to&  operator=(to&& o)			{ id=(o.id ? o.id+1000: id); 	o.id = -o.id;	std::cout << "= mv        " << "inst:"  << this->created  << "\tid:" << id << '\n';  return *this; }
+	#ifdef scc_ASSERT
+		const bool print=false;
+	#else
+		const bool print=true;
+	#endif
+	to(int id) 	: id(id)		{ constructed++;						if(print) std::cout << "ctor (id)   " << "inst:"  << this->created  << "\tid:" << id << '\n'; }
+	to() 			 		{ constructed++;						if(print) std::cout << "ctor ()    *" << "inst:"  << this->created                << '\n'; }
+	to(const to& o): id(o.id ? o.id+1000: 0){ constructed++;						if(print) std::cout << "ctor (cT&)  " << "inst:"  << this->created  << "\tid:" << id << '\n'; }
+	to&  operator=(const to& o)		{ constructed++;   id=(o.id ? o.id+1000: id); 			if(print) std::cout << "= cp        " << "inst:"  << this->created  << "\tid:" << id << '\n';  return *this; }
+	~to()					{ 								if(print) std::cout << "dtor       ~" << "inst:"  << this->created  << "\tid:" << id << '\n'; }
+	to(to&& o): id(o.id ? o.id+1000: 0)	{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id; 	if(print) std::cout << "ctor (T&&)  " << "inst:"  << this->created  << "\tid:" << id << '\n';}
+	to&  operator=(to&& o)			{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id;	if(print) std::cout << "= mv        " << "inst:"  << this->created  << "\tid:" << id << '\n';  return *this; }
 	int id = 0;
+	static int    constructed;
 };
+
+int to::constructed   {0};
 
 	std::ostream&
 operator<<      (std::ostream& os, const to& o) { std::cout << "to{" << o.id << "}";  return os; };
