@@ -1,7 +1,5 @@
-
 set -o errexit
 set -v
-
 
 scc -a10       	'int i=10;  (+ _1)(i)'
 scc -a10       	'(+ + _1)(10)'
@@ -36,9 +34,17 @@ scc -a10       	' *((+_1)(vint{10,11}))'
 #  prefix-1
 scc -a10        'vint v{1,2}; ((++_1)(v))=10'
 scc -a10        'dint v{1,10}; (++(--_1)(v))'
+scc -a1         '(!_1)(false) && (!_1)(0)'
+scc -a10 	'int i=10; *(&_1)(i)'
 
 #  postfix-1
 scc -a10        'vint v{10,20}; ((_1--)(v)++)'
+
+# contentsof
+scc        	'*((+_1)(v9))'
+scc        	' ((*_1)(+v9))'
+#scc 	' ((*+_1)(v9))'		# error
+
 
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
