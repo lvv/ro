@@ -321,10 +321,24 @@ struct  functor_t;
 	DEF_LAMBDA_FUNCTOR2(^=,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
 
 	DEF_LAMBDA_FUNCTOR2(||,or_action)			DEF_LAMBDA_OP2(||,or_action)
-
 	DEF_LAMBDA_FUNCTOR2(&&,and_action)			DEF_LAMBDA_OP2(&&,and_action)
 
+	// relational
+	DEF_LAMBDA_FUNCTOR2(<,less_action)			DEF_LAMBDA_OP2(<,less_action)
+	DEF_LAMBDA_FUNCTOR2(>,greater_action)			DEF_LAMBDA_OP2(>,greater_action)
+	DEF_LAMBDA_FUNCTOR2(<=,lessorequal_action)		DEF_LAMBDA_OP2(<=,lessorequal_action)
+	DEF_LAMBDA_FUNCTOR2(>,greaterorequal_action)		DEF_LAMBDA_OP2(>=,greaterorequal_action)
+	DEF_LAMBDA_FUNCTOR2(==,equal_action)			DEF_LAMBDA_OP2(==,equal_action)
+	DEF_LAMBDA_FUNCTOR2(!=,notequal_action)			DEF_LAMBDA_OP2(!=,notequal_action)
+
+
+
 /*
+	/////  MEMBERS ONLY -----------------------------------------
+
+	class assign_action {};
+	class subscript_action {};
+	class call_action {};
 
 */
 
