@@ -269,27 +269,11 @@ struct  functor_t;
 		}                                                                                               \
 	 };
 
-	DEF_LAMBDA_FUNCTOR2(+,plus_action)
-	DEF_LAMBDA_FUNCTOR2(-,minus_action)
-	DEF_LAMBDA_FUNCTOR2(*,multiply_action)
-	DEF_LAMBDA_FUNCTOR2(/,divide_action)
-	DEF_LAMBDA_FUNCTOR2(%,remainder_action)
-
-	DEF_LAMBDA_FUNCTOR2(+=,plus_assign_action)		// TOFIX: add check: arg1 must be lvalue-ref
-	DEF_LAMBDA_FUNCTOR2(-=,minus_assign_action)
-	DEF_LAMBDA_FUNCTOR2(*=,multiply_assign_action)
-	DEF_LAMBDA_FUNCTOR2(/=,divide_assign_action)
-	DEF_LAMBDA_FUNCTOR2(%=,remainder_assign_action)
+	
 	//////  MEMBER FUNCTORS
 	//DEF_LAMBDA_FUNCTOR2(=,assign_action)
 
 	template<bool A, bool B>  struct  AND  { enum { value = A && B }; };
-	/*
-	constexpr bool  AND	(bool a, bool b) { return a && b; };
-	constexpr bool  AND_NOT	(bool a, bool b) { return a && !b; };
-	constexpr bool  NOT_AND	(bool a, bool b) { return !a && b; };
-	*/
-
 
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
                                                                                                                 \
@@ -314,17 +298,18 @@ struct  functor_t;
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
-	DEF_LAMBDA_OP2(+,plus_action)
-	DEF_LAMBDA_OP2(-,minus_action)
-	DEF_LAMBDA_OP2(*,multiply_action)
-	DEF_LAMBDA_OP2(/,divide_action)
-	DEF_LAMBDA_OP2(%,remainder_action)
+	DEF_LAMBDA_FUNCTOR2(+,plus_action)                	DEF_LAMBDA_OP2(+,plus_action)
+	DEF_LAMBDA_FUNCTOR2(-,minus_action)               	DEF_LAMBDA_OP2(-,minus_action)
+	DEF_LAMBDA_FUNCTOR2(*,multiply_action)            	DEF_LAMBDA_OP2(*,multiply_action)
+	DEF_LAMBDA_FUNCTOR2(/,divide_action)              	DEF_LAMBDA_OP2(/,divide_action)
+	DEF_LAMBDA_FUNCTOR2(%,remainder_action)           	DEF_LAMBDA_OP2(%,remainder_action)
+                                                          
+	DEF_LAMBDA_FUNCTOR2(+=,plus_assign_action)        	DEF_LAMBDA_OP2(+=,plus_assign_action)
+	DEF_LAMBDA_FUNCTOR2(-=,minus_assign_action)       	DEF_LAMBDA_OP2(-=,minus_assign_action)
+	DEF_LAMBDA_FUNCTOR2(*=,multiply_assign_action)    	DEF_LAMBDA_OP2(*=,multiply_assign_action)
+	DEF_LAMBDA_FUNCTOR2(/=,divide_assign_action)      	DEF_LAMBDA_OP2(/=,divide_assign_action)
+	DEF_LAMBDA_FUNCTOR2(%=,remainder_assign_action)   	DEF_LAMBDA_OP2(%=,remainder_assign_action)
 
-		DEF_LAMBDA_OP2(+=,plus_assign_action)
-		DEF_LAMBDA_OP2(-=,minus_assign_action)
-		DEF_LAMBDA_OP2(*=,multiply_assign_action)
-		DEF_LAMBDA_OP2(/=,divide_assign_action)
-		DEF_LAMBDA_OP2(%=,remainder_assign_action)
 	//DEF_LAMBDA_OP2(=,assign_action)
 
 	DEF_LAMBDA_FUNCTOR2(<<,leftshift_action)		DEF_LAMBDA_OP2(<<,leftshift_action)
