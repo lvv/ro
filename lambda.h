@@ -283,28 +283,30 @@ struct  functor_t;
 	//////  MEMBER FUNCTORS
 	//DEF_LAMBDA_FUNCTOR2(=,assign_action)
 
-
+	constexpr bool  AND	(bool a, bool b) { return a && b; };
+	constexpr bool  AND_NOT	(bool a, bool b) { return a && !b; };
+	constexpr bool  NOT_AND	(bool a, bool b) { return !a && b; };
 
 
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
                                                                                                                 \
 		/* Fr OP Fr */											\
 		template<class Fr1, class Fr2>	                                                                \
-		eIF<IS_FR(Fr1) && IS_FR(Fr2), functor_t<OP_CLASS,Fr1&&,Fr2&&>>					\
+		eIF<AND(IS_FR(Fr1), IS_FR(Fr2)), functor_t<OP_CLASS,Fr1&&,Fr2&&>>					\
 	operator OP(Fr1&& fr1, Fr2&& fr2) {                                                                     \
 		return  functor_t<OP_CLASS,Fr1&&,Fr2&&> (FWD(Fr1,fr1), FWD(Fr2,fr2));                           \
 	 }                                                                                                      \
                                                                                                                 \
 		/* Fr OP T */                                                                                   \
 		template<class Fr1, class T2>                                   				\
-		eIF<IS_FR(Fr1) && !IS_FR(T2), functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
+		eIF<AND_NOT(IS_FR(Fr1), IS_FR(T2)), functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
 	operator OP(Fr1&& fr1, T2&& t2) {                                                                      	\
 		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
 	 }                                                                                                      \
                                                                                                                 \
 		/* T + Fr */											\
 		template<class T1, class Fr2>									\
-		eIF<!IS_FR(T1) && IS_FR(Fr2), functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+		eIF<NOT_AND(IS_FR(T1), IS_FR(Fr2)), functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
@@ -326,17 +328,17 @@ struct  functor_t;
 	DEF_LAMBDA_FUNCTOR2(>>,rightshift_action)		DEF_LAMBDA_OP2(>>,rightshift_action)
 	DEF_LAMBDA_FUNCTOR2(^,xor_action)			DEF_LAMBDA_OP2(^,xor_action)
 
-/*
 	DEF_LAMBDA_FUNCTOR2(<<=,leftshift_assign_action)	DEF_LAMBDA_OP2(<<=,leftshift_assign_action)
 	DEF_LAMBDA_FUNCTOR2(>>=,rightshift_assign_action)	DEF_LAMBDA_OP2(>>=,rightshift_assign_action)
 	DEF_LAMBDA_FUNCTOR2(^=,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
 
-	DEF_LAMBDA_FUNCTOR2(&&,and_action)			DEF_LAMBDA_OP2(&&,and_action)
 	DEF_LAMBDA_FUNCTOR2(||,or_action)			DEF_LAMBDA_OP2(||,or_action)
 
-	DEF_LAMBDA_FUNCTOR2(&&=,and_assign_action)		DEF_LAMBDA_OP2(&&=,and_assign_action)
-	DEF_LAMBDA_FUNCTOR2(||=,or_assign_action)		DEF_LAMBDA_OP2(||=,or_assign_action)
-	*/
+	DEF_LAMBDA_FUNCTOR2(&&,and_action)			DEF_LAMBDA_OP2(&&,and_action)
+
+/*
+
+*/
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS
 
