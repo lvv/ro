@@ -177,10 +177,23 @@ struct  functor_t;
 		auto operator() (Arg&& arg) -> decltype(OP arg) { return  OP this->value(FWD(Arg,arg)); }       \
 	 };
 
+#define  DEF_LAMBDA_POSTFIX_FUNCTOR1(OP,OP_CLASS) 		      				      		\
+                                                                                                                \
+		template<class Fr>                                                                              \
+	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
+			typedef void is_lambda_functor;                                                         \
+			using typename ref_container<Fr&&>::value_type;                                         \
+		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
+		template<class Arg>                                                                             \
+		auto operator() (Arg&& arg) -> decltype(arg OP) { return  this->value(FWD(Arg,arg)) OP; }       \
+	 };
+
 	DEF_LAMBDA_FUNCTOR1(+,plus1_action)
 	DEF_LAMBDA_FUNCTOR1(-,minus1_action)
 	DEF_LAMBDA_FUNCTOR1(++,increment_action)
 	DEF_LAMBDA_FUNCTOR1(--,decrement_action)
+	DEF_LAMBDA_POSTFIX_FUNCTOR1(++,postfix_increment_action)
+	DEF_LAMBDA_POSTFIX_FUNCTOR1(--,postfix_decrement_action)
 
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
@@ -240,7 +253,7 @@ struct  functor_t;
                                                                                                                 \
 		template<class Fr>                                               \
 		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
-	operator OP(Fr&& fr) {                                                                                    \
+	operator OP(Fr&& fr,int) {                                                                                    \
 		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
 	 }
 
@@ -248,6 +261,8 @@ struct  functor_t;
 	DEF_LAMBDA_OP1(-,minus1_action)
 	DEF_LAMBDA_OP1(++,increment_action)
 	DEF_LAMBDA_OP1(--,decrement_action)
+	DEF_LAMBDA_POSTFIX_OP1(++,postfix_increment_action)
+	DEF_LAMBDA_POSTFIX_OP1(--,postfix_decrement_action)
 
 
 
