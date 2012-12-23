@@ -179,6 +179,8 @@ struct  functor_t;
 
 	DEF_LAMBDA_FUNCTOR1(+,plus1_action)
 	DEF_LAMBDA_FUNCTOR1(-,minus1_action)
+	DEF_LAMBDA_FUNCTOR1(++,increment_action)
+	DEF_LAMBDA_FUNCTOR1(--,decrement_action)
 
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
@@ -234,8 +236,18 @@ struct  functor_t;
 		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
 	 }
 
+#define  DEF_LAMBDA_POSTFIX_OP1(OP,OP_CLASS)										\
+                                                                                                                \
+		template<class Fr>                                               \
+		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
+	operator OP(Fr&& fr) {                                                                                    \
+		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
+	 }
+
 	DEF_LAMBDA_OP1(+,plus1_action)
 	DEF_LAMBDA_OP1(-,minus1_action)
+	DEF_LAMBDA_OP1(++,increment_action)
+	DEF_LAMBDA_OP1(--,decrement_action)
 
 
 
