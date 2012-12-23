@@ -275,8 +275,12 @@ struct  functor_t;
 	DEF_LAMBDA_FUNCTOR2(*,multiply_action)
 	DEF_LAMBDA_FUNCTOR2(/,divide_action)
 	DEF_LAMBDA_FUNCTOR2(%,remainder_action)
-	DEF_LAMBDA_FUNCTOR2(+=,plus_assign_action)
 
+	DEF_LAMBDA_FUNCTOR2(+=,plus_assign_action)		// TOFIX: add check: arg1 must be lvalue-ref
+	DEF_LAMBDA_FUNCTOR2(-=,minus_assign_action)
+	DEF_LAMBDA_FUNCTOR2(*=,multiply_assign_action)
+	DEF_LAMBDA_FUNCTOR2(/=,divide_assign_action)
+	DEF_LAMBDA_FUNCTOR2(%=,remainder_assign_action)
 	//////  MEMBER FUNCTORS
 	//DEF_LAMBDA_FUNCTOR2(=,assign_action)
 
@@ -311,7 +315,12 @@ struct  functor_t;
 	DEF_LAMBDA_OP2(*,multiply_action)
 	DEF_LAMBDA_OP2(/,divide_action)
 	DEF_LAMBDA_OP2(%,remainder_action)
+
 	DEF_LAMBDA_OP2(+=,plus_assign_action)
+	DEF_LAMBDA_OP2(-=,minus_assign_action)
+	DEF_LAMBDA_OP2(*=,multiply_assign_action)
+	DEF_LAMBDA_OP2(/=,divide_assign_action)
+	DEF_LAMBDA_OP2(%=,remainder_assign_action)
 	//DEF_LAMBDA_OP2(=,assign_action)
 
 
