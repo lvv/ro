@@ -537,6 +537,5 @@ template<class T>	struct  ref_container2<T&&>  {
 	explicit ref_container2(T&& x) : value2(std::move(x)) {}
  };
 
-
 					};
 					#endif

@@ -13,10 +13,30 @@
 
 //////////////////////////////////////////////////////////////   OPERATOR TYPES
 
+	/////  UNARY ------------------------------------
+
 	// artihmetic
 	class plus1_action {};
-	class plus_action {};
 	class minus1_action {};
+
+	// increment/decrement
+	class increment_action {};
+	class decrement_action {};
+
+		class postfix_increment_action {};
+		class postfix_decrement_action {};
+
+	// bitwise/logical
+	class not_action {};
+
+	// other
+	class addressof_action {};
+	class contentsof_action {};
+
+	/////  BINARY ------------------------------------
+	
+	// artihmetic
+	class plus_action {};
 	class minus_action {};
 	class multiply_action {};
 	class divide_action {};
@@ -40,7 +60,6 @@
 	// bitwise/logical
 	class and_action {};
 	class or_action {};
-	class not_action {};
 
 		class and_assign_action {};
 		class or_assign_action {};
@@ -54,24 +73,12 @@
 	class equal_action {};
 	class notequal_action {};
 
-	/////  UNARY ------------------------------------
-
-	// increment/decrement
-	class increment_action {};
-	class decrement_action {};
-
-		class postfix_increment_action {};
-		class postfix_decrement_action {};
-
-	// other
-	class addressof_action {};
-	class contentsof_action {};
-
 
 	/////  MEMBERS ONLY -----------------------------------------
 
 	class assign_action {};
 	class subscript_action {};
+	class call_action {};
 		
 //////////////////////////////////////////////////////////////   PLACEHOLDER
 
