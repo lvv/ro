@@ -9,7 +9,14 @@
 					#include <functional>
 				namespace sto {
 
+////////////////////////////////////////////////////////////////////////////////////////////////   META+FORWARDS
+
 	#define  IS_FR(F)  sto::is_lambda_functor<F>::value
+	template<bool A, bool B>  struct  AND  { enum { value = A && B }; };
+
+
+	template<class Op, class Fr1, class Fr2> 	struct  functor_t;
+	template<class T> 				struct  var_t;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   OPERATOR TYPES
 
@@ -81,6 +88,43 @@
 	class subscript_action {};
 	class call_action {};
 		
+/////////////////////////////////////////////////////////////////////////////////////////   DEF_LAMBDA_FUNCTOR2
+
+#define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
+                                                                                                                \
+		template<class Fr1, class Fr2>                                                                  \
+	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
+		typedef void is_lambda_functor;                                                                 \
+		explicit functor_t(Fr1&& fr1, Fr2&& fr2) :							\
+			ref_container <Fr1&&>(FWD(Fr1,fr1)),							\
+			ref_container2<Fr2&&>(FWD(Fr2,fr2))							\
+		{};                                                                                             \
+			/*  Arity==2 */                                                                         \
+			template<class Arg1, class Arg2>                                                        \
+			auto                                                                                    \
+		operator() (Arg1&& arg1, Arg2&& arg2)  -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2)) {          \
+			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
+				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2));            			\
+		}                                                                                               \
+                                                                                                                \
+			/*  Arity==1 */                                                                         \
+			template<class Arg>                                                                     \
+			auto                                                                                    \
+		operator() (Arg&& arg) 										\
+			-> eIF<!is_tuple<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> {            \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
+		}                                                                                               \
+                                                                                                                \
+			/*  Tuple    */                                                                         \
+			template<class Arg>                                                                     \
+			auto                                                                                    \
+		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> { \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
+		}                                                                                               \
+	 };
+
+         DEF_LAMBDA_FUNCTOR2(=,assign_action)
+
 /////////////////////////////////////////////////////////////////////////////////////////////////   PLACEHOLDER
 
 	template<int N>
@@ -88,6 +132,8 @@ struct  ph {
 	typedef void is_lambda_functor;
 	typedef void is_ph;
 	enum {n=N};
+
+	///////////////////////////////////// FUNCTOR CALL IFACE
 
 	////// 1-ARG
 
@@ -115,6 +161,34 @@ struct  ph {
 		typename std::enable_if<(sizeof(Arg1),N==2), Arg2&&>::type
 	operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(Arg2,arg2); }
 
+
+	///////////////////////////////////// MEMBER-ONLY OVERLOADS
+
+	#define  DEF_LAMBDA_MEMBER_OP2(OP,OP_CLASS)										\
+															\
+			/* Ph OP Fr */											\
+			template<class Fr>	                                                                \
+			eIF<IS_FR(Fr), functor_t<OP_CLASS,ph<N>,Fr&&>>					\
+		operator OP(Fr&& fr) {                                                                     \
+			return  functor_t<OP_CLASS,ph<N>,Fr&&> (ph<N>(), FWD(Fr,fr));                           \
+		 }                                                                                                      \
+															\
+			/* Ph OP T */                                                                                   \
+			template<class T>                                   				\
+			eIF<std::is_scalar<rm_qualifier<T>>::value, functor_t<OP_CLASS,ph<N>,var_t<T&&>>>                           	\
+		operator OP(T&& t) {                                                                      	\
+			return  functor_t<OP_CLASS,ph<N>,var_t<T&&>> (ph<N>(), var_t<T&&>(FWD(T,t)));         	\
+		 }                                                                                                      \
+
+		DEF_LAMBDA_MEMBER_OP2(=,assign_action)
+
+/*
+	class assign_action {};
+	class subscript_action {};
+	class call_action {};
+*/
+
+	///////  Convertion to std:placeholder::...
 	operator typename std::_Placeholder<N> const () const { return std::_Placeholder<N>(); }	// non portable(?)
 
 };
@@ -158,12 +232,6 @@ struct  constant_t {
 	template<class T>
 constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////   FUNCTOR_T
-
-	// primary
-	template<class Op, class Fr1, class Fr2>
-struct  functor_t;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////   UNARY
@@ -234,46 +302,7 @@ struct  functor_t;
 	DEF_LAMBDA_OP1(*,contentsof_action)
 
 
-/////////////////////////////////////////////////////////////////////////////////////////   BYNARY
-
-#define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
-                                                                                                                \
-		template<class Fr1, class Fr2>                                                                  \
-	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
-		typedef void is_lambda_functor;                                                                 \
-		explicit functor_t(Fr1&& fr1, Fr2&& fr2) :							\
-			ref_container <Fr1&&>(FWD(Fr1,fr1)),							\
-			ref_container2<Fr2&&>(FWD(Fr2,fr2))							\
-		{};                                                                                             \
-			/*  Arity==2 */                                                                         \
-			template<class Arg1, class Arg2>                                                        \
-			auto                                                                                    \
-		operator() (Arg1&& arg1, Arg2&& arg2)  -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2)) {          \
-			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
-				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2));            			\
-		}                                                                                               \
-                                                                                                                \
-			/*  Arity==1 */                                                                         \
-			template<class Arg>                                                                     \
-			auto                                                                                    \
-		operator() (Arg&& arg) 										\
-			-> eIF<!is_tuple<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> {            \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
-		}                                                                                               \
-                                                                                                                \
-			/*  Tuple    */                                                                         \
-			template<class Arg>                                                                     \
-			auto                                                                                    \
-		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> { \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
-		}                                                                                               \
-	 };
-
 	
-	//////  MEMBER FUNCTORS
-	//DEF_LAMBDA_FUNCTOR2(=,assign_action)
-
-	template<bool A, bool B>  struct  AND  { enum { value = A && B }; };
 
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
                                                                                                                 \
@@ -310,7 +339,6 @@ struct  functor_t;
 	DEF_LAMBDA_FUNCTOR2(/=,divide_assign_action)      	DEF_LAMBDA_OP2(/=,divide_assign_action)
 	DEF_LAMBDA_FUNCTOR2(%=,remainder_assign_action)   	DEF_LAMBDA_OP2(%=,remainder_assign_action)
 
-	//DEF_LAMBDA_OP2(=,assign_action)
 
 	DEF_LAMBDA_FUNCTOR2(<<,leftshift_action)		DEF_LAMBDA_OP2(<<,leftshift_action)
 	DEF_LAMBDA_FUNCTOR2(>>,rightshift_action)		DEF_LAMBDA_OP2(>>,rightshift_action)
@@ -333,14 +361,6 @@ struct  functor_t;
 
 
 
-/*
-	/////  MEMBERS ONLY -----------------------------------------
-
-	class assign_action {};
-	class subscript_action {};
-	class call_action {};
-
-*/
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS
 
