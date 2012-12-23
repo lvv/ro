@@ -65,7 +65,6 @@
 
 		class and_assign_action {};
 		class or_assign_action {};
-		class not_assign_action {};
 
 	//  relational
 	class less_action {};
@@ -316,13 +315,28 @@ struct  functor_t;
 	DEF_LAMBDA_OP2(/,divide_action)
 	DEF_LAMBDA_OP2(%,remainder_action)
 
-	DEF_LAMBDA_OP2(+=,plus_assign_action)
-	DEF_LAMBDA_OP2(-=,minus_assign_action)
-	DEF_LAMBDA_OP2(*=,multiply_assign_action)
-	DEF_LAMBDA_OP2(/=,divide_assign_action)
-	DEF_LAMBDA_OP2(%=,remainder_assign_action)
+		DEF_LAMBDA_OP2(+=,plus_assign_action)
+		DEF_LAMBDA_OP2(-=,minus_assign_action)
+		DEF_LAMBDA_OP2(*=,multiply_assign_action)
+		DEF_LAMBDA_OP2(/=,divide_assign_action)
+		DEF_LAMBDA_OP2(%=,remainder_assign_action)
 	//DEF_LAMBDA_OP2(=,assign_action)
 
+	DEF_LAMBDA_FUNCTOR2(<<,leftshift_action)		DEF_LAMBDA_OP2(<<,leftshift_action)
+	DEF_LAMBDA_FUNCTOR2(>>,rightshift_action)		DEF_LAMBDA_OP2(>>,rightshift_action)
+	DEF_LAMBDA_FUNCTOR2(^,xor_action)			DEF_LAMBDA_OP2(^,xor_action)
+
+/*
+	DEF_LAMBDA_FUNCTOR2(<<=,leftshift_assign_action)	DEF_LAMBDA_OP2(<<=,leftshift_assign_action)
+	DEF_LAMBDA_FUNCTOR2(>>=,rightshift_assign_action)	DEF_LAMBDA_OP2(>>=,rightshift_assign_action)
+	DEF_LAMBDA_FUNCTOR2(^=,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
+
+	DEF_LAMBDA_FUNCTOR2(&&,and_action)			DEF_LAMBDA_OP2(&&,and_action)
+	DEF_LAMBDA_FUNCTOR2(||,or_action)			DEF_LAMBDA_OP2(||,or_action)
+
+	DEF_LAMBDA_FUNCTOR2(&&=,and_assign_action)		DEF_LAMBDA_OP2(&&=,and_assign_action)
+	DEF_LAMBDA_FUNCTOR2(||=,or_assign_action)		DEF_LAMBDA_OP2(||=,or_assign_action)
+	*/
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS
 
