@@ -11,7 +11,7 @@
 
 	#define  IS_FR(F)  sto::is_lambda_functor<F>::value
 
-//////////////////////////////////////////////////////////////   OPERATOR TYPES
+/////////////////////////////////////////////////////////////////////////////////////////////////   OPERATOR TYPES
 
 	/////  UNARY ------------------------------------
 
@@ -80,7 +80,7 @@
 	class subscript_action {};
 	class call_action {};
 		
-//////////////////////////////////////////////////////////////   PLACEHOLDER
+/////////////////////////////////////////////////////////////////////////////////////////////////   PLACEHOLDER
 
 	template<int N>
 struct  ph {
@@ -126,7 +126,7 @@ ph<3>	_3;
 template<class T> 	struct 	is_ph	 			: std::false_type  {};
 template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
 
-//////////////////////////////////////////////////////////////   VAR
+/////////////////////////////////////////////////////////////////////////////////////////////////   VAR
 
 	template<class T>
 struct  var_t : ref_container<T&&> {
@@ -142,7 +142,7 @@ struct  var_t : ref_container<T&&> {
 var_t<T> var(T&& t) { return var_t<T>(FWD(T,t)); }
 
 
-//////////////////////////////////////////////////////////////   CONSTANT
+/////////////////////////////////////////////////////////////////////////////////////////////////   CONSTANT
 
 	template<class T>
 struct  constant_t {
@@ -158,13 +158,14 @@ struct  constant_t {
 constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 
-//////////////////////////////////////////////////////////////   FUNCTOR_T
+///////////////////////////////////////////////////////////////////////////////////////////////////   FUNCTOR_T
 
 	// primary
 	template<class Op, class Fr1, class Fr2>
 struct  functor_t;
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////   UNARY
 
 #define  DEF_LAMBDA_FUNCTOR1(OP,OP_CLASS) 		      							\
                                                                                                                 \
@@ -195,6 +196,31 @@ struct  functor_t;
 	DEF_LAMBDA_POSTFIX_FUNCTOR1(++,postfix_increment_action)
 	DEF_LAMBDA_POSTFIX_FUNCTOR1(--,postfix_decrement_action)
 
+#define  DEF_LAMBDA_OP1(OP,OP_CLASS)										\
+                                                                                                                \
+		template<class Fr>                                               \
+		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
+	operator OP(Fr&& fr) {                                                                                    \
+		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
+	 }
+
+#define  DEF_LAMBDA_POSTFIX_OP1(OP,OP_CLASS)										\
+                                                                                                                \
+		template<class Fr>                                               \
+		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
+	operator OP(Fr&& fr,int) {                                                                                    \
+		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
+	 }
+
+	DEF_LAMBDA_OP1(+,plus1_action)
+	DEF_LAMBDA_OP1(-,minus1_action)
+	DEF_LAMBDA_OP1(++,increment_action)
+	DEF_LAMBDA_OP1(--,decrement_action)
+	DEF_LAMBDA_POSTFIX_OP1(++,postfix_increment_action)
+	DEF_LAMBDA_POSTFIX_OP1(--,postfix_decrement_action)
+
+
+/////////////////////////////////////////////////////////////////////////////////////////   BYNARY
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
                                                                                                                 \
@@ -239,30 +265,6 @@ struct  functor_t;
 	//////  MEMBER FUNCTORS
 	//DEF_LAMBDA_FUNCTOR2(=,assign_action)
 
-
-
-#define  DEF_LAMBDA_OP1(OP,OP_CLASS)										\
-                                                                                                                \
-		template<class Fr>                                               \
-		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
-	operator OP(Fr&& fr) {                                                                                    \
-		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
-	 }
-
-#define  DEF_LAMBDA_POSTFIX_OP1(OP,OP_CLASS)										\
-                                                                                                                \
-		template<class Fr>                                               \
-		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>                                                                    \
-	operator OP(Fr&& fr,int) {                                                                                    \
-		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));                                                        \
-	 }
-
-	DEF_LAMBDA_OP1(+,plus1_action)
-	DEF_LAMBDA_OP1(-,minus1_action)
-	DEF_LAMBDA_OP1(++,increment_action)
-	DEF_LAMBDA_OP1(--,decrement_action)
-	DEF_LAMBDA_POSTFIX_OP1(++,postfix_increment_action)
-	DEF_LAMBDA_POSTFIX_OP1(--,postfix_decrement_action)
 
 
 
