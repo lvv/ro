@@ -85,29 +85,29 @@
 			/*  Arity==2 */                                                                         \
 			template<class Arg1, class Arg2>                                                        \
 			auto                                                                                    \
-		operator() (Arg1&& arg1, Arg2&& arg2)  -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2)) {          \
+		operator() (Arg1&& arg1, Arg2&& arg2)  -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2) OP2 ) {      \
 			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
-				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2));            			\
+				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)) OP2;          			\
 		}                                                                                               \
                                                                                                                 \
 			/*  Arity==1 */                                                                         \
 			template<class Arg>                                                                     \
 			auto                                                                                    \
 		operator() (Arg&& arg) 										\
-			-> eIF<!is_tuple<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> {            \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
+			-> eIF<!is_tuple<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
                                                                                                                 \
 			/*  Tuple    */                                                                         \
 			template<class Arg>                                                                     \
 			auto                                                                                    \
-		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> { \
+		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
 			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
 	 };
 
          DEF_LAMBDA_FUNCTOR2(=,,assign_action)
-         //DEF_LAMBDA_FUNCTOR2([,],subscript_action)
+         DEF_LAMBDA_FUNCTOR2([,],subscript_action)
          //DEF_LAMBDA_FUNCTOR2((,),call_action)
 
 /*
@@ -171,7 +171,7 @@ struct  ph {
 		 }                                                                                                      \
 
 		DEF_LAMBDA_MEMBER_OP2(=,assign_action)
-		//DEF_LAMBDA_MEMBER_OP2([],subscript_action)
+		DEF_LAMBDA_MEMBER_OP2([],subscript_action)
 		//DEF_LAMBDA_MEMBER_OP2((),call_action)
 
 
@@ -239,28 +239,16 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 			using typename ref_container<Fr&&>::value_type;                                         \
 		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
 		template<class Arg>                                                                             \
-		auto operator() (Arg&& arg) -> decltype(OP arg OP2) { return  OP (this->value(FWD(Arg,arg))); OP2 } \
+		auto operator() (Arg&& arg) -> decltype(OP arg OP2) { return  OP (this->value(FWD(Arg,arg))) OP2 ;} \
 	 };
-
-#define  DEF_LAMBDA_POSTFIX_FUNCTOR1(OP, OP_CLASS) 		      				      		\
-                                                                                                                \
-		template<class Fr>                                                                              \
-	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
-			typedef void is_lambda_functor;                                                         \
-			using typename ref_container<Fr&&>::value_type;                                         \
-		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
-		template<class Arg>                                                                             \
-		auto operator() (Arg&& arg) -> decltype(arg OP) { return  this->value(FWD(Arg,arg)) OP; }       \
-	 };
-
 
 
 	DEF_LAMBDA_FUNCTOR1(+,,plus1_action)
 	DEF_LAMBDA_FUNCTOR1(-,,minus1_action)
 	DEF_LAMBDA_FUNCTOR1(++,,increment_action)
 	DEF_LAMBDA_FUNCTOR1(--,,decrement_action)
-	DEF_LAMBDA_POSTFIX_FUNCTOR1(++,postfix_increment_action)
-	DEF_LAMBDA_POSTFIX_FUNCTOR1(--,postfix_decrement_action)
+	DEF_LAMBDA_FUNCTOR1(,++,postfix_increment_action)
+	DEF_LAMBDA_FUNCTOR1(,--,postfix_decrement_action)
 
 	DEF_LAMBDA_FUNCTOR1(!,,not_action)
 	DEF_LAMBDA_FUNCTOR1(&,,addressof_action)
