@@ -124,7 +124,14 @@
 	 };
 
          DEF_LAMBDA_FUNCTOR2(=,assign_action)
+         //DEF_LAMBDA_FUNCTOR2([],subscript_action)
+         //DEF_LAMBDA_FUNCTOR2((),call_action)
 
+/*
+	class assign_action {};
+	class subscript_action {};
+	class call_action {};
+*/
 /////////////////////////////////////////////////////////////////////////////////////////////////   PLACEHOLDER
 
 	template<int N>
@@ -181,12 +188,9 @@ struct  ph {
 		 }                                                                                                      \
 
 		DEF_LAMBDA_MEMBER_OP2(=,assign_action)
+		//DEF_LAMBDA_MEMBER_OP2([],subscript_action)
+		//DEF_LAMBDA_MEMBER_OP2((),call_action)
 
-/*
-	class assign_action {};
-	class subscript_action {};
-	class call_action {};
-*/
 
 	///////  Convertion to std:placeholder::...
 	operator typename std::_Placeholder<N> const () const { return std::_Placeholder<N>(); }	// non portable(?)

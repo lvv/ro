@@ -154,7 +154,6 @@ operator >>  (sRn&& src, tRn&& trg)  {
 			eIF <is_callable<F, bool(rg_elem_type<Rg>)>::value, rg_iterator<Rg>>
 		find_elem(Rg&& C, const F& pred)  { return  std::find_if(std::begin(C), endz(C), pred); };
 
-
 			
 		//  Rg1 / Rg2   ---  search() --> it
 			template<typename Rg1, typename Rg2>
