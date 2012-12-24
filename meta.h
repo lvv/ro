@@ -238,12 +238,13 @@ template<class T>	struct  is_string { enum { value = is_string_t<rm_qualifier<T>
 //////////////////////////////////////////////////////////////////////////////////////  IS PAIR/TUPLE
 template<class T>		struct  is_pair_t			: std::false_type {};
 template<class T1, class T2>	struct  is_pair_t <std::pair<T1,T2>>	: std::true_type  {};
-template<class T>	struct  is_pair { enum { value = is_pair_t<rm_qualifier<T>>::value };};
+template<class T>		struct  is_pair { enum { value = is_pair_t<rm_qualifier<T>>::value };};
 
 
-template<class T>	struct  is_tuple_t				: std::false_type {};
-template<class ... Ts>	struct  is_tuple_t <std::tuple<Ts...>>		: std::true_type  {};
-template<class T>	struct  is_tuple { enum { value = is_tuple_t<rm_qualifier<T>>::value };};
+template<class T>		struct  is_tuple_t				: std::false_type {};
+template<class ... Ts>		struct  is_tuple_t <std::tuple<Ts...>>		: std::true_type  {};
+template<class T1, class T2>	struct  is_tuple_t <std::pair<T1,T2>>		: std::true_type  {};
+template<class T>		struct  is_tuple { enum { value = is_tuple_t<rm_qualifier<T>>::value };};
 
 
 
@@ -381,6 +382,7 @@ struct is_callable<F, R(Args...)> {					// plain callable
 
 		template<class U> static
 		eIF<
+			//std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>
@@ -397,6 +399,7 @@ struct is_callable<F, R(*)(Args...)> {					// pointer to callable
 
 		template<class U> static
 		eIF<
+			//std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>
@@ -413,6 +416,7 @@ struct is_callable<F, R(&)(Args...)> {					// ref to callable
 
 		template<class U> static
 		eIF<
+			//std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
 			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
 			int16_t
 		>

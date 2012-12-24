@@ -12,7 +12,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////   META+FORWARDS
 
 	#define  IS_FR(F)  sto::is_lambda_functor<F>::value
-	template<bool A, bool B>  struct  AND  { enum { value = A && B }; };
+	template<bool A, bool B, bool C=true, bool D=true>  struct  AND  { enum { value = A && B && C && D }; };
 
 
 	template<class Op, class Fr1, class Fr2> 	struct  functor_t;
@@ -182,7 +182,7 @@ struct  ph {
 															\
 			/* Ph OP T */                                                                                   \
 			template<class T>                                   				\
-			eIF<std::is_scalar<rm_qualifier<T>>::value, functor_t<OP_CLASS,ph<N>,var_t<T&&>>>                           	\
+			eIF<!IS_FR(T), functor_t<OP_CLASS,ph<N>,var_t<T&&>>>                           	\
 		operator OP(T&& t) {                                                                      	\
 			return  functor_t<OP_CLASS,ph<N>,var_t<T&&>> (ph<N>(), var_t<T&&>(FWD(T,t)));         	\
 		 }                                                                                                      \
@@ -214,7 +214,11 @@ struct  var_t : ref_container<T&&> {
 
 	explicit var_t(T&& t)  : ref_container<T&&>(FWD(T,t))  {}; // this->value initialised
 
-	value_type operator() (...) { return FWD(T,this->value); }
+		template<class Arg>
+	value_type operator() (Arg&& arg) { return FWD(T,this->value); }
+
+		template<class Arg1, class Arg2>
+	value_type operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(T,this->value); }
 };
 
 	template<class T>
@@ -230,7 +234,11 @@ struct  constant_t {
 
 	explicit constant_t(const T& t)  : value_cref(t)   {};
 
-	const T& operator() (...) { return value_cref; }
+		template<class Arg>
+	const T& operator() (Arg&& arg) { return value_cref; }
+
+		template<class Arg1, class Arg2>
+	const T& operator() (Arg1&& arg1, Arg2&& arg2) { return value_cref; }
 };
 
 	template<class T>
@@ -310,23 +318,23 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
                                                                                                                 \
-		/* Fr OP Fr */											\
+		/*  Fr  OP  Fr  */											\
 		template<class Fr1, class Fr2>	                                                                \
 		eIF<AND<IS_FR(Fr1), IS_FR(Fr2)>::value, functor_t<OP_CLASS,Fr1&&,Fr2&&>>					\
 	operator OP(Fr1&& fr1, Fr2&& fr2) {                                                                     \
 		return  functor_t<OP_CLASS,Fr1&&,Fr2&&> (FWD(Fr1,fr1), FWD(Fr2,fr2));                           \
 	 }                                                                                                      \
                                                                                                                 \
-		/* Fr OP T */                                                                                   \
+		/*  Fr  OP  T  */                                                                                   \
 		template<class Fr1, class T2>                                   				\
-		eIF<AND<IS_FR(Fr1), std::is_scalar<rm_qualifier<T2>>::value>::value, functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
+		eIF<AND<IS_FR(Fr1), !IS_FR(T2)>::value, functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
 	operator OP(Fr1&& fr1, T2&& t2) {                                                                      	\
 		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
 	 }                                                                                                      \
                                                                                                                 \
-		/* T + Fr */											\
+		/*  T  OP  Fr  */											\
 		template<class T1, class Fr2>									\
-		eIF<AND<std::is_scalar<rm_qualifier<T1>>::value, IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+		eIF<AND<!IS_FR(T1), !is_range<T1>::value, IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
