@@ -94,14 +94,14 @@
 			template<class Arg>                                                                     \
 			auto                                                                                    \
 		operator() (Arg&& arg) 										\
-			-> eIF<!is_tuple<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
+			-> eIF<!is_tuple_or_pair<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
 			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
                                                                                                                 \
 			/*  Tuple    */                                                                         \
 			template<class Arg>                                                                     \
 			auto                                                                                    \
-		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
+		operator() (Arg&& arg) -> eIF<is_tuple_or_pair<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
 			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
 	 };
@@ -129,12 +129,12 @@ struct  ph {
 
 		// non-tuple
 		template<class Arg>
-		eIF<!is_tuple<Arg>::value, Arg&&>
+		eIF<!is_tuple_or_pair<Arg>::value, Arg&&>
 	operator() (Arg&& arg) { static_assert(N==1, "bad placeholder number");  return FWD(Arg,arg); }
 
 		// tuple                                                     // FIXME: ref-correctness
 		template<class Arg>
-		eIF<is_tuple<Arg>::value, typename std::tuple_element<N,Arg>::type >
+		eIF<is_tuple_or_pair<Arg>::value, typename std::tuple_element<N,Arg>::type >
 	operator() (Arg arg) { return std::get<N>(arg); }
 
 	////// 2-ARG
