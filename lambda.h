@@ -27,11 +27,9 @@
 	class minus1_action {};
 
 	// increment/decrement
-	class increment_action {};
-	class decrement_action {};
+	class increment_action {};              class postfix_increment_action {}; 
+	class decrement_action {};              class postfix_decrement_action {}; 
 
-		class postfix_increment_action {};
-		class postfix_decrement_action {};
 
 	// bitwise/logical
 	class not_action {};
@@ -45,39 +43,24 @@
 	/////  BINARY ------------------------------------
 	
 	// artihmetic
-	class plus_action {};
-	class minus_action {};
-	class multiply_action {};
-	class divide_action {};
-	class remainder_action {};
-
-		class plus_assign_action {};
-		class minus_assign_action {};
-		class multiply_assign_action {};
-		class divide_assign_action {};
-		class remainder_assign_action {};
+	class plus_action {};                  class plus_assign_action {};       
+	class minus_action {};                 class minus_assign_action {};      
+	class multiply_action {};              class multiply_assign_action {};   
+	class divide_action {};                class divide_assign_action {};     
+	class remainder_action {};             class remainder_assign_action {};  
 
 	// bitwise
-	class leftshift_action {};
-	class rightshift_action {};
-	class xor_action {};
-
-		class leftshift_assign_action {};
-		class rightshift_assign_action {};
-		class xor_assign_action {};
+	class leftshift_action {};             class leftshift_assign_action {};       
+	class rightshift_action {};            class rightshift_assign_action {};      
+	class xor_action {};                   class xor_assign_action {};             
 
 	// bitwise/logical
-	class and_action {};
-	class or_action {};
-
-		class and_assign_action {};
-		class or_assign_action {};
+	class and_action {};                   class and_assign_action {};   
+	class or_action {};                    class or_assign_action {};    
 
 	//  relational
-	class less_action {};
-	class greater_action {};
-	class lessorequal_action {};
-	class greaterorequal_action {};
+	class less_action {};                  class lessorequal_action {};      
+	class greater_action {};               class greaterorequal_action {};   
 	class equal_action {};
 	class notequal_action {};
 
@@ -90,7 +73,7 @@
 		
 /////////////////////////////////////////////////////////////////////////////////////////   DEF_LAMBDA_FUNCTOR2
 
-#define  DEF_LAMBDA_FUNCTOR2(OP,OP_CLASS) 		      							\
+#define  DEF_LAMBDA_FUNCTOR2(OP,OP2,OP_CLASS) 		      							\
                                                                                                                 \
 		template<class Fr1, class Fr2>                                                                  \
 	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
@@ -119,13 +102,13 @@
 			template<class Arg>                                                                     \
 			auto                                                                                    \
 		operator() (Arg&& arg) -> eIF<is_tuple<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)))> { \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg));                                                            \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
 	 };
 
-         DEF_LAMBDA_FUNCTOR2(=,assign_action)
-         //DEF_LAMBDA_FUNCTOR2([],subscript_action)
-         //DEF_LAMBDA_FUNCTOR2((),call_action)
+         DEF_LAMBDA_FUNCTOR2(=,,assign_action)
+         //DEF_LAMBDA_FUNCTOR2([,],subscript_action)
+         //DEF_LAMBDA_FUNCTOR2((,),call_action)
 
 /*
 	class assign_action {};
@@ -248,7 +231,7 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////   UNARY
 
-#define  DEF_LAMBDA_FUNCTOR1(OP,OP_CLASS) 		      							\
+#define  DEF_LAMBDA_FUNCTOR1(OP,OP2,OP_CLASS) 		      							\
                                                                                                                 \
 		template<class Fr>                                                                              \
 	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
@@ -256,10 +239,10 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 			using typename ref_container<Fr&&>::value_type;                                         \
 		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
 		template<class Arg>                                                                             \
-		auto operator() (Arg&& arg) -> decltype(OP arg) { return  OP (this->value(FWD(Arg,arg))); }       \
+		auto operator() (Arg&& arg) -> decltype(OP arg OP2) { return  OP (this->value(FWD(Arg,arg))); OP2 } \
 	 };
 
-#define  DEF_LAMBDA_POSTFIX_FUNCTOR1(OP,OP_CLASS) 		      				      		\
+#define  DEF_LAMBDA_POSTFIX_FUNCTOR1(OP, OP_CLASS) 		      				      		\
                                                                                                                 \
 		template<class Fr>                                                                              \
 	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
@@ -272,17 +255,17 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 
 
-	DEF_LAMBDA_FUNCTOR1(+,plus1_action)
-	DEF_LAMBDA_FUNCTOR1(-,minus1_action)
-	DEF_LAMBDA_FUNCTOR1(++,increment_action)
-	DEF_LAMBDA_FUNCTOR1(--,decrement_action)
+	DEF_LAMBDA_FUNCTOR1(+,,plus1_action)
+	DEF_LAMBDA_FUNCTOR1(-,,minus1_action)
+	DEF_LAMBDA_FUNCTOR1(++,,increment_action)
+	DEF_LAMBDA_FUNCTOR1(--,,decrement_action)
 	DEF_LAMBDA_POSTFIX_FUNCTOR1(++,postfix_increment_action)
 	DEF_LAMBDA_POSTFIX_FUNCTOR1(--,postfix_decrement_action)
 
-	DEF_LAMBDA_FUNCTOR1(!,not_action)
-	DEF_LAMBDA_FUNCTOR1(&,addressof_action)
+	DEF_LAMBDA_FUNCTOR1(!,,not_action)
+	DEF_LAMBDA_FUNCTOR1(&,,addressof_action)
 
-	DEF_LAMBDA_FUNCTOR1(*,contentsof_action) 		// TOFIX
+	DEF_LAMBDA_FUNCTOR1(*,,contentsof_action) 		// TOFIX
 
 
 #define  DEF_LAMBDA_OP1(OP,OP_CLASS)				       	\
@@ -339,37 +322,37 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
-	DEF_LAMBDA_FUNCTOR2(+,plus_action)                	DEF_LAMBDA_OP2(+,plus_action)
-	DEF_LAMBDA_FUNCTOR2(-,minus_action)               	DEF_LAMBDA_OP2(-,minus_action)
-	DEF_LAMBDA_FUNCTOR2(*,multiply_action)            	DEF_LAMBDA_OP2(*,multiply_action)
-	DEF_LAMBDA_FUNCTOR2(/,divide_action)              	DEF_LAMBDA_OP2(/,divide_action)
-	DEF_LAMBDA_FUNCTOR2(%,remainder_action)           	DEF_LAMBDA_OP2(%,remainder_action)
+	DEF_LAMBDA_FUNCTOR2(+,,plus_action)                	DEF_LAMBDA_OP2(+,plus_action)
+	DEF_LAMBDA_FUNCTOR2(-,,minus_action)               	DEF_LAMBDA_OP2(-,minus_action)
+	DEF_LAMBDA_FUNCTOR2(*,,multiply_action)            	DEF_LAMBDA_OP2(*,multiply_action)
+	DEF_LAMBDA_FUNCTOR2(/,,divide_action)              	DEF_LAMBDA_OP2(/,divide_action)
+	DEF_LAMBDA_FUNCTOR2(%,,remainder_action)           	DEF_LAMBDA_OP2(%,remainder_action)
                                                           
-	DEF_LAMBDA_FUNCTOR2(+=,plus_assign_action)        	DEF_LAMBDA_OP2(+=,plus_assign_action)
-	DEF_LAMBDA_FUNCTOR2(-=,minus_assign_action)       	DEF_LAMBDA_OP2(-=,minus_assign_action)
-	DEF_LAMBDA_FUNCTOR2(*=,multiply_assign_action)    	DEF_LAMBDA_OP2(*=,multiply_assign_action)
-	DEF_LAMBDA_FUNCTOR2(/=,divide_assign_action)      	DEF_LAMBDA_OP2(/=,divide_assign_action)
-	DEF_LAMBDA_FUNCTOR2(%=,remainder_assign_action)   	DEF_LAMBDA_OP2(%=,remainder_assign_action)
+	DEF_LAMBDA_FUNCTOR2(+=,,plus_assign_action)        	DEF_LAMBDA_OP2(+=,plus_assign_action)
+	DEF_LAMBDA_FUNCTOR2(-=,,minus_assign_action)       	DEF_LAMBDA_OP2(-=,minus_assign_action)
+	DEF_LAMBDA_FUNCTOR2(*=,,multiply_assign_action)    	DEF_LAMBDA_OP2(*=,multiply_assign_action)
+	DEF_LAMBDA_FUNCTOR2(/=,,divide_assign_action)      	DEF_LAMBDA_OP2(/=,divide_assign_action)
+	DEF_LAMBDA_FUNCTOR2(%=,,remainder_assign_action)   	DEF_LAMBDA_OP2(%=,remainder_assign_action)
 
 
-	DEF_LAMBDA_FUNCTOR2(<<,leftshift_action)		DEF_LAMBDA_OP2(<<,leftshift_action)
-	DEF_LAMBDA_FUNCTOR2(>>,rightshift_action)		DEF_LAMBDA_OP2(>>,rightshift_action)
-	DEF_LAMBDA_FUNCTOR2(^,xor_action)			DEF_LAMBDA_OP2(^,xor_action)
+	DEF_LAMBDA_FUNCTOR2(<<,,leftshift_action)		DEF_LAMBDA_OP2(<<,leftshift_action)
+	DEF_LAMBDA_FUNCTOR2(>>,,rightshift_action)		DEF_LAMBDA_OP2(>>,rightshift_action)
+	DEF_LAMBDA_FUNCTOR2(^,,xor_action)			DEF_LAMBDA_OP2(^,xor_action)
 
-	DEF_LAMBDA_FUNCTOR2(<<=,leftshift_assign_action)	DEF_LAMBDA_OP2(<<=,leftshift_assign_action)
-	DEF_LAMBDA_FUNCTOR2(>>=,rightshift_assign_action)	DEF_LAMBDA_OP2(>>=,rightshift_assign_action)
-	DEF_LAMBDA_FUNCTOR2(^=,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
+	DEF_LAMBDA_FUNCTOR2(<<=,,leftshift_assign_action)	DEF_LAMBDA_OP2(<<=,leftshift_assign_action)
+	DEF_LAMBDA_FUNCTOR2(>>=,,rightshift_assign_action)	DEF_LAMBDA_OP2(>>=,rightshift_assign_action)
+	DEF_LAMBDA_FUNCTOR2(^=,,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
 
-	DEF_LAMBDA_FUNCTOR2(||,or_action)			DEF_LAMBDA_OP2(||,or_action)
-	DEF_LAMBDA_FUNCTOR2(&&,and_action)			DEF_LAMBDA_OP2(&&,and_action)
+	DEF_LAMBDA_FUNCTOR2(||,,or_action)			DEF_LAMBDA_OP2(||,or_action)
+	DEF_LAMBDA_FUNCTOR2(&&,,and_action)			DEF_LAMBDA_OP2(&&,and_action)
 
 	// relational
-	DEF_LAMBDA_FUNCTOR2(<,less_action)			DEF_LAMBDA_OP2(<,less_action)
-	DEF_LAMBDA_FUNCTOR2(>,greater_action)			DEF_LAMBDA_OP2(>,greater_action)
-	DEF_LAMBDA_FUNCTOR2(<=,lessorequal_action)		DEF_LAMBDA_OP2(<=,lessorequal_action)
-	DEF_LAMBDA_FUNCTOR2(>,greaterorequal_action)		DEF_LAMBDA_OP2(>=,greaterorequal_action)
-	DEF_LAMBDA_FUNCTOR2(==,equal_action)			DEF_LAMBDA_OP2(==,equal_action)
-	DEF_LAMBDA_FUNCTOR2(!=,notequal_action)			DEF_LAMBDA_OP2(!=,notequal_action)
+	DEF_LAMBDA_FUNCTOR2(<,,less_action)			DEF_LAMBDA_OP2(<,less_action)
+	DEF_LAMBDA_FUNCTOR2(>,,greater_action)			DEF_LAMBDA_OP2(>,greater_action)
+	DEF_LAMBDA_FUNCTOR2(<=,,lessorequal_action)		DEF_LAMBDA_OP2(<=,lessorequal_action)
+	DEF_LAMBDA_FUNCTOR2(>,,greaterorequal_action)		DEF_LAMBDA_OP2(>=,greaterorequal_action)
+	DEF_LAMBDA_FUNCTOR2(==,,equal_action)			DEF_LAMBDA_OP2(==,equal_action)
+	DEF_LAMBDA_FUNCTOR2(!=,,notequal_action)	       	DEF_LAMBDA_OP2(!=,notequal_action)
 
 
 
