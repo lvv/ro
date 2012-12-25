@@ -251,19 +251,18 @@ template<class T>		struct  is_tuple_or_pair { enum { value = is_tuple_t<rm_quali
 
 //////////////////////////////////////////////////////////////////////////////////////  IS_IOABLE
 			// alt impl:  http://stackoverflow.com/questions/257288/is-it-possible-to-write-a-c-template-to-check-for-a-functions-existence/9154394#9154394
-template<typename T>	struct  is_ioable_t 		: std::conditional<std::is_arithmetic<T>::value, std::true_type, std::false_type>::type  {};
-template<typename T,typename CT,typename AL>
-			struct  is_ioable_t <std::basic_string<T,CT,AL>>	: std::true_type  {};
-template<size_t N>	struct  is_ioable_t <char[N]>				: std::true_type  {};
-template<>		struct  is_ioable_t <char*>				: std::true_type  {};
-template<>		struct  is_ioable_t <const char*>			: std::true_type  {};
+template<class T>			struct  is_ioable_t    					: std::conditional<std::is_arithmetic<T>::value, std::true_type, std::false_type>::type  {};
+template<class T,class CT,class AL>	struct  is_ioable_t <std::basic_string<T,CT,AL>>	: std::true_type  {};
+template<size_t N>			struct  is_ioable_t <char[N]>				: std::true_type  {};
+template<>				struct  is_ioable_t <char*>				: std::true_type  {};
+template<>				struct  is_ioable_t <const char*>			: std::true_type  {};
 
 template<class T>	struct  is_ioable { enum { value = is_ioable_t<rm_qualifier<T>>::value };};
-//template<typename T>     constexpr bool   is_ioable()        { return  is_ioable_t<rm_qualifier<T>>::value; };
+//template<class T>     constexpr bool   is_ioable()        { return  is_ioable_t<rm_qualifier<T>>::value; };
 
 
 //////////////////////////////////////////////////////////////////////////////////////  IS_STACK
-	template <typename T>
+	template <class T>
 struct is_stack {
 
 		template <
@@ -274,17 +273,17 @@ struct is_stack {
 		static int8_t
 	test(U* u);
 
-		template <typename U>
+		template <class U>
 		static int16_t
 	test(...);
 
 	enum { value = sizeof test<rm_qualifier<T>>(0) == 1 };
 };
-//template<typename T>     constexpr bool   is_stack()        { return  is_stack_t<rm_qualifier<T>>::value; };
+//template<class T>     constexpr bool   is_stack()        { return  is_stack_t<rm_qualifier<T>>::value; };
 
 
 //////////////////////////////////////////////////////////////////////////////////////  IS_QUEUE
-	template <typename T>
+	template <class T>
 struct is_queue {
 
 		template <
