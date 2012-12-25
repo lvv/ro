@@ -305,7 +305,8 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
                                                                                                                 \
 		/*  T  OP  Fr  */											\
 		template<class T1, class Fr2>									\
-		eIF<AND<!IS_FR(T1), !is_range<T1>::value, IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+		/*eIF<AND<!IS_FR(T1), !is_range<T1>::value, IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>     */  \
+		eIF<AND<!IS_FR(T1), IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
