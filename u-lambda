@@ -7,7 +7,7 @@ scc -a10       	'(+ + _1)(10)'
 scc -a10	'(- _1)(2) * (+ - - - + _1)(5)'
 scc -a10 	'(_1 +_2)(2,8)'
 scc -a10       	'(_1 +_2)(MT(2,4,6))'
-#scc -a10	'range(5) || (_1 +_2)'		TOFIX
+scc -a10	'range(5) || (_1 +_2)'
 scc -a10       	'(_1 +_1)(5)'
 
 #  var
@@ -62,13 +62,11 @@ scc        	' ((*_1)(+v9))'
 
 # array subscript
 scc -a1 '(_1[1])(v9) * (_1[1])(vint{0,1,2})'
-# scc '(v9[_1])(1)'		# TOFIX
-	scc 'range(9)[1]'
+# scc '(v9[_1])(1)'		# not fixable:  error: no viable overloaded operator[] for type 'std::vector<int>'
+scc 'range(9)[1]'
 
 # function call
 #scc '_1[1])(range(9))'		# TOFIX
-#scc '(strlen(_1))("abc")'	# TOFIX
-#scc '(v9[_1])(1)'
 #scc '(strlen(_1))("abc")'	# TOFIX
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
