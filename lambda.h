@@ -34,7 +34,7 @@
 			/*  Arity==2 */                                                                         \
 			template<class Arg1, class Arg2>                                                        \
 			auto                                                                                    \
-		operator() (Arg1&& arg1, Arg2&& arg2)  -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2) OP2 ) {      \
+		operator() (Arg1&& arg1, Arg2&& arg2) -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2) OP2 ) {      \
 			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
 				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)) OP2;          			\
 		}                                                                                               \
@@ -42,7 +42,7 @@
 			/*  Arity==1 */                                                                         \
 			template<class Arg>                                                                     \
 			auto                                                                                    \
-		operator() (Arg&& arg) 										\
+		operator() (Arg&& arg) 	\
 			-> eIF<!is_tuple_or_pair<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
 			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
@@ -79,12 +79,12 @@ struct  ph {
 		// non-tuple
 		template<class Arg>
 		eIF<!is_tuple_or_pair<Arg>::value && N==1, Arg&&>
-	operator() (Arg&& arg) { return FWD(Arg,arg); }
+	operator() (Arg&& arg) const { return FWD(Arg,arg); }
 
 		// tuple                                                     // FIXME: ref-correctness
 		template<class Arg>
 		eIF<is_tuple_or_pair<Arg>::value, typename std::tuple_element<N,Arg>::type >
-	operator() (Arg arg) { return std::get<N>(arg); }
+	operator() (Arg arg) const { return std::get<N>(arg); }
 
 	////// 2-ARG
 	
@@ -92,13 +92,13 @@ struct  ph {
 		template<class Arg1, class Arg2>
 		//eIF<(sizeof(Arg1),N==1), Arg1>			// this dosn't work, gcc bug
 		typename std::enable_if<(sizeof(Arg1),N==1), Arg1&&>::type
-	operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(Arg1,arg1); }
+	operator() (Arg1&& arg1, Arg2&& arg2) const { return FWD(Arg1,arg1); }
 
 		//  N==2
 		template<class Arg1, class Arg2>
 		//eIF<(sizeof(Arg1), N==2), Arg2>			// this dosn't work, gcc bug
 		typename std::enable_if<(sizeof(Arg1),N==2), Arg2&&>::type
-	operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(Arg2,arg2); }
+	operator() (Arg1&& arg1, Arg2&& arg2) const { return FWD(Arg2,arg2); }
 
 
 	///////////////////////////////////// MEMBER-ONLY OVERLOADS
@@ -108,14 +108,14 @@ struct  ph {
 			/* Ph OP Fr */											\
 			template<class Fr>	                                                                \
 			eIF<IS_FR(Fr), functor_t<OP_CLASS,ph<N>,Fr&&>>					\
-		operator OP(Fr&& fr) {                                                                     \
+		operator OP(Fr&& fr) const {                                                                     \
 			return  functor_t<OP_CLASS,ph<N>,Fr&&> (ph<N>(), FWD(Fr,fr));                           \
 		 }                                                                                                      \
 															\
 			/* Ph OP T */                                                                                   \
 			template<class T>                                   				\
 			eIF<!IS_FR(T), functor_t<OP_CLASS,ph<N>,var_t<T&&>>>                           	\
-		operator OP(T&& t) {                                                                      	\
+		operator OP(T&& t) const {                                                                      	\
 			return  functor_t<OP_CLASS,ph<N>,var_t<T&&>> (ph<N>(), var_t<T&&>(FWD(T,t)));         	\
 		 }                                                                                                      \
 
@@ -167,10 +167,10 @@ struct  constant_t {
 	explicit constant_t(const T& t)  : value_cref(t)   {};
 
 		template<class Arg>
-	const T& operator() (Arg&& arg) { return value_cref; }
+	const T& operator() (Arg&& arg) const { return value_cref; }
 
 		template<class Arg1, class Arg2>
-	const T& operator() (Arg1&& arg1, Arg2&& arg2) { return value_cref; }
+	const T& operator() (Arg1&& arg1, Arg2&& arg2) const { return value_cref; }
 };
 
 	template<class T>
