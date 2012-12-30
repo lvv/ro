@@ -178,7 +178,7 @@ template<class Rg, class F, class O, bool RO>	struct is_sto_range_iterator <mapp
 		class F,
 		class O= rm_ref<decltype(std::declval<F>()(std::declval<E>()))>
 	> 
-	eIF <is_range<Rg>::value  &&  is_callable<F, O(E)>::value  && !has_result_type<F>::value,   mapped_range<Rg&&,F,O>>
+	eIF <is_range<Rg>::value  &&  is_callable<F, O(E)>::value  && !has_result_type<F>::value  && !is_lambda_functor<F>::value,   mapped_range<Rg&&,F,O>>
 operator*       (Rg&& rg,  F f)    {
 	return   mapped_range<Rg&&,F,O> (std::forward<Rg>(rg),  f);
  };
@@ -197,6 +197,17 @@ operator*       (Rg&& rg,  F f)    {
 	return   mapped_range<Rg&&,F,O> (std::forward<Rg>(rg),  f);
  };
 
+//// STO::LAMBDA_FUNCTOR 
+
+	template<
+		class Rg,
+		class F,
+		class E = rg_elem_type<Rg>,
+		class = typename F::is_lambda_functor
+	> 
+auto operator*       (Rg&& rg,  F f) ->   eIF <is_range<Rg>::value,   mapped_range<Rg&&,F,decltype(f(E()))>> {
+	return   mapped_range<Rg&&,F,decltype(f(E()))> (std::forward<Rg>(rg),  f);
+ };
 ///////////////////////////////////  TUPLES
 
 

@@ -78,8 +78,8 @@ struct  ph {
 
 		// non-tuple
 		template<class Arg>
-		eIF<!is_tuple_or_pair<Arg>::value, Arg&&>
-	operator() (Arg&& arg) { static_assert(N==1, "bad placeholder number");  return FWD(Arg,arg); }
+		eIF<!is_tuple_or_pair<Arg>::value && N==1, Arg&&>
+	operator() (Arg&& arg) { return FWD(Arg,arg); }
 
 		// tuple                                                     // FIXME: ref-correctness
 		template<class Arg>
@@ -271,7 +271,7 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
 	 }                                                                                                      \
                                                                                                                 \
-		/*  T  OP  Fr   <------- SPECIAL -------    */											\
+		/*  T  OP  Fr  */											\
 		template<class T1, class Fr2>									\
 		eIF<AND<!IS_FR(T1), IS_FR(Fr2), !is_range_op<OP_CLASS,T1>::value>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\

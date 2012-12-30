@@ -52,6 +52,7 @@ scc -a1		'(0 <= _1 &&  _1 < 2  && 1 == _1  && _1 != 2) (1)'
 scc -a1		'(_1 << 1)(v9)++'
 scc -a1		'(v9 << _1)(1)++'
 scc '(cout <<  _1)(1); (cout <<  _1)(v9);'
+# scc 'v9 * (cout << _1);'  TOFIX
 
 # contentsof
 scc        	'*((+_1)(v9))'
@@ -61,13 +62,18 @@ scc        	' ((*_1)(+v9))'
 #  MEMBER
 
 # array subscript
-scc -a1 '(_1[1])(v9) * (_1[1])(vint{0,1,2})'
+scc -a1		'range(9)[1]'
+scc -a1		'(_1[1])(v9) * (_1[1])(vint{0,1,2})'
 # scc '(v9[_1])(1)'		# not fixable:  error: no viable overloaded operator[] for type 'std::vector<int>'
-scc 'range(9)[1]'
+# scc '(range(v9)[_1])(1)'		# TOFIX
+scc -a1 	'_1[1](range(9))'
 
 # function call
-#scc '_1[1])(range(9))'		# TOFIX
 #scc '(strlen(_1))("abc")'	# TOFIX
+
+# with ranges
+scc 'v9 | (_1%2)'
+scc 'v9 || (_1+_2)'
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
 
