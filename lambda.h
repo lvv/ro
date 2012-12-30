@@ -18,58 +18,6 @@
 	template<class Op, class Fr1, class Fr2> 	struct  functor_t;
 	template<class T> 				struct  var_t;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////   OPERATOR TYPES
-
-	/////  UNARY ------------------------------------
-
-	// artihmetic
-	class plus1_action {};
-	class minus1_action {};
-
-	// increment/decrement
-	class increment_action {};              class postfix_increment_action {}; 
-	class decrement_action {};              class postfix_decrement_action {}; 
-
-
-	// bitwise/logical
-	class not_action {};
-
-	// other
-	class addressof_action {};
-	class contentsof_action {};
-  	class comma_action {}; // boost special
-	class member_pointer_action {}; // boost special
-
-	/////  BINARY ------------------------------------
-	
-	// artihmetic
-	class plus_action {};                  class plus_assign_action {};       
-	class minus_action {};                 class minus_assign_action {};      
-	class multiply_action {};              class multiply_assign_action {};   
-	class divide_action {};                class divide_assign_action {};     
-	class remainder_action {};             class remainder_assign_action {};  
-
-	// bitwise
-	class leftshift_action {};             class leftshift_assign_action {};       
-	class rightshift_action {};            class rightshift_assign_action {};      
-	class xor_action {};                   class xor_assign_action {};             
-
-	// bitwise/logical
-	class and_action {};                   class and_assign_action {};   
-	class or_action {};                    class or_assign_action {};    
-
-	//  relational
-	class less_action {};                  class lessorequal_action {};      
-	class greater_action {};               class greaterorequal_action {};   
-	class equal_action {};
-	class notequal_action {};
-
-
-	/////  MEMBERS ONLY -----------------------------------------
-
-	class assign_action {};
-	class subscript_action {};
-	class call_action {};
 		
 /////////////////////////////////////////////////////////////////////////////////////////   DEF_LAMBDA_FUNCTOR2
 

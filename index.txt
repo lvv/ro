@@ -794,6 +794,8 @@ RANGES
 		distribution (e.g. with a good random function) with using
 		Euclidean algorithm to calculate GCD in O(log(N)) complexity
 		you'll get what you want.
+	
+	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 
 
 MAP
