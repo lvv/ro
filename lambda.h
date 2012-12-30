@@ -3,6 +3,7 @@
 				#define  STO_LAMBDA_H
 
 
+				#include <iostream>
 				#include <sto/meta.h>
 
 
@@ -233,6 +234,25 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	DEF_LAMBDA_OP1(*,contentsof_action)
 
 
+
+
+//      λ	ANY	T	=>	λ
+//      T	ANY	λ	=>	λ	// default rules
+//
+//      range	*	λ	=> 	map-range
+//      !range	*	λ	=> 	λ
+//      λ	*	λ	=> 	λ o λ
+//
+//      range	|	λ	=> 	filter-range
+//      !	|	λ	=> 	λ
+//
+//      range	||	λ	=> 	fold-range
+//      !	||	λ	=> 	λ
+
+template<class Op, class Arg1>	struct  is_range_op   			        { enum {value=false}; };
+template<class Arg1>		struct  is_range_op<logical_or_action ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
+template<class Arg1>		struct  is_range_op<bitwise_or_action ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
+template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 	
 
 #define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
@@ -251,10 +271,9 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
 	 }                                                                                                      \
                                                                                                                 \
-		/*  T  OP  Fr  */											\
+		/*  T  OP  Fr   <------- SPECIAL -------    */											\
 		template<class T1, class Fr2>									\
-		/*eIF<AND<!IS_FR(T1), !is_range<T1>::value, IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>     */  \
-		eIF<AND<!IS_FR(T1), IS_FR(Fr2)>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+		eIF<AND<!IS_FR(T1), IS_FR(Fr2), !is_range_op<OP_CLASS,T1>::value>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
@@ -280,8 +299,15 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	DEF_LAMBDA_FUNCTOR2(>>=,,rightshift_assign_action)	DEF_LAMBDA_OP2(>>=,rightshift_assign_action)
 	DEF_LAMBDA_FUNCTOR2(^=,,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
 
-	DEF_LAMBDA_FUNCTOR2(||,,or_action)			DEF_LAMBDA_OP2(||,or_action)
-	DEF_LAMBDA_FUNCTOR2(&&,,and_action)			DEF_LAMBDA_OP2(&&,and_action)
+	DEF_LAMBDA_FUNCTOR2(||,,logical_or_action)    		DEF_LAMBDA_OP2(||,logical_or_action)
+	DEF_LAMBDA_FUNCTOR2(&&,,logical_and_action)	       	DEF_LAMBDA_OP2(&&,logical_and_action)
+	//DEF_LAMBDA_FUNCTOR2(||=,,logical_or_assign_action)    	DEF_LAMBDA_OP2(||=,logical_or_assign_action)
+	//DEF_LAMBDA_FUNCTOR2(&&=,,logical_and_assign_action)    	DEF_LAMBDA_OP2(&&=,logical_and_assign_action)
+
+	DEF_LAMBDA_FUNCTOR2(|,,bitwise_or_action)    		DEF_LAMBDA_OP2(|,bitwise_or_action)
+	DEF_LAMBDA_FUNCTOR2(&,,bitwise_and_action)    		DEF_LAMBDA_OP2(&,bitwise_and_action)
+	DEF_LAMBDA_FUNCTOR2(|=,,bitwise_or_assign_action)    	DEF_LAMBDA_OP2(|=,bitwise_or_assign_action)
+	DEF_LAMBDA_FUNCTOR2(&=,,bitwise_and_assign_action)    	DEF_LAMBDA_OP2(&=,bitwise_and_assign_action)
 
 	// relational
 	DEF_LAMBDA_FUNCTOR2(<,,less_action)			DEF_LAMBDA_OP2(<,less_action)
@@ -290,7 +316,6 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	DEF_LAMBDA_FUNCTOR2(>,,greaterorequal_action)		DEF_LAMBDA_OP2(>=,greaterorequal_action)
 	DEF_LAMBDA_FUNCTOR2(==,,equal_action)			DEF_LAMBDA_OP2(==,equal_action)
 	DEF_LAMBDA_FUNCTOR2(!=,,notequal_action)	       	DEF_LAMBDA_OP2(!=,notequal_action)
-
 
 
 

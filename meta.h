@@ -576,10 +576,12 @@ template<class T>	struct  ref_container2<T&&>  {
 	class leftshift_action {};             class leftshift_assign_action {};       
 	class rightshift_action {};            class rightshift_assign_action {};      
 	class xor_action {};                   class xor_assign_action {};             
+	class bitwise_and_action {};           class bitwise_and_assign_action {};   
+	class bitwise_or_action {};            class bitwise_or_assign_action {};    
 
-	// bitwise/logical
-	class and_action {};                   class and_assign_action {};   
-	class or_action {};                    class or_assign_action {};    
+	// logical
+	class logical_and_action {};           //class logical_and_assign_action {};   
+	class logical_or_action {};            //class logical_or_assign_action {};    
 
 	//  relational
 	class less_action {};                  class lessorequal_action {};      
