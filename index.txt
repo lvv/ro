@@ -776,6 +776,12 @@ Corresponding CLANG bugs:
 
 == Refs 
 
+MISC
+	SETS -- http://docs.python.org/2/library/sets.html#set-objects
+	operators owl -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
+	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
+
+
 RANGES
 	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3350.html
 
@@ -795,7 +801,6 @@ RANGES
 		Euclidean algorithm to calculate GCD in O(log(N)) complexity
 		you'll get what you want.
 	
-	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 
 
 MAP

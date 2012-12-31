@@ -154,7 +154,7 @@ struct  var_t : ref_container<T&&> {
 };
 
 	template<class T>
-var_t<T> var(T&& t) { return var_t<T>(FWD(T,t)); }
+var_t<T&&> var(T&& t) { return var_t<T&&>(FWD(T,t)); }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   CONSTANT
