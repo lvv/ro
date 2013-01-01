@@ -72,7 +72,7 @@ template<typename> void ttd();
 
 
 struct  to : counter<to> {
-	#ifdef scc_ASSERT
+	#if 	defined(scc_ASSERT) || defined(LVV_CHECK_H)
 		const bool print=false;
 	#else
 		const bool print=true;
@@ -84,8 +84,10 @@ struct  to : counter<to> {
 	to(to&& o): id(o.id ? o.id+1000: 0)	{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id; 	if(print) std::cout << "ctor (T&&)  " << "inst:"  << this->newed  << "\tid:" << id << '\n';}
 	to&  operator=(to&& o)			{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id;	if(print) std::cout << "= mv        " << "inst:"  << this->newed  << "\tid:" << id << '\n';  return *this; }
 	~to()					{
-		if(print) std::cout << "dtor       ~" << "inst:"  << this->newed  << "\tid:" << id << '\n';
-		if(alive==1) std::cout << "\n*** ON EXIT ***:  newed:" <<  this->newed  << "\tconstructed:" << constructed << '\n';
+		if(print) {
+			std::cout << "dtor       ~" << "inst:"  << this->newed  << "\tid:" << id << '\n';
+			if(alive==1) std::cout << "\n*** ON EXIT ***:  newed:" <<  this->newed  << "\tconstructed:" << constructed << '\n';
+		}
 	}
 	int id = 0;
 	static int    constructed;

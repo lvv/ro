@@ -79,8 +79,8 @@ scc 'v9 || var(true)'
 scc '*+(v9 * _1);'
 scc 'range(9) * _1'
 # scc 'range(9) * var(1)'	# TOFIX
-# scc 'range(9)*(_1+0)'		# TOFIX 
-# scc 'v9      *(_1+0)'		# TOFIX 
+# scc 'range(9) * (_1+0)'      	# TOFIX 
+# scc 'v9       * (_1+0)'      	# TOFIX 
 # scc 'v9 * _1'			# TOFIX
 # scc 'v9 * var(1)' 		# TOFIX
 

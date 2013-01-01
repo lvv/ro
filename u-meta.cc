@@ -1,6 +1,6 @@
 				#include <scc/simple.h>
-				#include <sto/debug.h>
 				#include <lvv/check.h>
+				#include <sto/debug.h>
 				#include <sto/sto.h>
 				using namespace sto;
 
@@ -188,9 +188,7 @@ CHECK(   (is_fold_functor<add_t>::value))
 CHECK( ! (is_fold_functor<std::plus<int>>::value))
 CHECK( ! (is_fold_functor<int>::value))
 
-// is_callable
-	//{ typedef bool T(int);
-	//for_T(   "bool T(int)");  }
+// IS_CALLABLE
 		
 CHECK( ! (is_callable<bool,  bool(int)>::value))		// is not
 CHECK( ! (is_callable<int,   bool(int)>::value))
@@ -225,6 +223,15 @@ CHECK( ! (is_callable<std::function<bool()>,	bool(int)>::value))
 //CHECK(   (is_callable<std::function<lam_t>, bool(int)>::value)) 	// ??????????????????????????
 CHECK(   (is_callable<std::negate<int>,		int(int)>::value))
 CHECK(   (is_callable<std::less<int>,		bool(int,int)>::value))
+
+// REF_CONTAINER
+{ to lto;  ref_container<to&> lrc(lto);
+CHECK_ARE_EQUAL(lto.newed, 1) }
+
+to::constructed = 0; 	CHECK_ARE_EQUAL((ref_container<to&&>{to()}).value.constructed, 1)
+to::constructed = 0; 	CHECK_ARE_EQUAL((ref_container<to&&>{to()}).value.constructed, 1)
+
+CHECK(   (is_same<decltype(((ref_container<to&&>{to()}).value)),to>::value))
 
 					CHECK_EXIT;
 					}
