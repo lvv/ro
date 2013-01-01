@@ -140,7 +140,7 @@ struct  basic_range : ref_container<Rg&&> {
 	Rg&	rg;
 
 	////  CTOR
-	explicit basic_range(Rg&& rg)  : ref_container<Rg&&>(std::forward<Rg>(rg)), rg(this->value)  {};
+	explicit basic_range(Rg&& rg) : ref_container<Rg&&>(std::forward<Rg>(rg)), rg(this->value)  {};
 
 	////  ASSIGNMENT
 	self_type&   operator= (elem_type x) { std::fill(begin(), end(), x);  return *this; };

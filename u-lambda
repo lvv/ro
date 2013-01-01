@@ -74,6 +74,15 @@ scc -a1 	'_1[1](range(9))'
 # with ranges
 scc 'v9 | (_1%2)'
 scc 'v9 || (_1+_2)'
+scc 'v9 | var(true)'
+scc 'v9 || var(true)'
+scc '*+(v9 * _1);'
+scc 'range(9) * _1'
+# scc 'range(9) * var(1)'	# TOFIX
+# scc 'range(9)*(_1+0)'		# TOFIX 
+# scc 'v9      *(_1+0)'		# TOFIX 
+# scc 'v9 * _1'			# TOFIX
+# scc 'v9 * var(1)' 		# TOFIX
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
 
