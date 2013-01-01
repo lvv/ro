@@ -63,11 +63,11 @@ template<typename> void ttd();
 //  neg id - moved object;  id+1000 - id of moved out object 
 		template <typename T>
 	struct counter {
-		static int    newed,   alive;
-		counter()  {++newed; ++alive; }
+		static int    instances,   alive;
+		counter()  {++instances; ++alive; }
 		~counter() {           --alive; }
 	};
-	template <typename T> int counter<T>::newed (0);
+	template <typename T> int counter<T>::instances (0);
 	template <typename T> int counter<T>::alive   (0);
 
 
@@ -77,16 +77,16 @@ struct  to : counter<to> {
 	#else
 		const bool print=true;
 	#endif
-	to(int id) 	: id(id)		{ constructed++;						if(print) std::cout << "ctor (id)   " << "inst:"  << this->newed  << "\tid:" << id << '\n'; }
-	to() 			 		{ constructed++;						if(print) std::cout << "ctor ()    *" << "inst:"  << this->newed                << '\n'; }
-	to(const to& o): id(o.id ? o.id+1000: 0){ constructed++;						if(print) std::cout << "ctor (cT&)  " << "inst:"  << this->newed  << "\tid:" << id << '\n'; }
-	to&  operator=(const to& o)		{ constructed++;   id=(o.id ? o.id+1000: id); 			if(print) std::cout << "= cp        " << "inst:"  << this->newed  << "\tid:" << id << '\n';  return *this; }
-	to(to&& o): id(o.id ? o.id+1000: 0)	{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id; 	if(print) std::cout << "ctor (T&&)  " << "inst:"  << this->newed  << "\tid:" << id << '\n';}
-	to&  operator=(to&& o)			{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id;	if(print) std::cout << "= mv        " << "inst:"  << this->newed  << "\tid:" << id << '\n';  return *this; }
+	to(int id) 	: id(id)		{ constructed++;						if(print) std::cout << "ctor (id)   " << "inst:"  << this->instances  << "\tid:" << id << '\n'; }
+	to() 			 		{ constructed++;						if(print) std::cout << "ctor ()    *" << "inst:"  << this->instances                << '\n'; }
+	to(const to& o): id(o.id ? o.id+1000: 0){ constructed++;						if(print) std::cout << "ctor (cT&)  " << "inst:"  << this->instances  << "\tid:" << id << '\n'; }
+	to&  operator=(const to& o)		{ constructed++;   id=(o.id ? o.id+1000: id); 			if(print) std::cout << "= cp        " << "inst:"  << this->instances  << "\tid:" << id << '\n';  return *this; }
+	to(to&& o): id(o.id ? o.id+1000: 0)	{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id; 	if(print) std::cout << "ctor (T&&)  " << "inst:"  << this->instances  << "\tid:" << id << '\n';}
+	to&  operator=(to&& o)			{ 		   id=(o.id ? o.id+1000: id); 	o.id = -o.id;	if(print) std::cout << "= mv        " << "inst:"  << this->instances  << "\tid:" << id << '\n';  return *this; }
 	~to()					{
 		if(print) {
-			std::cout << "dtor       ~" << "inst:"  << this->newed  << "\tid:" << id << '\n';
-			if(alive==1) std::cout << "\n*** ON EXIT ***:  newed:" <<  this->newed  << "\tconstructed:" << constructed << '\n';
+			std::cout << "dtor       ~" << "inst:"  << this->instances  << "\tid:" << id << '\n';
+			if(alive==1) std::cout << "\n*** ON EXIT ***:  instances:" <<  this->instances  << "\tconstructed:" << constructed << '\n';
 		}
 	}
 	int id = 0;

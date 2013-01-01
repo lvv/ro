@@ -226,7 +226,7 @@ CHECK(   (is_callable<std::less<int>,		bool(int,int)>::value))
 
 // REF_CONTAINER
 { to lto;  ref_container<to&> lrc(lto);
-CHECK_ARE_EQUAL(lto.newed, 1) }
+CHECK_ARE_EQUAL(lto.instances, 1) }
 
 to::constructed = 0; 	CHECK_ARE_EQUAL((ref_container<to&&>{to()}).value.constructed, 1)
 to::constructed = 0; 	CHECK_ARE_EQUAL((ref_container<to&&>{to()}).value.constructed, 1)
