@@ -517,12 +517,28 @@ template<class T>	struct  ref_container<T& >  {
 	explicit ref_container(T&  x) : value(x)         {}
  };
 
+template<class T>	struct  ref_container<T const& >  {
+	typedef void is_lvalue; 
+	typedef T const& value_type; 
+	T const& value; 
+	explicit ref_container(T const& x) : value(x)         {}
+ };
+
 template<class T>	struct  ref_container<T&&>  {
 	typedef void is_rvalue;
 	typedef T value_type; 
         T  value;	
 	explicit ref_container(T&& x) : value(std::move(x)) {}
  };
+
+template<class T>	struct  ref_container<T const&&>  {
+	typedef void is_rvalue;
+	typedef T value_type; 
+        T const value;	
+	explicit ref_container(T const && x) : value(x) {}
+ };
+/*
+ */
 
 // 2
 template<class T>	struct  ref_container2;

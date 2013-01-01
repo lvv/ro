@@ -202,11 +202,12 @@ operator*       (Rg&& rg,  F f)    {
 	template<
 		class Rg,
 		class F,
-		class E = rg_elem_type<Rg>,
+		class E = rg_reference<Rg>,
 		class = typename F::is_lambda_functor
 	> 
-auto operator*       (Rg&& rg,  F f) ->   eIF <is_range<Rg>::value,   mapped_range<Rg&&,F,decltype(f(E()))>> {
-	return   mapped_range<Rg&&,F,decltype(f(E()))> (std::forward<Rg>(rg),  f);
+auto operator*       (Rg&& rg,  F f) ->  
+	eIF <is_range<Rg>::value,   mapped_range<Rg&&,F,decltype(f(std::declval<E>()))>> {
+	return                      mapped_range<Rg&&,F,decltype(f(std::declval<E>()))> (std::forward<Rg>(rg),  f);
  };
 ///////////////////////////////////  TUPLES
 
