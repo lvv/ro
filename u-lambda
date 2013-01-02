@@ -78,12 +78,11 @@ scc 'v9 | var(true)'
 scc 'v9 || var(true)'
 scc '*+(v9 * _1);'
 scc 'range(9) * _1'
-# scc 'range(9) * var(1)'	# TOFIX
-# scc 'range(9) * (_1+0)'      	# TOFIX 
-# scc 'v9       * (_1+0)'      	# TOFIX 
-# scc 'v9 * _1'			# TOFIX
-# scc 'v9 * var(1)' 		# TOFIX
+scc 'for(auto i: v9 * _1) _ i;'
+scc 'range(9) * var(1)'
+scc 'range(9) * (_1+0)'
+scc 'v9       * (_1+0)'
+scc 'v9 * _1'
+scc 'v9 * var(1)'
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'
-
-

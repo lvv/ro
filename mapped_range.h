@@ -3,6 +3,7 @@
 						#define  STO_MAPPED_RANGE_H
 
 						#include <sto/basic_range.h>
+						#include <sto/debug.h>
 
 						namespace sto {
 
@@ -53,12 +54,9 @@ struct mapped_range_iterator : basic_range_iterator<Rg,RO> {
 
 
 	////// CONVERSION  non-const --> const
-	//operator mapped_range_iterator<Rg&&,F,O,true>() { return mapped_range_iterator<Rg&&,F,O,true>(parent_p, b::current); };
 	operator mapped_range_iterator<Rg&&,F,O,true>() { return mapped_range_iterator<Rg&&,F,O,true>((parent_t*)b::parent_p, b::current); };
 
 	////// IFACE
-	//reference	operator*()  		{ return  (parent_p->f)(*b::current); };
-	//const_reference operator*() const 	{ return  (parent_p->f)(*b::current); };
 	reference	operator*()  		{ return  ((parent_t*)b::parent_p)->f(*b::current); };
 	const_reference operator*() const 	{ return  ((parent_t*)b::parent_p)->f(*b::current); };
 

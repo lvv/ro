@@ -47,11 +47,12 @@ struct basic_range_iterator {
 	typedef		SEL <RO, const rm_ref<value_type>*, rm_ref<value_type>*>   	pointer;
 
 	typedef         rg_const_reference<Rg>     			const_reference;
+
 	typedef		typename std::conditional <
 				std::is_const<Rg>::value || RO,
 				rg_const_reference<Rg>,
 				rg_reference<Rg>
-			>::type reference;
+			>::type						reference;
 
 
 	// non-STL
@@ -125,11 +126,12 @@ struct  basic_range : ref_container<Rg&&> {
 	typedef		rm_ref<value_type>*				pointer;
 
 	typedef         rg_const_reference<Rg>     			const_reference;  // non-STL
+
 	typedef		typename std::conditional <
 				std::is_const<Rg>::value /* || RO*/,      // <-- different from interator
 				rg_const_reference<Rg>,
 				rg_reference<Rg>
-			>::type reference;
+			>::type						reference;
 
 
 	// non-STL
