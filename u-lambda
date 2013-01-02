@@ -85,4 +85,8 @@ scc 'v9       * (_1+0)'
 scc 'v9 * _1'
 scc 'v9 * var(1)'
 
+#scc 'vector<int*> va; v9 * (va << &_1); __ size(va); for(auto p:va) _ *p; '
+#scc 'v9 * (*oi = _1);'  
+#scc 'v9 * (cout << _1);'
+
 : '- - - - - - - - - - - - - - - - - - - - - -  U-LAMBDA passed   - -- - - - - - - - - - - - - - - - - - - - -'

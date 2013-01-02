@@ -54,15 +54,15 @@ operator<<      (ostream& os, const IT& it) { std::cout << &*it << " "; return o
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template<typename Rg >
 	eIF<is_range<Rg>::value  &&  !is_ioable<Rg>::value, std::ostream&>
-operator<<      (ostream& os, const Rg& C);
+operator<<      (ostream& os, const Rg& rg);
 
 	template<typename Rg >
 	eIF <is_stack<Rg>::value, std::ostream> &
-operator<<      (ostream& os, Rg C);
+operator<<      (ostream& os, Rg rg);
 
 	template<typename Rg >
 	eIF <is_queue<Rg>::value, std::ostream> &
-operator<<      (ostream& os, Rg C);
+operator<<      (ostream& os, Rg rg);
 
 		template<typename T, typename U>
 		std::ostream&
@@ -76,20 +76,20 @@ operator<<      (ostream& os, const std::tuple<TT...>& tup);
 // RANGE
 	template<typename Rg>
 	eIF<is_range<Rg>::value  &&  !is_ioable<Rg>::value, std::ostream&>
-operator<<      (ostream& os, Rg&& C) {
+operator<<      (ostream& os, Rg&& rg) {
 
 	if (is_elem_of<char,Rg>::value)  {
-		auto I=std::begin(C);
-		while (I != endz(C)) {
+		auto I=std::begin(rg);
+		while (I != endz(rg)) {
 			os  << *I;
-			if (++I == endz(C))  break;
+			if (++I == endz(rg))  break;
 		}
 	} else {
 		cout << "{";
-			auto I=std::begin(C);
-			while (I != endz(C)) {
+			auto I=std::begin(rg);
+			while (I != endz(rg)) {
 				os  << *I;
-				if (++I == endz(C))  break;
+				if (++I == endz(rg))  break;
 				os << ", ";
 			}
 		cout << "}";
@@ -101,10 +101,10 @@ operator<<      (ostream& os, Rg&& C) {
 // STACK
 	template<typename Rg >
 	eIF <is_stack<Rg>::value, std::ostream> &
-operator<<      (ostream& os, Rg C) {
+operator<<      (ostream& os, Rg rg) {
 
 	Rg CC; 
-	while(!C.empty()) { auto x = C.top();  C.pop();  CC.push(std::move(x)); }
+	while(!rg.empty()) { auto x = rg.top();  rg.pop();  CC.push(std::move(x)); }
 
 	cout << "[";
 		if    ( !CC.empty() )  { os         << CC.top();  CC.pop(); }
@@ -116,10 +116,10 @@ operator<<      (ostream& os, Rg C) {
 // QUEUE
 	template<typename Rg >
 	eIF <is_queue<Rg>::value, std::ostream> &
-operator<<      (ostream& os, Rg C) {
+operator<<      (ostream& os, Rg rg) {
 	cout << "[";
-		if    ( !C.empty() )  { os         << C.front();  C.pop(); }
-		while ( !C.empty() )  { os << ", " << C.front();  C.pop(); }
+		if    ( !rg.empty() )  { os         << rg.front();  rg.pop(); }
+		while ( !rg.empty() )  { os << ", " << rg.front();  rg.pop(); }
 	cout << "]";
         return os;
 };
@@ -190,8 +190,8 @@ namespace oi_space {
 
 			template<typename Rg >
 			eIF<is_range<Rg>::value,  void>
-		operator=(const Rg& C)  {
-			copy(std::begin(C),  endz(C),  *this);
+		operator=(const Rg& rg)  {
+			copy(std::begin(rg),  endz(rg),  *this);
 		}
 	};
 
@@ -231,32 +231,32 @@ struct in_t {
 	// SEQ-CONT
 		template<typename Rg>
 		eIF<is_range<Rg>::value  &&  has_push_back<Rg>::value  &&  !is_ioable<Rg>::value,  void>
-	input(Rg& C)	{
+	input(Rg& rg)	{
 		typename Rg::value_type t;
-		if (n>0) C.resize(n);
-		if (!C.empty())		for (typename Rg::value_type&x : C)  { std::cin >> t;   if(!std::cin || n-- <= 0)  break;  x=t;}
-		else			{ C.clear();  while  (std::cin >> t, std::cin)  C.push_back(t);}
+		if (n>0) rg.resize(n);
+		if (!rg.empty())		for (typename Rg::value_type&x : rg)  { std::cin >> t;   if(!std::cin || n-- <= 0)  break;  x=t;}
+		else			{ rg.clear();  while  (std::cin >> t, std::cin)  rg.push_back(t);}
 	}
 
 	// SET
 		template<typename Rg>
 		eIF<is_range<Rg>::value  &&  has_1arg_insert<Rg>::value  &&  !is_map<Rg>::value,  void>
-	input(Rg& C)	{
+	input(Rg& rg)	{
 		typename Rg::value_type t;
-		C.clear(); 
+		rg.clear(); 
 		n = n ? n : -1;
-		while  (std::cin >> t,  std::cin && n--)   C.insert(t);
+		while  (std::cin >> t,  std::cin && n--)   rg.insert(t);
 	}
 
 	// MAP
 		template<typename Rg>
 		eIF<is_range<Rg>::value  &&  has_1arg_insert<Rg>::value  &&  is_map<Rg>::value,  void>
-	input(Rg& C)	{
+	input(Rg& rg)	{
 		typename Rg::key_type	  k;
 		typename Rg::mapped_type  m;
-		C.clear(); 
+		rg.clear(); 
 		n = n ? n : -1;
-		while(std::cin >> k >> m  && n--)  C[k] = m;
+		while(std::cin >> k >> m  && n--)  rg[k] = m;
 	}
 
 
@@ -276,11 +276,11 @@ static in_t in;
 
 		template<typename Rg>
 		eIF<is_range<Rg>::value  &&  has_push_back<Rg>::value  &&  !is_ioable<Rg>::value, std::istream& >
-operator>>      (std::istream& is, Rg& C)    {
-	int n = C.size() ? C.size() : -1;
-	C.clear(); 
+operator>>      (std::istream& is, Rg& rg)    {
+	int n = rg.size() ? rg.size() : -1;
+	rg.clear(); 
 	typename Rg::value_type c;
-	while(is>>c && n--)  C.push_back(c);
+	while(is>>c && n--)  rg.push_back(c);
 	return is;
 };
 
@@ -350,9 +350,9 @@ operator>>      (std::istream& is, std::tuple<TT...>& tup) {
 // SET
 		template<typename Rg>
 		eIF<is_range<Rg>::value  &&  has_1arg_insert<Rg>::value && !is_map<Rg>::value, std::istream& >
-operator>>      (std::istream& is, Rg& C)    {
+operator>>      (std::istream& is, Rg& rg)    {
 	typename Rg::value_type c;
-	while(is>>c)  C.insert(c);
+	while(is>>c)  rg.insert(c);
 	return is;
 };
 
@@ -360,10 +360,10 @@ operator>>      (std::istream& is, Rg& C)    {
 // MAP
 		template<typename Rg>
 		eIF<is_range<Rg>::value  &&  has_1arg_insert<Rg>::value && is_map<Rg>::value, std::istream& >
-operator>>      (std::istream& is, Rg& C)    {
+operator>>      (std::istream& is, Rg& rg)    {
 	typename Rg::key_type	  k;
 	typename Rg::mapped_type  m;
-	while(is >> k >> m)  C[k] = m;
+	while(is >> k >> m)  rg[k] = m;
 	return is;
 };
 
