@@ -243,7 +243,9 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 //      !range	*	λ	=> 	λ
 //      λ	*	λ	=> 	λ o λ
 //
-//      range	|	λ	=> 	filter-range
+//      range	|	algo	=> 	basic-range
+//      range	|	pred	=> 	predicated-range
+//      range	|	λ	=> 	predicated-range
 //      !	|	λ	=> 	λ
 //
 //      range	||	λ	=> 	fold-range

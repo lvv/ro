@@ -4,6 +4,7 @@
 
 						#include <sto/meta.h>
 						#include <sto/stl.h>
+						#include <sto/lambda.h>
 
 						#include <cassert>
 
@@ -102,13 +103,14 @@ struct basic_range_iterator {
 	// random access
 	template<class U=org_iterator, class=decltype(std::declval<U>()+=1)>			iterator	operator+= (difference_type n)	{ current+=n;  return *this; }
 	template<class U=org_iterator, class=decltype(std::declval<U>()-=1)>			iterator	operator-= (difference_type n)	{ current-=n;  return *this; }
-	template<class U=org_iterator, class=decltype(std::declval<U>()[1])>			reference	operator[] (difference_type n)	{ return current[n]; }
 	template<class U=org_iterator, class=decltype(std::declval<U>() <  std::declval<U>())>	bool		operator<  (self_type other)	{ return current <  other.current; } 
 	template<class U=org_iterator, class=decltype(std::declval<U>() <= std::declval<U>())>	bool		operator<= (self_type other)	{ return current <= other.current; } 
 	template<class U=org_iterator, class=decltype(std::declval<U>() >  std::declval<U>())>	bool		operator>  (self_type other)	{ return current >  other.current; } 
 	template<class U=org_iterator, class=decltype(std::declval<U>() >= std::declval<U>())>	bool		operator>= (self_type other)	{ return current >= other.current; } 
- };
 
+	template<class U=org_iterator, class=decltype(std::declval<U>()[1])>		       reference	operator[] (difference_type n)	{ return current[n]; }
+	// TODO template<class U=org_iterator, class=decltype(std::declval<U>()[1])>		       eIF<std::is_convertible<>::value,reference> operator[] (difference_type n)	{ return current[n]; }
+ };
 
 
 /////////////////////////////////////////////////////////////////////////////////////////  CHAIN_RANGE
@@ -210,7 +212,12 @@ struct  basic_range : ref_container<Rg&&> {
 
 
 	
-	template<class U=Rg>  auto  operator[] (difference_type n) -> decltype(std::declval<U>()[0])   		{ return  rg[n]; } // FIXME for pred
+	template<class U=Rg>             auto  operator[] (difference_type n ) -> decltype(std::declval<U>()[0])   		{ return  rg[n]; }
+
+	template<class Fr2, class U=Rg>  auto  operator[] (Fr2&& fr2)            -> eIF<sto::is_lambda_functor<Fr2>::value,
+			functor_t<subscript_action,var_t<self_type&&>,Fr2&&>>  {
+		return	functor_t<subscript_action,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
+	}
  };
 
 
