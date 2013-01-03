@@ -4,10 +4,10 @@ set -v
 renice -n 20 -p $$
 
 make -B u-meta && ./u-meta || exit
+scc -f u-print.h
 . u-stl
 . u-in
 . u-regex
-scc -f u-print.h
 . u-range
 . u-lambda
 

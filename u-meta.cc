@@ -233,5 +233,7 @@ to::constructed = 0; 	CHECK_ARE_EQUAL((ref_container<to&&>{to()}).value.construc
 
 CHECK(   (is_same<decltype(((ref_container<to&&>{to()}).value)),to>::value))
 
-					CHECK_EXIT;
+__ "- - - - - - - - - - - - - - - - - - - - - - U-META passed   - -- - - - - - - - - - - - - - - - - - - - -";
+						CHECK_EXIT;
+
 					}
