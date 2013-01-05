@@ -4,10 +4,10 @@
 
 
 				#include <iostream>
+				#include <functional>
 				#include <sto/meta.h>
+				#include <sto/stl.h>
 
-
-					#include <functional>
 				namespace sto {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////   META+FORWARDS
@@ -21,6 +21,23 @@
 
 		
 /////////////////////////////////////////////////////////////////////////////////////////   DEF_LAMBDA_FUNCTOR2
+
+#define  DEF_LAMBDA_MEMBER_OP2(OP,OP_CLASS,THIS_T)										\
+														\
+		/* Ph OP Fr */											\
+		template<class Fr>	                                                                	\
+		eIF<IS_FR(Fr), functor_t<OP_CLASS,THIS_T,Fr&&>>							\
+	operator OP(Fr&& fr) const {                                                                     	\
+		return  functor_t<OP_CLASS,THIS_T,Fr&&> (THIS_T(), FWD(Fr,fr));                           	\
+	 }                                                                                                      \
+														\
+		/* Ph OP T */                                                                                   \
+		template<class U>                                   						\
+		eIF<!IS_FR(U), functor_t<OP_CLASS,THIS_T,var_t<U&&>>>                           		\
+	operator OP(U&& t) const {                                                                      	\
+		return  functor_t<OP_CLASS,THIS_T,var_t<U&&>> (THIS_T(), var_t<U&&>(FWD(U,t)));         	\
+	 }                                                                                                      \
+
 
 #define  DEF_LAMBDA_FUNCTOR2(OP,OP2,OP_CLASS) 		      							\
                                                                                                                 \
@@ -53,11 +70,15 @@
 		operator() (Arg&& arg) -> eIF<is_tuple_or_pair<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
 			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
 		}                                                                                               \
-	 };
-
-         DEF_LAMBDA_FUNCTOR2(=,,assign_action)
-         DEF_LAMBDA_FUNCTOR2([,],subscript_action)
-         //DEF_LAMBDA_FUNCTOR2((,),call_action)
+														\
+		/*  MEMBER-ONLY OVERLOADS */                                                                   \
+		typedef 	 functor_t<OP_CLASS,Fr1,Fr2> 	this_t;						\
+		DEF_LAMBDA_MEMBER_OP2(=, assign_action,    this_t)                                                          \
+		DEF_LAMBDA_MEMBER_OP2([],subscript_action, this_t)                                                      \
+		/*DEF_LAMBDA_MEMBER_OP2((),call_action)*/                                                         \
+                                                                                                                \
+	 };                                                                                                     \
+	
 
 /*
 	class assign_action {};
@@ -101,27 +122,10 @@ struct  ph {
 	operator() (Arg1&& arg1, Arg2&& arg2) const { return FWD(Arg2,arg2); }
 
 
-	///////////////////////////////////// MEMBER-ONLY OVERLOADS
-
-	#define  DEF_LAMBDA_MEMBER_OP2(OP,OP_CLASS)										\
-															\
-			/* Ph OP Fr */											\
-			template<class Fr>	                                                                \
-			eIF<IS_FR(Fr), functor_t<OP_CLASS,ph<N>,Fr&&>>					\
-		operator OP(Fr&& fr) const {                                                                     \
-			return  functor_t<OP_CLASS,ph<N>,Fr&&> (ph<N>(), FWD(Fr,fr));                           \
-		 }                                                                                                      \
-															\
-			/* Ph OP T */                                                                                   \
-			template<class T>                                   				\
-			eIF<!IS_FR(T), functor_t<OP_CLASS,ph<N>,var_t<T&&>>>                           	\
-		operator OP(T&& t) const {                                                                      	\
-			return  functor_t<OP_CLASS,ph<N>,var_t<T&&>> (ph<N>(), var_t<T&&>(FWD(T,t)));         	\
-		 }                                                                                                      \
-
-		DEF_LAMBDA_MEMBER_OP2(=,assign_action)
-		DEF_LAMBDA_MEMBER_OP2([],subscript_action)
-		//DEF_LAMBDA_MEMBER_OP2((),call_action)
+	/////  MEMBER-ONLY OVERLOADS
+	DEF_LAMBDA_MEMBER_OP2(=,  assign_action,    ph<N>)
+	DEF_LAMBDA_MEMBER_OP2([], subscript_action, ph<N>)
+	//DEF_LAMBDA_MEMBER_OP2((),call_action)
 
 
 	///////  Convertion to std:placeholder::...
@@ -151,6 +155,12 @@ struct  var_t : ref_container<T&&> {
 
 		template<class Arg1, class Arg2>
 	value_type operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(T,this->value); }
+
+	/////  MEMBER-ONLY OVERLOADS
+	DEF_LAMBDA_MEMBER_OP2(=,	assign_action, 		var_t<T>)
+	DEF_LAMBDA_MEMBER_OP2([],	subscript_action,	var_t<T>)
+	//DEF_LAMBDA_MEMBER_OP2((),call_action)
+
 };
 
 	template<class T>
@@ -171,6 +181,12 @@ struct  constant_t {
 
 		template<class Arg1, class Arg2>
 	const T& operator() (Arg1&& arg1, Arg2&& arg2) const { return value_cref; }
+
+	/////  MEMBER-ONLY OVERLOADS
+	DEF_LAMBDA_MEMBER_OP2(=,	assign_action, 		constant_t<T>)
+	DEF_LAMBDA_MEMBER_OP2([],	subscript_action,	constant_t<T>)
+	//DEF_LAMBDA_MEMBER_OP2((),call_action)
+
 };
 
 	template<class T>
