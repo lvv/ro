@@ -1,4 +1,6 @@
 
+ # vim:ft=sh  nonu
+
 set -o errexit
 set -v
 

@@ -1,3 +1,4 @@
+ # vim:ft=sh  nonu
 
 # echo 1 2 3 4| scc 'vector<vint>	   C;     cin >> C;   C'
 
