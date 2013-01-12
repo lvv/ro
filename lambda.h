@@ -7,6 +7,7 @@
 				#include <functional>
 				#include <sto/meta.h>
 				#include <sto/stl.h>
+				#include <sto/range.h>
 
 				namespace sto {
 
@@ -18,73 +19,65 @@
 
 	template<class Op, class Fr1, class Fr2> 	struct  functor_t;
 	template<class T> 				struct  var_t;
+	template<class T> 				struct  constant_t;
 
 		
-/////////////////////////////////////////////////////////////////////////////////////////   DEF_LAMBDA_FUNCTOR2
+/////////////////////////////////////////////////////////////////////////////////////////   DEF_FUNCTOR2
 
-#define  DEF_LAMBDA_MEMBER_OP2(OP,OP_CLASS,THIS_T)										\
+#define  DECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
 														\
-		/* Ph OP Fr */											\
-		template<class Fr>	                                                                	\
-		eIF<IS_FR(Fr), functor_t<OP_CLASS,THIS_T,Fr&&>>							\
-	operator OP(Fr&& fr) const {                                                                     	\
-		return  functor_t<OP_CLASS,THIS_T,Fr&&> (THIS_T(), FWD(Fr,fr));                           	\
+		/* This OP Fr */	      									\
+		template<class Arg2>	                                                                	\
+		eIF<IS_FR(Arg2), functor_t<OP_CLASS,THIS,Arg2&&>>							\
+	operator OP(Arg2&& fr);                                                                      	\
+														\
+		/* This OP T */                                                                                 \
+		template<class Arg2>                                   						\
+		eIF<!IS_FR(Arg2), functor_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
+	operator OP(Arg2&& x);	                                                                      	\
+
+
+#define  DEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)					       				\
+														\
+	/* This OP Fr */		       									\
+		TMPL												\
+		template<class Arg2>	                                                                	\
+		eIF<IS_FR(Arg2), functor_t<OP_CLASS,THIS,Arg2&&>>						\
+	THIS::operator OP(Arg2&& fr) {                                                                  	\
+		return  functor_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                        \
 	 }                                                                                                      \
 														\
-		/* Ph OP T */                                                                                   \
-		template<class U>                                   						\
-		eIF<!IS_FR(U), functor_t<OP_CLASS,THIS_T,var_t<U&&>>>                           		\
-	operator OP(U&& t) const {                                                                      	\
-		return  functor_t<OP_CLASS,THIS_T,var_t<U&&>> (THIS_T(), var_t<U&&>(FWD(U,t)));         	\
+														\
+	/* This OP T */                                                                                 	\
+		TMPL												\
+		template<class Arg2>                                   						\
+		eIF<!IS_FR(Arg2), functor_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
+	THIS::operator OP(Arg2&& x) {                                                                    	\
+		return  functor_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));   \
 	 }                                                                                                      \
 
 
-#define  DEF_LAMBDA_FUNCTOR2(OP,OP2,OP_CLASS) 		      							\
-                                                                                                                \
-		template<class Fr1, class Fr2>                                                                  \
-	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
-		typedef void is_lambda_functor;                                                                 \
-		explicit functor_t(Fr1&& fr1, Fr2&& fr2) :							\
-			ref_container <Fr1&&>(FWD(Fr1,fr1)),							\
-			ref_container2<Fr2&&>(FWD(Fr2,fr2))							\
-		{};                                                                                             \
-			/*  Arity==2 */                                                                         \
-			template<class Arg1, class Arg2>                                                        \
-			auto                                                                                    \
-		operator() (Arg1&& arg1, Arg2&& arg2) -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2) OP2 ) {      \
-			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
-				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)) OP2;          			\
-		}                                                                                               \
-                                                                                                                \
-			/*  Arity==1 */                                                                         \
-			template<class Arg>                                                                     \
-			auto                                                                                    \
-		operator() (Arg&& arg) 	\
-			-> eIF<!is_tuple_or_pair<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
-		}                                                                                               \
-                                                                                                                \
-			/*  Tuple    */                                                                         \
-			template<class Arg>                                                                     \
-			auto                                                                                    \
-		operator() (Arg&& arg) -> eIF<is_tuple_or_pair<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
-		}                                                                                               \
-														\
-		/*  MEMBER-ONLY OVERLOADS */                                                                   \
-		typedef 	 functor_t<OP_CLASS,Fr1,Fr2> 	this_t;						\
-		DEF_LAMBDA_MEMBER_OP2(=, assign_action,    this_t)                                                          \
-		DEF_LAMBDA_MEMBER_OP2([],subscript_action, this_t)                                                      \
-		/*DEF_LAMBDA_MEMBER_OP2((),call_action)*/                                                         \
-                                                                                                                \
-	 };                                                                                                     \
-	
 
-/*
-	class assign_action {};
-	class subscript_action {};
-	class call_action {};
-*/
+
+
+
+	/*
+		template<class Arg2>	                                                                	\
+		eIF<IS_FR(Arg2), functor_t<OP_CLASS,THIS,Arg2&&>>							\
+	THIS::operator OP(Arg2&& fr) {                                                                  	\
+		return  functor_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                           	\
+	 }                                                                                                      \
+														\
+														\
+		template<class Arg2>                                   						\
+		eIF<!IS_FR(Arg2), functor_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
+	THIS::operator OP(Arg2&& x) {                                                                    	\
+		return  functor_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));         	\
+	 }                                                                                                      \
+	 */
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////   PLACEHOLDER
 
 	template<int N>
@@ -122,14 +115,13 @@ struct  ph {
 	operator() (Arg1&& arg1, Arg2&& arg2) const { return FWD(Arg2,arg2); }
 
 
-	/////  MEMBER-ONLY OVERLOADS
-	DEF_LAMBDA_MEMBER_OP2(=,  assign_action,    ph<N>)
-	DEF_LAMBDA_MEMBER_OP2([], subscript_action, ph<N>)
-	//DEF_LAMBDA_MEMBER_OP2((),call_action)
-
-
 	///////  Convertion to std:placeholder::...
 	operator typename std::_Placeholder<N> const () const { return std::_Placeholder<N>(); }	// non portable(?)
+
+	/*  MEMBER-ONLY OVERLOADS */
+	typedef 	 ph<N>	self_type;
+	DECLARE_MEMBER_OP2(=, assign_action, self_type)
+	DECLARE_MEMBER_OP2([],subscript_action, self_type)
 
 };
 
@@ -156,10 +148,10 @@ struct  var_t : ref_container<T&&> {
 		template<class Arg1, class Arg2>
 	value_type operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(T,this->value); }
 
-	/////  MEMBER-ONLY OVERLOADS
-	DEF_LAMBDA_MEMBER_OP2(=,	assign_action, 		var_t<T>)
-	DEF_LAMBDA_MEMBER_OP2([],	subscript_action,	var_t<T>)
-	//DEF_LAMBDA_MEMBER_OP2((),call_action)
+	/*  MEMBER-ONLY OVERLOADS */
+	typedef 	 var_t<T>	self_type;
+	DECLARE_MEMBER_OP2(=, assign_action, self_type)
+	DECLARE_MEMBER_OP2([],subscript_action, self_type)
 
 };
 
@@ -182,10 +174,10 @@ struct  constant_t {
 		template<class Arg1, class Arg2>
 	const T& operator() (Arg1&& arg1, Arg2&& arg2) const { return value_cref; }
 
-	/////  MEMBER-ONLY OVERLOADS
-	DEF_LAMBDA_MEMBER_OP2(=,	assign_action, 		constant_t<T>)
-	DEF_LAMBDA_MEMBER_OP2([],	subscript_action,	constant_t<T>)
-	//DEF_LAMBDA_MEMBER_OP2((),call_action)
+	/*  MEMBER-ONLY OVERLOADS */
+	typedef 	 constant_t<T>	self_type;
+	DECLARE_MEMBER_OP2(=, assign_action, self_type)
+	DECLARE_MEMBER_OP2([],subscript_action, self_type)
 
 };
 
@@ -193,10 +185,50 @@ struct  constant_t {
 constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////   FUNCTOR_T
 
-////////////////////////////////////////////////////////////////////////////////////////////////////   UNARY
+#define  FUNCTOR2(OP,OP2,OP_CLASS) 		      							\
+                                                                                                                \
+		template<class Fr1, class Fr2>                                                                  \
+	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
+		typedef void is_lambda_functor;                                                                 \
+		explicit functor_t(Fr1&& fr1, Fr2&& fr2) :							\
+			ref_container <Fr1&&>(FWD(Fr1,fr1)),							\
+			ref_container2<Fr2&&>(FWD(Fr2,fr2))							\
+		{};                                                                                             \
+			/*  Arity==2 */                                                                         \
+			template<class Arg1, class Arg2>                                                        \
+			auto                                                                                    \
+		operator() (Arg1&& arg1, Arg2&& arg2) -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2) OP2 ) {      \
+			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
+				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)) OP2;          			\
+		}                                                                                               \
+                                                                                                                \
+			/*  Arity==1 */                                                                         \
+			template<class Arg>                                                                     \
+			auto                                                                                    \
+		operator() (Arg&& arg) 	\
+			-> eIF<!is_tuple_or_pair<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
+		}                                                                                               \
+                                                                                                                \
+			/*  Tuple    */                                                                         \
+			template<class Arg>                                                                     \
+			auto                                                                                    \
+		operator() (Arg&& arg) -> eIF<is_tuple_or_pair<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
+			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
+		}                                                                                               \
+														\
+		/*  MEMBER-ONLY OVERLOADS */                                                                   \
+		typedef 	 functor_t<OP_CLASS,Fr1,Fr2> 	self_type;						\
+		DECLARE_MEMBER_OP2(=, 	assign_action, self_type)                                                          \
+		DECLARE_MEMBER_OP2([],	subscript_action, self_type)                                                      \
+                                                                                                                \
+	 };                                                                                                     \
+	
 
-#define  DEF_LAMBDA_FUNCTOR1(OP,OP2,OP_CLASS) 		      							\
+
+#define  FUNCTOR1(OP,OP2,OP_CLASS) 		      							\
                                                                                                                 \
 		template<class Fr>                                                                              \
 	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
@@ -205,23 +237,29 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
 		template<class Arg>                                                                             \
 		auto operator() (Arg&& arg) -> decltype(OP arg OP2) { return  OP (this->value(FWD(Arg,arg))) OP2 ;} \
+														\
+		/*  MEMBER-ONLY OVERLOADS */                                                                   \
+		typedef 	 functor_t<OP_CLASS,Fr,void> 	self_type;						\
+		DECLARE_MEMBER_OP2(=, 	assign_action, self_type)                                                          \
+		DECLARE_MEMBER_OP2([],	subscript_action, self_type)                                                      \
+                                                                                                                \
 	 };
 
 
-	DEF_LAMBDA_FUNCTOR1(+,,plus1_action)
-	DEF_LAMBDA_FUNCTOR1(-,,minus1_action)
-	DEF_LAMBDA_FUNCTOR1(++,,increment_action)
-	DEF_LAMBDA_FUNCTOR1(--,,decrement_action)
-	DEF_LAMBDA_FUNCTOR1(,++,postfix_increment_action)
-	DEF_LAMBDA_FUNCTOR1(,--,postfix_decrement_action)
+	FUNCTOR1(+,,plus1_action)
+	FUNCTOR1(-,,minus1_action)
+	FUNCTOR1(++,,increment_action)
+	FUNCTOR1(--,,decrement_action)
+	FUNCTOR1(,++,postfix_increment_action)
+	FUNCTOR1(,--,postfix_decrement_action)
 
-	DEF_LAMBDA_FUNCTOR1(!,,not_action)
-	DEF_LAMBDA_FUNCTOR1(&,,addressof_action)
+	FUNCTOR1(!,,not_action)
+	FUNCTOR1(&,,addressof_action)
 
-	DEF_LAMBDA_FUNCTOR1(*,,contentsof_action) 		// TOFIX
+	FUNCTOR1(*,,contentsof_action) 		// TOFIX
 
 
-#define  DEF_LAMBDA_OP1(OP,OP_CLASS)				       	\
+#define  OP1(OP,OP_CLASS)				       	\
 									\
 		template<class Fr>					\
 		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>		\
@@ -229,7 +267,7 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));	\
 	 }
 
-#define  DEF_LAMBDA_POSTFIX_OP1(OP,OP_CLASS)				\
+#define  POSTFIX_OP1(OP,OP_CLASS)				\
 									\
 		template<class Fr>					\
 		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>		\
@@ -237,17 +275,17 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));	\
 	 }
 
-	DEF_LAMBDA_OP1(+,plus1_action)
-	DEF_LAMBDA_OP1(-,minus1_action)
-	DEF_LAMBDA_OP1(++,increment_action)
-	DEF_LAMBDA_OP1(--,decrement_action)
-	DEF_LAMBDA_POSTFIX_OP1(++,postfix_increment_action)
-	DEF_LAMBDA_POSTFIX_OP1(--,postfix_decrement_action)
+	OP1(+,plus1_action)
+	OP1(-,minus1_action)
+	OP1(++,increment_action)
+	OP1(--,decrement_action)
+	POSTFIX_OP1(++,postfix_increment_action)
+	POSTFIX_OP1(--,postfix_decrement_action)
 
-	DEF_LAMBDA_OP1(!,not_action)
-	DEF_LAMBDA_OP1(&,addressof_action)
+	OP1(!,not_action)
+	OP1(&,addressof_action)
 
-	DEF_LAMBDA_OP1(*,contentsof_action)
+	OP1(*,contentsof_action)
 
 
 
@@ -273,7 +311,7 @@ template<class Arg1>		struct  is_range_op<bitwise_or_action ,Arg1>	{ enum {value
 template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 	
 
-#define  DEF_LAMBDA_OP2(OP,OP_CLASS)										\
+#define  OP2(OP,OP_CLASS)										\
                                                                                                                 \
 		/*  Fr  OP  Fr  */											\
 		template<class Fr1, class Fr2>	                                                                \
@@ -296,45 +334,60 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
-	DEF_LAMBDA_FUNCTOR2(+,,plus_action)                	DEF_LAMBDA_OP2(+,plus_action)
-	DEF_LAMBDA_FUNCTOR2(-,,minus_action)               	DEF_LAMBDA_OP2(-,minus_action)
-	DEF_LAMBDA_FUNCTOR2(*,,multiply_action)            	DEF_LAMBDA_OP2(*,multiply_action)
-	DEF_LAMBDA_FUNCTOR2(/,,divide_action)              	DEF_LAMBDA_OP2(/,divide_action)
-	DEF_LAMBDA_FUNCTOR2(%,,remainder_action)           	DEF_LAMBDA_OP2(%,remainder_action)
+	FUNCTOR2(+,,plus_action)                	OP2(+,plus_action)
+	FUNCTOR2(-,,minus_action)               	OP2(-,minus_action)
+	FUNCTOR2(*,,multiply_action)            	OP2(*,multiply_action)
+	FUNCTOR2(/,,divide_action)              	OP2(/,divide_action)
+	FUNCTOR2(%,,remainder_action)           	OP2(%,remainder_action)
                                                           
-	DEF_LAMBDA_FUNCTOR2(+=,,plus_assign_action)        	DEF_LAMBDA_OP2(+=,plus_assign_action)
-	DEF_LAMBDA_FUNCTOR2(-=,,minus_assign_action)       	DEF_LAMBDA_OP2(-=,minus_assign_action)
-	DEF_LAMBDA_FUNCTOR2(*=,,multiply_assign_action)    	DEF_LAMBDA_OP2(*=,multiply_assign_action)
-	DEF_LAMBDA_FUNCTOR2(/=,,divide_assign_action)      	DEF_LAMBDA_OP2(/=,divide_assign_action)
-	DEF_LAMBDA_FUNCTOR2(%=,,remainder_assign_action)   	DEF_LAMBDA_OP2(%=,remainder_assign_action)
+	FUNCTOR2(+=,,plus_assign_action)        	OP2(+=,plus_assign_action)
+	FUNCTOR2(-=,,minus_assign_action)       	OP2(-=,minus_assign_action)
+	FUNCTOR2(*=,,multiply_assign_action)    	OP2(*=,multiply_assign_action)
+	FUNCTOR2(/=,,divide_assign_action)      	OP2(/=,divide_assign_action)
+	FUNCTOR2(%=,,remainder_assign_action)   	OP2(%=,remainder_assign_action)
 
 
-	DEF_LAMBDA_FUNCTOR2(<<,,leftshift_action)		DEF_LAMBDA_OP2(<<,leftshift_action)
-	DEF_LAMBDA_FUNCTOR2(>>,,rightshift_action)		DEF_LAMBDA_OP2(>>,rightshift_action)
-	DEF_LAMBDA_FUNCTOR2(^,,xor_action)			DEF_LAMBDA_OP2(^,xor_action)
+	FUNCTOR2(<<,,leftshift_action)			OP2(<<,leftshift_action)
+	FUNCTOR2(>>,,rightshift_action)			OP2(>>,rightshift_action)
+	FUNCTOR2(^,,xor_action)				OP2(^,xor_action)
 
-	DEF_LAMBDA_FUNCTOR2(<<=,,leftshift_assign_action)	DEF_LAMBDA_OP2(<<=,leftshift_assign_action)
-	DEF_LAMBDA_FUNCTOR2(>>=,,rightshift_assign_action)	DEF_LAMBDA_OP2(>>=,rightshift_assign_action)
-	DEF_LAMBDA_FUNCTOR2(^=,,xor_assign_action)		DEF_LAMBDA_OP2(^=,xor_assign_action)
+	FUNCTOR2(<<=,,leftshift_assign_action)		OP2(<<=,leftshift_assign_action)
+	FUNCTOR2(>>=,,rightshift_assign_action)		OP2(>>=,rightshift_assign_action)
+	FUNCTOR2(^=,,xor_assign_action)			OP2(^=,xor_assign_action)
 
-	DEF_LAMBDA_FUNCTOR2(||,,logical_or_action)    		DEF_LAMBDA_OP2(||,logical_or_action)
-	DEF_LAMBDA_FUNCTOR2(&&,,logical_and_action)	       	DEF_LAMBDA_OP2(&&,logical_and_action)
-	//DEF_LAMBDA_FUNCTOR2(||=,,logical_or_assign_action)    	DEF_LAMBDA_OP2(||=,logical_or_assign_action)
-	//DEF_LAMBDA_FUNCTOR2(&&=,,logical_and_assign_action)    	DEF_LAMBDA_OP2(&&=,logical_and_assign_action)
+	FUNCTOR2(||,,logical_or_action)    		OP2(||,logical_or_action)
+	FUNCTOR2(&&,,logical_and_action)	       	OP2(&&,logical_and_action)
+	//FUNCTOR2(||=,,logical_or_assign_action)    	OP2(||=,logical_or_assign_action)
+	//FUNCTOR2(&&=,,logical_and_assign_action)    	OP2(&&=,logical_and_assign_action)
 
-	DEF_LAMBDA_FUNCTOR2(|,,bitwise_or_action)    		DEF_LAMBDA_OP2(|,bitwise_or_action)
-	DEF_LAMBDA_FUNCTOR2(&,,bitwise_and_action)    		DEF_LAMBDA_OP2(&,bitwise_and_action)
-	DEF_LAMBDA_FUNCTOR2(|=,,bitwise_or_assign_action)    	DEF_LAMBDA_OP2(|=,bitwise_or_assign_action)
-	DEF_LAMBDA_FUNCTOR2(&=,,bitwise_and_assign_action)    	DEF_LAMBDA_OP2(&=,bitwise_and_assign_action)
+	FUNCTOR2(|,,bitwise_or_action)    		OP2(|,bitwise_or_action)
+	FUNCTOR2(&,,bitwise_and_action)    		OP2(&,bitwise_and_action)
+	FUNCTOR2(|=,,bitwise_or_assign_action)    	OP2(|=,bitwise_or_assign_action)
+	FUNCTOR2(&=,,bitwise_and_assign_action)    	OP2(&=,bitwise_and_assign_action)
 
 	// relational
-	DEF_LAMBDA_FUNCTOR2(<,,less_action)			DEF_LAMBDA_OP2(<,less_action)
-	DEF_LAMBDA_FUNCTOR2(>,,greater_action)			DEF_LAMBDA_OP2(>,greater_action)
-	DEF_LAMBDA_FUNCTOR2(<=,,lessorequal_action)		DEF_LAMBDA_OP2(<=,lessorequal_action)
-	DEF_LAMBDA_FUNCTOR2(>,,greaterorequal_action)		DEF_LAMBDA_OP2(>=,greaterorequal_action)
-	DEF_LAMBDA_FUNCTOR2(==,,equal_action)			DEF_LAMBDA_OP2(==,equal_action)
-	DEF_LAMBDA_FUNCTOR2(!=,,notequal_action)	       	DEF_LAMBDA_OP2(!=,notequal_action)
+	FUNCTOR2(<,,less_action)			OP2(<,less_action)
+	FUNCTOR2(>,,greater_action)			OP2(>,greater_action)
+	FUNCTOR2(<=,,lessorequal_action)		OP2(<=,lessorequal_action)
+	FUNCTOR2(>,,greaterorequal_action)		OP2(>=,greaterorequal_action)
+	FUNCTOR2(==,,equal_action)			OP2(==,equal_action)
+	FUNCTOR2(!=,,notequal_action)	       		OP2(!=,notequal_action)
 
+
+/////  MEMBER-ONLY OVERLOADS
+	DEFINE_MEMBER_OP2(=,	assign_action, 	    	template<class T>,	var_t<T>)
+	DEFINE_MEMBER_OP2([],	subscript_action,	template<class T>,	var_t<T>)
+
+	DEFINE_MEMBER_OP2(=,	assign_action, 		template<class T>,	constant_t<T>)
+	DEFINE_MEMBER_OP2([],	subscript_action,	template<class T>,	constant_t<T>)
+                                                                                
+	DEFINE_MEMBER_OP2(=,  	assign_action,    	template<int N>,	ph<N>)
+	DEFINE_MEMBER_OP2([], 	subscript_action, 	template<int N>,	ph<N>)
+
+	
+	//#define COMMA ,
+	//DEFINE_MEMBER_OP2(=,  	assign_action,    	template<class Fr1 COMMA class Fr2>,		functor_t<assign_action COMMA Fr1 COMMA Fr2>)
+	//DEFINE_MEMBER_OP2([], 	subscript_action, 	template<class Fr1 COMMA class Fr2>,		functor_t<assign_action COMMA Fr1 COMMA Fr2>)
 
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS

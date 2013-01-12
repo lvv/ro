@@ -780,6 +780,7 @@ MISC
 	SETS -- http://docs.python.org/2/library/sets.html#set-objects
 	operators owl -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
 	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
+	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
 
 
 RANGES
