@@ -78,8 +78,8 @@ scc 'v9 * var(1)'
 # <<
 scc -a1		'(_1 << 1)(v9)++'
 scc -a1		'(v9 << _1)(1)++'
-scc '(cout <<  _1)(1); (cout <<  _1)(v9);'
-# scc 'v9 * (cout << _1);'  TOFIX
+# scc '(cout <<  _1)(1); (cout <<  _1)(v9);'	# fix for clang
+# scc 'v9 * (cout << _1);'  TOFIX (empty output)
 
 # contentsof
 scc        	'*((+_1)(v9))'

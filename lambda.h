@@ -25,32 +25,29 @@
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////   OP CLASSES
 
-	/////  UNARY ------------------------------------
-
-	// artihmetic
 #define DEF_OP1_CLASS(PREFIX,POSTFIX,OP_CLASS)	       								\
 	struct  OP_CLASS{						                                        \
 			template <class Fr>                                                                     \
 			static auto                                                                             \
 		eval (Fr&& fr)                                                                                  \
-			-> decltype (PREFIX fr POSTFIX)  {                                                      \
-			return       PREFIX fr POSTFIX;                                                         \
+			-> decltype (PREFIX  FWD(Fr,fr)  POSTFIX)  {                                                      \
+			return       PREFIX  FWD(Fr,fr)  POSTFIX;                                                         \
 		};                                                                                              \
 	};
 
-
-	// artihmetic
 
 #define DEF_OP2_CLASS(INFIX,POSTFIX,OP_CLASS)	       								\
 	struct  OP_CLASS{                                                                                       \
 			template <class Fr1, class Fr2>                                                         \
 			static auto                                                                             \
 		eval (Fr1&& fr1, Fr2&& fr2)                                                                     \
-			-> decltype(fr1 INFIX fr2 POSTFIX) {                                                    \
-			return fr1 INFIX fr2 POSTFIX;                                                           \
+			-> decltype(FWD(Fr1,fr1)  INFIX  FWD(Fr2,fr2)  POSTFIX) {                                                    \
+			return      FWD(Fr1,fr1)  INFIX  FWD(Fr2,fr2)  POSTFIX;                                                           \
 		};                                                                                              \
 	};
 
+
+	/////  UNARY ------------------------------------
 
 	DEF_OP1_CLASS(+,,plus1_op)
 	DEF_OP1_CLASS(-,,minus1_op)
@@ -436,6 +433,24 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
 		return  fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
+
+       
+	/*
+	 * Attempt to fix: scc '(cout <<  _1)(vint{1});' for clang
+	 *
+		//  cout  <<  Fr
+		template<class Fr2>
+		eIF<IS_FR(Fr2), fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,Fr2&&>>
+	operator <<(std::basic_ostream<char>& os, Fr2&& fr2) {
+		return  fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,Fr2&&> (var(os), FWD(Fr2,fr2));
+	 }
+
+		//  cout  <<  _1
+		        fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,ph<1>>
+	operator <<(std::basic_ostream<char>& os, ph<1> ph1) {
+		return  fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,ph<1>> (var(os), FWD(ph<1>,ph1));
+	 }
+	*/
 
 	newOP2(+,plus_op)
        	newOP2(-,minus_op)
