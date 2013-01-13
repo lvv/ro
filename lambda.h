@@ -52,10 +52,9 @@
 		};                                                                                              \
 	};
 
-	DEF_OP2_CLASS(+,,plus_op)
 
 	DEF_OP1_CLASS(+,,plus1_op)
-	DEF_OP1_CLASS(-,, minus1_op)
+	DEF_OP1_CLASS(-,,minus1_op)
 	// increment/decrement
 	DEF_OP1_CLASS(++,,increment_op)
 	DEF_OP1_CLASS(--,,decrement_op)
@@ -73,55 +72,69 @@
 
 	/////  BINARY ------------------------------------
 	
-	// artihmetic
-	//class plus_op {};                    
-	class minus_op {};                   
-	class multiply_op {};                
-	class divide_op {};                  
-	class remainder_op {};               
+	DEF_OP2_CLASS(+,,plus_op)
+       	DEF_OP2_CLASS(-,,minus_op)
+       	DEF_OP2_CLASS(*,,multiply_op)
+       	DEF_OP2_CLASS(/,,divide_op)
+       	DEF_OP2_CLASS(%,,remainder_op)
 
-	class plus_assign_op {};     
-        class minus_assign_op {};    
-        class multiply_assign_op {}; 
-        class divide_assign_op {};   
-        class remainder_assign_op {};
+       	DEF_OP2_CLASS(+=,,plus_assign_op)
+       	DEF_OP2_CLASS(-=,,minus_assign_op)
+       	DEF_OP2_CLASS(*=,,multiply_assign_op)
+       	DEF_OP2_CLASS(/=,,divide_assign_op)
+       	DEF_OP2_CLASS(%=,,remainder_assign_op)
 
-	// bitwise
-	class leftshift_op {};                  
-	class rightshift_op {};                 
-	class xor_op {};                        
-	class bitwise_and_op {};              
-	class bitwise_or_op {};               
 
-        class leftshift_assign_op {};  
-        class rightshift_assign_op {}; 
-        class xor_assign_op {};        
-        class bitwise_and_assign_op {};
-        class bitwise_or_assign_op {}; 
+       	DEF_OP2_CLASS(<<,,leftshift_op)
+       	DEF_OP2_CLASS(>>,,rightshift_op)
+       	DEF_OP2_CLASS(^,,xor_op)
 
-	// logical
-	class logical_and_op {};              
-	class logical_or_op {};               
-	 //there are no logical assign
+       	DEF_OP2_CLASS(<<=,,leftshift_assign_op)
+       	DEF_OP2_CLASS(>>=,,rightshift_assign_op)
+       	DEF_OP2_CLASS(^=,,xor_assign_op)
 
-	//  relational
-	class less_op {};                     
-	class greater_op {};                  
-	class equal_op {};
-	class notequal_op {};
-        class lessorequal_op {};   
-        class greaterorequal_op {};
+       	DEF_OP2_CLASS(||,,logical_or_op)
+       	DEF_OP2_CLASS(&&,,logical_and_op)
+
+       	DEF_OP2_CLASS(|,,bitwise_or_op)
+       	DEF_OP2_CLASS(&,,bitwise_and_op)
+       	DEF_OP2_CLASS(|=,,bitwise_or_assign_op)
+       	DEF_OP2_CLASS(&=,,bitwise_and_assign_op)
+
+
+       	DEF_OP2_CLASS(<,,less_op)
+       	DEF_OP2_CLASS(>,,greater_op)
+       	DEF_OP2_CLASS(<=,,lessorequal_op)
+       	DEF_OP2_CLASS(>=,,greaterorequal_op)
+       	DEF_OP2_CLASS(==,,equal_op)
+       	DEF_OP2_CLASS(!=,,notequal_op)
                                        
 
-	/////  MEMBERS ONLY -----------------------------------------
-
-	class assign_op {};
-	class subscript_op {};
-	class call_op {};
+	//  MEMBERS ONLY -----------------------------------------
+	DEF_OP2_CLASS(=,,assign_op)
+	DEF_OP2_CLASS([,],subscript_op)
+	//DEF_OP2_CLASS( TODO call_op)
 
 /////////////////////////////////////////////////////////////////////////////////////////   MEMBER OP MACRO
 
 #define  newDECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
+														\
+		/* This OP Fr */	      									\
+		template<class Arg2>	                                                                	\
+		eIF<IS_FR(Arg2), fr2_t<OP_CLASS,THIS,Arg2&&>>							\
+	operator OP(Arg2&& fr) {                                                                                \
+		return  fr2_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                        	\
+	 }                                                                                                      \
+														\
+		/* This OP T */                                                                                 \
+		template<class Arg2>                                   						\
+		eIF<!IS_FR(Arg2), fr2_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
+        operator OP(Arg2&& x) {	                                                                      		\
+		return  fr2_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));   	\
+	 }                                                                                                      \
+
+
+#define  old_newDECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
 														\
 		/* This OP Fr */	      									\
 		template<class Arg2>	                                                                	\
@@ -134,7 +147,8 @@
 	operator OP(Arg2&& x);	                                                                      	\
 
 
-#define  newDEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)					       				\
+#define  newDEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)	 
+#define  XXXnewDEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)					       				\
 														\
 	/* This OP Fr */		       									\
 		TMPL												\
@@ -226,8 +240,8 @@
 
 		/*  MEMBER-ONLY OVERLOADS */
 		typedef 	 fr2_t<Op,Fr1,Fr2> 	self_type;
-		newDECLARE_MEMBER_OP2(=, 	assign_action, self_type)
-		newDECLARE_MEMBER_OP2([],	subscript_action, self_type)
+		newDECLARE_MEMBER_OP2(=, 	assign_op, self_type)
+		newDECLARE_MEMBER_OP2([],	subscript_op, self_type)
 
 	 };
 	
@@ -503,17 +517,16 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	 }
 
 	newOP1(+,plus1_op)
-	//OP1(+,plus1_action)
-	OP1(-,minus1_action)
-	OP1(++,increment_action)
-	OP1(--,decrement_action)
-	POSTFIX_OP1(++,postfix_increment_action)
-	POSTFIX_OP1(--,postfix_decrement_action)
+	newOP1(-,minus1_op)
+	newOP1(++,increment_op)
+	newOP1(--,decrement_op)
+	newPOSTFIX_OP1(++,postfix_increment_op)
+	newPOSTFIX_OP1(--,postfix_decrement_op)
 
-	OP1(!,not_action)
-	OP1(&,addressof_action)
-
-	OP1(*,contentsof_action)
+	newOP1(!,logical_not_op)
+	newOP1(~,bitwise_not_op)
+	newOP1(&,addressof_op)
+	newOP1(*,contentsof_op)
 
 
 
@@ -534,9 +547,9 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 //      !	||	λ	=> 	λ
 
 template<class Op, class Arg1>	struct  is_range_op   			        { enum {value=false}; };
-template<class Arg1>		struct  is_range_op<logical_or_action ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
-template<class Arg1>		struct  is_range_op<bitwise_or_action ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
-template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
+template<class Arg1>		struct  is_range_op<logical_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
+template<class Arg1>		struct  is_range_op<bitwise_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
+template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 	
 
 #define  newOP2(OP,OP_CLASS)										\
@@ -562,116 +575,55 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 		return  fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
-#define  OP2(OP,OP_CLASS)										\
-                                                                                                                \
-		/*  Fr  OP  Fr  */											\
-		template<class Fr1, class Fr2>	                                                                \
-		eIF<AND<IS_FR(Fr1), IS_FR(Fr2)>::value, functor_t<OP_CLASS,Fr1&&,Fr2&&>>					\
-	operator OP(Fr1&& fr1, Fr2&& fr2) {                                                                     \
-		return  functor_t<OP_CLASS,Fr1&&,Fr2&&> (FWD(Fr1,fr1), FWD(Fr2,fr2));                           \
-	 }                                                                                                      \
-                                                                                                                \
-		/*  Fr  OP  T  */                                                                                   \
-		template<class Fr1, class T2>                                   				\
-		eIF<AND<IS_FR(Fr1), !IS_FR(T2)>::value, functor_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
-	operator OP(Fr1&& fr1, T2&& t2) {                                                                      	\
-		return  functor_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
-	 }                                                                                                      \
-                                                                                                                \
-		/*  T  OP  Fr  */											\
-		template<class T1, class Fr2>									\
-		eIF<AND<!IS_FR(T1), IS_FR(Fr2), !is_range_op<OP_CLASS,T1>::value>::value, functor_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
-	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
-		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
-	 }
-
 	newOP2(+,plus_op)
-       	newOP2(-,minus_action)
-       	newOP2(*,multiply_action)
-       	newOP2(/,divide_action)
-       	newOP2(%,remainder_action)
+       	newOP2(-,minus_op)
+       	newOP2(*,multiply_op)
+       	newOP2(/,divide_op)
+       	newOP2(%,remainder_op)
 
-       	newOP2(+=,plus_assign_action)
-       	newOP2(-=,minus_assign_action)
-       	newOP2(*=,multiply_assign_action)
-       	newOP2(/=,divide_assign_action)
-       	newOP2(%=,remainder_assign_action)
-
-
-       	newOP2(<<,leftshift_action)
-       	newOP2(>>,rightshift_action)
-       	newOP2(^,xor_action)
-
-       	newOP2(<<=,leftshift_assign_action)
-       	newOP2(>>=,rightshift_assign_action)
-       	newOP2(^=,xor_assign_action)
-
-       	newOP2(||,logical_or_action)
-       	newOP2(&&,logical_and_action)
-
-       	newOP2(|,bitwise_or_action)
-       	newOP2(&,bitwise_and_action)
-       	newOP2(|=,bitwise_or_assign_action)
-       	newOP2(&=,bitwise_and_assign_action)
+       	newOP2(+=,plus_assign_op)
+       	newOP2(-=,minus_assign_op)
+       	newOP2(*=,multiply_assign_op)
+       	newOP2(/=,divide_assign_op)
+       	newOP2(%=,remainder_assign_op)
 
 
-       	newOP2(<,less_action)
-       	newOP2(>,greater_action)
-       	newOP2(<=,lessorequal_action)
-       	newOP2(>=,greaterorequal_action)
-       	newOP2(==,equal_action)
-       	newOP2(!=,notequal_action)
+       	newOP2(<<,leftshift_op)
+       	newOP2(>>,rightshift_op)
+       	newOP2(^,xor_op)
+
+       	newOP2(<<=,leftshift_assign_op)
+       	newOP2(>>=,rightshift_assign_op)
+       	newOP2(^=,xor_assign_op)
+
+       	newOP2(||,logical_or_op)
+       	newOP2(&&,logical_and_op)
+
+       	newOP2(|,bitwise_or_op)
+       	newOP2(&,bitwise_and_op)
+       	newOP2(|=,bitwise_or_assign_op)
+       	newOP2(&=,bitwise_and_assign_op)
 
 
-	/*
-	FUNCTOR2(+,,plus_action)                	OP2(+,plus_action)
-	FUNCTOR2(-,,minus_action)               	OP2(-,minus_action)
-	FUNCTOR2(*,,multiply_action)            	OP2(*,multiply_action)
-	FUNCTOR2(/,,divide_action)              	OP2(/,divide_action)
-	FUNCTOR2(%,,remainder_action)           	OP2(%,remainder_action)
-                                                          
-	FUNCTOR2(+=,,plus_assign_action)        	OP2(+=,plus_assign_action)
-	FUNCTOR2(-=,,minus_assign_action)       	OP2(-=,minus_assign_action)
-	FUNCTOR2(*=,,multiply_assign_action)    	OP2(*=,multiply_assign_action)
-	FUNCTOR2(/=,,divide_assign_action)      	OP2(/=,divide_assign_action)
-	FUNCTOR2(%=,,remainder_assign_action)   	OP2(%=,remainder_assign_action)
+       	newOP2(<,less_op)
+       	newOP2(>,greater_op)
+       	newOP2(<=,lessorequal_op)
+       	newOP2(>=,greaterorequal_op)
+       	newOP2(==,equal_op)
+       	newOP2(!=,notequal_op)
 
 
-	FUNCTOR2(<<,,leftshift_action)			OP2(<<,leftshift_action)
-	FUNCTOR2(>>,,rightshift_action)			OP2(>>,rightshift_action)
-	FUNCTOR2(^,,xor_action)				OP2(^,xor_action)
-
-	FUNCTOR2(<<=,,leftshift_assign_action)		OP2(<<=,leftshift_assign_action)
-	FUNCTOR2(>>=,,rightshift_assign_action)		OP2(>>=,rightshift_assign_action)
-	FUNCTOR2(^=,,xor_assign_action)			OP2(^=,xor_assign_action)
-
-	FUNCTOR2(||,,logical_or_action)    		OP2(||,logical_or_action)
-	FUNCTOR2(&&,,logical_and_action)	       	OP2(&&,logical_and_action)
-
-	FUNCTOR2(|,,bitwise_or_action)    		OP2(|,bitwise_or_action)
-	FUNCTOR2(&,,bitwise_and_action)    		OP2(&,bitwise_and_action)
-	FUNCTOR2(|=,,bitwise_or_assign_action)    	OP2(|=,bitwise_or_assign_action)
-	FUNCTOR2(&=,,bitwise_and_assign_action)    	OP2(&=,bitwise_and_assign_action)
-
-	// relational
-	FUNCTOR2(<,,less_action)			OP2(<,less_action)
-	FUNCTOR2(>,,greater_action)			OP2(>,greater_action)
-	FUNCTOR2(<=,,lessorequal_action)		OP2(<=,lessorequal_action)
-	FUNCTOR2(>,,greaterorequal_action)		OP2(>=,greaterorequal_action)
-	FUNCTOR2(==,,equal_action)			OP2(==,equal_action)
-	FUNCTOR2(!=,,notequal_action)	       		OP2(!=,notequal_action)
-	*/
 
 
 /////  MEMBER-ONLY OVERLOADS
-	DEFINE_MEMBER_OP2(=,	assign_action, 	    	template<class T>,	var_t<T>)
-	DEFINE_MEMBER_OP2([],	subscript_action,	template<class T>,	var_t<T>)
+	newDEFINE_MEMBER_OP2(=,		assign_op,     	template<class T>,	var_t<T>)
+	newDEFINE_MEMBER_OP2([],	subscript_op,	template<class T>,	var_t<T>)
 
-	DEFINE_MEMBER_OP2(=,	assign_action, 		template<class T>,	constant_t<T>)
-	DEFINE_MEMBER_OP2([],	subscript_action,	template<class T>,	constant_t<T>)
+	newDEFINE_MEMBER_OP2(=,	assign_op, 		template<class T>,	constant_t<T>)
+	newDEFINE_MEMBER_OP2([],	subscript_op,	template<class T>,	constant_t<T>)
                                                                                 
-	DEFINE_MEMBER_OP2(=,  	assign_action,    	template<int N>,	ph<N>)
-	DEFINE_MEMBER_OP2([], 	subscript_action, 	template<int N>,	ph<N>)
+	newDEFINE_MEMBER_OP2(=,  	assign_op,    	template<int N>,	ph<N>)
+	newDEFINE_MEMBER_OP2([], 	subscript_op, 	template<int N>,	ph<N>)
 
 	
 	//#define COMMA ,
