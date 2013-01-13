@@ -41,7 +41,6 @@
 
 
 	// artihmetic
-	DEF_OP1_CLASS(+,,plus1_op)
 
 #define DEF_OP2_CLASS(INFIX,POSTFIX,OP_CLASS)	       								\
 	struct  OP_CLASS{                                                                                       \
@@ -55,24 +54,22 @@
 
 	DEF_OP2_CLASS(+,,plus_op)
 
-	//class plus1_op {};
-	class minus1_op {};
-
+	DEF_OP1_CLASS(+,,plus1_op)
+	DEF_OP1_CLASS(-,, minus1_op)
 	// increment/decrement
-	class increment_op {};               
-	class decrement_op {};               
-
-	class postfix_increment_op {};
-	class postfix_decrement_op {};
-
-	// bitwise/logical
-	class not_op {};
+	DEF_OP1_CLASS(++,,increment_op)
+	DEF_OP1_CLASS(--,,decrement_op)
+	DEF_OP1_CLASS(,++,postfix_increment_op)
+	DEF_OP1_CLASS(,--,postfix_decrement_op)
+	DEF_OP1_CLASS(!,,logical_not_op)
+	DEF_OP1_CLASS(~,,bitwise_not_op)
+	DEF_OP1_CLASS(&,,addressof_op)
+	DEF_OP1_CLASS(*,,contentsof_op)
 
 	// other
-	class addressof_op {};
-	class contentsof_op {};
-  	class comma_op {}; // boost special
-	class member_pointer_op {}; // boost special
+	// TODO
+  	//class comma_op {}; // boost special
+	//class member_pointer_op {}; // boost special
 
 	/////  BINARY ------------------------------------
 	
