@@ -216,8 +216,8 @@ struct  basic_range : ref_container<Rg&&> {
 
 	template<class Fr2, class U=Rg>  auto  operator[] (Fr2&& fr2)           
 			-> eIF<is_lambda_functor<Fr2>::value,
-			fr2_t<subscript_action,var_t<self_type&&>,Fr2&&>>  {
-		return	fr2_t<subscript_action,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
+			fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>>  {
+		return	fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
 	}
  };
 
@@ -270,7 +270,7 @@ operator ||       (Rg&& rg, identity<std::function<T(const T&, const T&)>> f )  
 	return  std::accumulate(i, endz(rg), init, f);
  }
 
-	template< class Rg, class F, class T = rg_elem_type<Rg>, class R = T > 
+	template< class Rg, class F, class T = rm_qualifier<rg_elem_type<Rg>>, class R = T > 
 	eIF <is_range<Rg>::value  &&  is_fold_functor<F>::value, R>	// overload for: fold-functor
 operator ||       (Rg&& rg, F f )    {
 	return  std::accumulate(std::begin(rg), endz(rg), f.fold_init_value(T()), f);
