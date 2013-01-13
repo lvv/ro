@@ -570,6 +570,8 @@ template<class T>	struct  ref_container2<T&&>  {
 	class decrement_action {};              class postfix_decrement_action {}; 
 
 
+
+
 	// bitwise/logical
 	class not_action {};
 

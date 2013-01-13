@@ -18,12 +18,209 @@
 
 
 	template<class Op, class Fr1, class Fr2> 	struct  functor_t;
+	template<class Op, class Fr1, class Fr2> 	struct  fr2_t;
+	template<class Op, class Fr> 			struct  fr1_t;
 	template<class T> 				struct  var_t;
 	template<class T> 				struct  constant_t;
 
 		
-/////////////////////////////////////////////////////////////////////////////////////////   DEF_FUNCTOR2
+/////////////////////////////////////////////////////////////////////////////////////////////////   OP CLASSES
 
+	/////  UNARY ------------------------------------
+
+	// artihmetic
+	struct  plus1_op{
+		template <class Fr>
+		static auto eval (Fr&& fr) -> decltype(+fr) { return +fr; };
+	};
+
+	struct  plus_op{
+		template <class Fr1, class Fr2>
+		static auto eval (Fr1&& fr1, Fr2&& fr2) -> decltype(fr1+fr2) { return fr1+fr2; };
+	};
+
+	//class plus1_op {};
+	class minus1_op {};
+
+	// increment/decrement
+	class increment_op {};               
+	class decrement_op {};               
+
+	class postfix_increment_op {};
+	class postfix_decrement_op {};
+
+	// bitwise/logical
+	class not_op {};
+
+	// other
+	class addressof_op {};
+	class contentsof_op {};
+  	class comma_op {}; // boost special
+	class member_pointer_op {}; // boost special
+
+	/////  BINARY ------------------------------------
+	
+	// artihmetic
+	//class plus_op {};                    
+	class minus_op {};                   
+	class multiply_op {};                
+	class divide_op {};                  
+	class remainder_op {};               
+
+	class plus_assign_op {};     
+        class minus_assign_op {};    
+        class multiply_assign_op {}; 
+        class divide_assign_op {};   
+        class remainder_assign_op {};
+
+	// bitwise
+	class leftshift_op {};                  
+	class rightshift_op {};                 
+	class xor_op {};                        
+	class bitwise_and_op {};              
+	class bitwise_or_op {};               
+
+        class leftshift_assign_op {};  
+        class rightshift_assign_op {}; 
+        class xor_assign_op {};        
+        class bitwise_and_assign_op {};
+        class bitwise_or_assign_op {}; 
+
+	// logical
+	class logical_and_op {};              
+	class logical_or_op {};               
+	 //there are no logical assign
+
+	//  relational
+	class less_op {};                     
+	class greater_op {};                  
+	class equal_op {};
+	class notequal_op {};
+        class lessorequal_op {};   
+        class greaterorequal_op {};
+                                       
+
+	/////  MEMBERS ONLY -----------------------------------------
+
+	class assign_op {};
+	class subscript_op {};
+	class call_op {};
+
+/////////////////////////////////////////////////////////////////////////////////////////   MEMBER OP MACRO
+
+#define  newDECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
+														\
+		/* This OP Fr */	      									\
+		template<class Arg2>	                                                                	\
+		eIF<IS_FR(Arg2), fr2_t<OP_CLASS,THIS,Arg2&&>>							\
+	operator OP(Arg2&& fr);                                                                      	\
+														\
+		/* This OP T */                                                                                 \
+		template<class Arg2>                                   						\
+		eIF<!IS_FR(Arg2), fr2_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
+	operator OP(Arg2&& x);	                                                                      	\
+
+
+#define  newDEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)					       				\
+														\
+	/* This OP Fr */		       									\
+		TMPL												\
+		template<class Arg2>	                                                                	\
+		eIF<IS_FR(Arg2), fr2_t<OP_CLASS,THIS,Arg2&&>>						\
+	THIS::operator OP(Arg2&& fr) {                                                                  	\
+		return  fr2_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                        \
+	 }                                                                                                      \
+														\
+														\
+	/* This OP T */                                                                                 	\
+		TMPL												\
+		template<class Arg2>                                   						\
+		eIF<!IS_FR(Arg2), fr2_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
+	THIS::operator OP(Arg2&& x) {                                                                    	\
+		return  fr2_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));   \
+	 }                                                                                                      \
+
+	/////////////////////////////////////////////////////////////////////////////////////////  FR_T
+
+		template<class Op, class Fr>
+	struct  fr1_t  : ref_container<Fr&&> {
+		typedef void is_lambda_functor;
+		explicit fr1_t(Fr&& fr) :
+			ref_container <Fr&&>(FWD(Fr,fr))
+		{};
+			/*  Arity==2 */
+			template<class Arg1, class Arg2>
+			auto
+		operator() (Arg1&& arg1, Arg2&& arg2)
+			-> decltype(Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)))) {
+			return      Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)));
+		}
+
+			/*  Arity==1 */
+			template<class Arg>
+			auto
+		operator() (Arg&& arg)
+			-> eIF<!is_tuple_or_pair<Arg&&>::value,
+			decltype(Op::eval(this->value (FWD(Arg,arg))))> {
+			return   Op::eval(this->value (FWD(Arg,arg))) ;
+		}
+
+			/*  Tuple    */
+			template<class Arg>
+			auto
+		operator() (Arg&& arg)
+			-> eIF<is_tuple_or_pair<Arg&&>::value,
+			decltype(Op::eval(this->value(FWD(Arg,arg))))> {
+			return   Op::eval(this->value(FWD(Arg,arg)));
+		}
+
+	 };
+	
+
+                                                                                 
+		template<class Op, class Fr1, class Fr2>
+	struct  fr2_t : ref_container<Fr1&&>, ref_container2<Fr2&&> {
+		typedef void is_lambda_functor;
+		explicit fr2_t(Fr1&& fr1, Fr2&& fr2) :
+			ref_container <Fr1&&>(FWD(Fr1,fr1)),
+			ref_container2<Fr2&&>(FWD(Fr2,fr2))
+		{};
+			/*  Arity==2 */
+			template<class Arg1, class Arg2>
+			auto
+		operator() (Arg1&& arg1, Arg2&& arg2)
+			-> decltype(Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)), this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)))) {
+			return      Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)), this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)));
+		}
+
+			/*  Arity==1 */
+			template<class Arg>
+			auto
+		operator() (Arg&& arg)
+			-> eIF<!is_tuple_or_pair<Arg&&>::value,
+			decltype(Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))))> {
+			return   Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))) ;
+		}
+
+			/*  Tuple    */
+			template<class Arg>
+			auto
+		operator() (Arg&& arg)
+			-> eIF<is_tuple_or_pair<Arg&&>::value,
+			decltype(Op::eval(this->value(FWD(Arg,arg)),this->value2(FWD(Arg,arg))))> {
+			return   Op::eval(this->value(FWD(Arg,arg)),this->value2(FWD(Arg,arg)));
+		}
+
+		/*  MEMBER-ONLY OVERLOADS */
+		typedef 	 fr2_t<Op,Fr1,Fr2> 	self_type;
+		newDECLARE_MEMBER_OP2(=, 	assign_action, self_type)
+		newDECLARE_MEMBER_OP2([],	subscript_action, self_type)
+
+	 };
+	
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define  DECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
 														\
 		/* This OP Fr */	      									\
@@ -259,6 +456,23 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	FUNCTOR1(*,,contentsof_action) 		// TOFIX
 
 
+#define  newOP1(OP,OP_CLASS)				       	\
+									\
+		template<class Fr>					\
+		eIF<IS_FR(Fr), fr1_t<OP_CLASS,Fr&&>>		\
+	operator OP(Fr&& fr) {						\
+		return  fr1_t<OP_CLASS,Fr&&>(FWD(Fr,fr));	\
+	 }
+
+#define  newPOSTFIX_OP1(OP,OP_CLASS)				\
+									\
+		template<class Fr>					\
+		eIF<IS_FR(Fr), fr1_t<OP_CLASS,Fr&&>>		\
+	operator OP(Fr&& fr,int) {					\
+		return  fr1_t<OP_CLASS,Fr&&>(FWD(Fr,fr));	\
+	 }
+
+
 #define  OP1(OP,OP_CLASS)				       	\
 									\
 		template<class Fr>					\
@@ -275,7 +489,8 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));	\
 	 }
 
-	OP1(+,plus1_action)
+	newOP1(+,plus1_op)
+	//OP1(+,plus1_action)
 	OP1(-,minus1_action)
 	OP1(++,increment_action)
 	OP1(--,decrement_action)
@@ -311,6 +526,29 @@ template<class Arg1>		struct  is_range_op<bitwise_or_action ,Arg1>	{ enum {value
 template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 	
 
+#define  newOP2(OP,OP_CLASS)										\
+                                                                                                                \
+		/*  Fr  OP  Fr  */											\
+		template<class Fr1, class Fr2>	                                                                \
+		eIF<AND<IS_FR(Fr1), IS_FR(Fr2)>::value, fr2_t<OP_CLASS,Fr1&&,Fr2&&>>					\
+	operator OP(Fr1&& fr1, Fr2&& fr2) {                                                                     \
+		return  fr2_t<OP_CLASS,Fr1&&,Fr2&&> (FWD(Fr1,fr1), FWD(Fr2,fr2));                           \
+	 }                                                                                                      \
+                                                                                                                \
+		/*  Fr  OP  T  */                                                                                   \
+		template<class Fr1, class T2>                                   				\
+		eIF<AND<IS_FR(Fr1), !IS_FR(T2)>::value, fr2_t<OP_CLASS,Fr1&&,var_t<T2&&>>>                           	\
+	operator OP(Fr1&& fr1, T2&& t2) {                                                                      	\
+		return  fr2_t<OP_CLASS,Fr1&&,var_t<T2&&>> (FWD(Fr1,fr1), var_t<T2&&>(FWD(T2,t2)));         	\
+	 }                                                                                                      \
+                                                                                                                \
+		/*  T  OP  Fr  */											\
+		template<class T1, class Fr2>									\
+		eIF<AND<!IS_FR(T1), IS_FR(Fr2), !is_range_op<OP_CLASS,T1>::value>::value, fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
+		return  fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
+	 }
+
 #define  OP2(OP,OP_CLASS)										\
                                                                                                                 \
 		/*  Fr  OP  Fr  */											\
@@ -334,7 +572,8 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
-	FUNCTOR2(+,,plus_action)                	OP2(+,plus_action)
+	                                        	newOP2(+,plus_op)
+	//FUNCTOR2(+,,plus_action)                	OP2(+,plus_action)
 	FUNCTOR2(-,,minus_action)               	OP2(-,minus_action)
 	FUNCTOR2(*,,multiply_action)            	OP2(*,multiply_action)
 	FUNCTOR2(/,,divide_action)              	OP2(/,divide_action)

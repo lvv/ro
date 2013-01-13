@@ -54,10 +54,8 @@ scc -a1		'(0 <= _1 &&  _1 < 2  && 1 == _1  && _1 != 2) (1)'
 scc -a1		'range(9)[1]'
 scc -a1		'(_1[1])(v9) * (_1[1])(vint{0,1,2})'
 scc -a1 	'_1[1](range(9))'
-
 # scc '(v9[_1])(1)'			# not fixable:  error: no viable overloaded operator[] for type 'std::vector<int>'
 scc -a1		'(range(v9)[_1])(1)'
-
 # scc 		'range(9) * v9[_1]'  	# not fixable
 scc -a1 	'range(9) * range(v9)[_1]'
 
