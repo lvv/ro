@@ -82,9 +82,9 @@ scc -a1		'(v9 << _1)(1)++'
 # scc 'v9 * (cout << _1);'  TOFIX (empty output)
 
 # contentsof
-scc        	'*((+_1)(v9))'
-scc        	' ((*_1)(+v9))'
-# scc 	' ((*+_1)(v9))'						# TOFIX
+scc -a0       	'*((+_1)(v9))'
+scc -a0       	' ((*_1)(+v9))'
+scc -a0		' ((*+_1)(v9))'
 # scc 'int i=1;  int *p=&i;  int **pp=&p;  (**_1)(pp)'		# TOFIX
 
 #scc 'vector<int*> va; v9 * (va << &_1); __ size(va); for(auto p:va) _ *p; '
