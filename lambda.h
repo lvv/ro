@@ -17,7 +17,6 @@
 	template<bool A, bool B, bool C=true, bool D=true>  struct  AND  { enum { value = A && B && C && D }; };
 
 
-	template<class Op, class Fr1, class Fr2> 	struct  functor_t;
 	template<class Op, class Fr1, class Fr2> 	struct  fr2_t;
 	template<class Op, class Fr> 			struct  fr1_t;
 	template<class T> 				struct  var_t;
@@ -200,6 +199,9 @@
 			decltype(Op::eval(this->value(FWD(Arg,arg))))> {
 			return   Op::eval(this->value(FWD(Arg,arg)));
 		}
+		typedef 	 fr1_t<Op,Fr> 	self_type;
+		newDECLARE_MEMBER_OP2(=, 	assign_op, self_type)
+		newDECLARE_MEMBER_OP2([],	subscript_op, self_type)
 
 	 };
 	
@@ -247,59 +249,6 @@
 	
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define  DECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
-														\
-		/* This OP Fr */	      									\
-		template<class Arg2>	                                                                	\
-		eIF<IS_FR(Arg2), functor_t<OP_CLASS,THIS,Arg2&&>>							\
-	operator OP(Arg2&& fr);                                                                      	\
-														\
-		/* This OP T */                                                                                 \
-		template<class Arg2>                                   						\
-		eIF<!IS_FR(Arg2), functor_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
-	operator OP(Arg2&& x);	                                                                      	\
-
-
-#define  DEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)					       				\
-														\
-	/* This OP Fr */		       									\
-		TMPL												\
-		template<class Arg2>	                                                                	\
-		eIF<IS_FR(Arg2), functor_t<OP_CLASS,THIS,Arg2&&>>						\
-	THIS::operator OP(Arg2&& fr) {                                                                  	\
-		return  functor_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                        \
-	 }                                                                                                      \
-														\
-														\
-	/* This OP T */                                                                                 	\
-		TMPL												\
-		template<class Arg2>                                   						\
-		eIF<!IS_FR(Arg2), functor_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
-	THIS::operator OP(Arg2&& x) {                                                                    	\
-		return  functor_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));   \
-	 }                                                                                                      \
-
-
-
-
-
-
-	/*
-		template<class Arg2>	                                                                	\
-		eIF<IS_FR(Arg2), functor_t<OP_CLASS,THIS,Arg2&&>>							\
-	THIS::operator OP(Arg2&& fr) {                                                                  	\
-		return  functor_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                           	\
-	 }                                                                                                      \
-														\
-														\
-		template<class Arg2>                                   						\
-		eIF<!IS_FR(Arg2), functor_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
-	THIS::operator OP(Arg2&& x) {                                                                    	\
-		return  functor_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));         	\
-	 }                                                                                                      \
-	 */
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   PLACEHOLDER
@@ -344,8 +293,8 @@ struct  ph {
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 ph<N>	self_type;
-	DECLARE_MEMBER_OP2(=, assign_action, self_type)
-	DECLARE_MEMBER_OP2([],subscript_action, self_type)
+	newDECLARE_MEMBER_OP2(=, assign_op, self_type)
+	newDECLARE_MEMBER_OP2([],subscript_op, self_type)
 
 };
 
@@ -374,8 +323,8 @@ struct  var_t : ref_container<T&&> {
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 var_t<T>	self_type;
-	DECLARE_MEMBER_OP2(=, assign_action, self_type)
-	DECLARE_MEMBER_OP2([],subscript_action, self_type)
+	newDECLARE_MEMBER_OP2(=, assign_op, self_type)
+	newDECLARE_MEMBER_OP2([],subscript_op, self_type)
 
 };
 
@@ -400,8 +349,8 @@ struct  constant_t {
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 constant_t<T>	self_type;
-	DECLARE_MEMBER_OP2(=, assign_action, self_type)
-	DECLARE_MEMBER_OP2([],subscript_action, self_type)
+	newDECLARE_MEMBER_OP2(=, assign_op, self_type)
+	newDECLARE_MEMBER_OP2([],subscript_op, self_type)
 
 };
 
@@ -410,78 +359,6 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////   FUNCTOR_T
-
-#define  FUNCTOR2(OP,OP2,OP_CLASS) 		      							\
-                                                                                                                \
-		template<class Fr1, class Fr2>                                                                  \
-	struct  functor_t <OP_CLASS,Fr1,Fr2> : ref_container<Fr1&&>, ref_container2<Fr2&&> {                    \
-		typedef void is_lambda_functor;                                                                 \
-		explicit functor_t(Fr1&& fr1, Fr2&& fr2) :							\
-			ref_container <Fr1&&>(FWD(Fr1,fr1)),							\
-			ref_container2<Fr2&&>(FWD(Fr2,fr2))							\
-		{};                                                                                             \
-			/*  Arity==2 */                                                                         \
-			template<class Arg1, class Arg2>                                                        \
-			auto                                                                                    \
-		operator() (Arg1&& arg1, Arg2&& arg2) -> decltype(FWD(Arg1,arg1) OP FWD(Arg2,arg2) OP2 ) {      \
-			return      this->value (FWD(Arg1,arg1),FWD(Arg2,arg2))     	   			\
-				OP  this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)) OP2;          			\
-		}                                                                                               \
-                                                                                                                \
-			/*  Arity==1 */                                                                         \
-			template<class Arg>                                                                     \
-			auto                                                                                    \
-		operator() (Arg&& arg) 	\
-			-> eIF<!is_tuple_or_pair<Arg&&>::value,decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> {            \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
-		}                                                                                               \
-                                                                                                                \
-			/*  Tuple    */                                                                         \
-			template<class Arg>                                                                     \
-			auto                                                                                    \
-		operator() (Arg&& arg) -> eIF<is_tuple_or_pair<Arg&&>::value, decltype(this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2 )> { \
-			return this->value(FWD(Arg,arg)) OP this->value2(FWD(Arg,arg)) OP2;                                                            \
-		}                                                                                               \
-														\
-		/*  MEMBER-ONLY OVERLOADS */                                                                   \
-		typedef 	 functor_t<OP_CLASS,Fr1,Fr2> 	self_type;						\
-		DECLARE_MEMBER_OP2(=, 	assign_action, self_type)                                                          \
-		DECLARE_MEMBER_OP2([],	subscript_action, self_type)                                                      \
-                                                                                                                \
-	 };                                                                                                     \
-	
-
-
-#define  FUNCTOR1(OP,OP2,OP_CLASS) 		      							\
-                                                                                                                \
-		template<class Fr>                                                                              \
-	struct  functor_t <OP_CLASS,Fr,void> : ref_container<Fr&&> {                                            \
-			typedef void is_lambda_functor;                                                         \
-			using typename ref_container<Fr&&>::value_type;                                         \
-		explicit functor_t(Fr&& fr) :  ref_container<Fr&&>(FWD(Fr,fr)) {};                              \
-		template<class Arg>                                                                             \
-		auto operator() (Arg&& arg) -> decltype(OP arg OP2) { return  OP (this->value(FWD(Arg,arg))) OP2 ;} \
-														\
-		/*  MEMBER-ONLY OVERLOADS */                                                                   \
-		typedef 	 functor_t<OP_CLASS,Fr,void> 	self_type;						\
-		DECLARE_MEMBER_OP2(=, 	assign_action, self_type)                                                          \
-		DECLARE_MEMBER_OP2([],	subscript_action, self_type)                                                      \
-                                                                                                                \
-	 };
-
-
-	FUNCTOR1(+,,plus1_action)
-	FUNCTOR1(-,,minus1_action)
-	FUNCTOR1(++,,increment_action)
-	FUNCTOR1(--,,decrement_action)
-	FUNCTOR1(,++,postfix_increment_action)
-	FUNCTOR1(,--,postfix_decrement_action)
-
-	FUNCTOR1(!,,not_action)
-	FUNCTOR1(&,,addressof_action)
-
-	FUNCTOR1(*,,contentsof_action) 		// TOFIX
-
 
 #define  newOP1(OP,OP_CLASS)				       	\
 									\
@@ -500,21 +377,6 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	 }
 
 
-#define  OP1(OP,OP_CLASS)				       	\
-									\
-		template<class Fr>					\
-		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>		\
-	operator OP(Fr&& fr) {						\
-		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));	\
-	 }
-
-#define  POSTFIX_OP1(OP,OP_CLASS)				\
-									\
-		template<class Fr>					\
-		eIF<IS_FR(Fr), functor_t<OP_CLASS,Fr&&,void>>		\
-	operator OP(Fr&& fr,int) {					\
-		return  functor_t<OP_CLASS,Fr&&,void>(FWD(Fr,fr));	\
-	 }
 
 	newOP1(+,plus1_op)
 	newOP1(-,minus1_op)
@@ -627,8 +489,8 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 
 	
 	//#define COMMA ,
-	//DEFINE_MEMBER_OP2(=,  	assign_action,    	template<class Fr1 COMMA class Fr2>,		functor_t<assign_action COMMA Fr1 COMMA Fr2>)
-	//DEFINE_MEMBER_OP2([], 	subscript_action, 	template<class Fr1 COMMA class Fr2>,		functor_t<assign_action COMMA Fr1 COMMA Fr2>)
+	//DEFINE_MEMBER_OP2(=,  	assign_op,    	template<class Fr1 COMMA class Fr2>,		functor_t<assign_op COMMA Fr1 COMMA Fr2>)
+	//DEFINE_MEMBER_OP2([], 	subscript_op, 	template<class Fr1 COMMA class Fr2>,		functor_t<assign_op COMMA Fr1 COMMA Fr2>)
 
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS

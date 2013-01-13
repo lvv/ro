@@ -214,9 +214,10 @@ struct  basic_range : ref_container<Rg&&> {
 	
 	template<class U=Rg>             auto  operator[] (difference_type n ) -> decltype(std::declval<U>()[0])   		{ return  rg[n]; }
 
-	template<class Fr2, class U=Rg>  auto  operator[] (Fr2&& fr2)            -> eIF<sto::is_lambda_functor<Fr2>::value,
-			functor_t<subscript_action,var_t<self_type&&>,Fr2&&>>  {
-		return	functor_t<subscript_action,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
+	template<class Fr2, class U=Rg>  auto  operator[] (Fr2&& fr2)           
+			-> eIF<is_lambda_functor<Fr2>::value,
+			fr2_t<subscript_action,var_t<self_type&&>,Fr2&&>>  {
+		return	fr2_t<subscript_action,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
 	}
  };
 
