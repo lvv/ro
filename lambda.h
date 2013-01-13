@@ -29,15 +29,31 @@
 	/////  UNARY ------------------------------------
 
 	// artihmetic
-	struct  plus1_op{
-		template <class Fr>
-		static auto eval (Fr&& fr) -> decltype(+fr) { return +fr; };
+#define DEF_OP1_CLASS(PREFIX,POSTFIX,OP_CLASS)	       								\
+	struct  OP_CLASS{						                                        \
+			template <class Fr>                                                                     \
+			static auto                                                                             \
+		eval (Fr&& fr)                                                                                  \
+			-> decltype (PREFIX fr POSTFIX)  {                                                      \
+			return       PREFIX fr POSTFIX;                                                         \
+		};                                                                                              \
 	};
 
-	struct  plus_op{
-		template <class Fr1, class Fr2>
-		static auto eval (Fr1&& fr1, Fr2&& fr2) -> decltype(fr1+fr2) { return fr1+fr2; };
+
+	// artihmetic
+	DEF_OP1_CLASS(+,,plus1_op)
+
+#define DEF_OP2_CLASS(INFIX,POSTFIX,OP_CLASS)	       								\
+	struct  OP_CLASS{                                                                                       \
+			template <class Fr1, class Fr2>                                                         \
+			static auto                                                                             \
+		eval (Fr1&& fr1, Fr2&& fr2)                                                                     \
+			-> decltype(fr1 INFIX fr2 POSTFIX) {                                                    \
+			return fr1 INFIX fr2 POSTFIX;                                                           \
+		};                                                                                              \
 	};
+
+	DEF_OP2_CLASS(+,,plus_op)
 
 	//class plus1_op {};
 	class minus1_op {};
@@ -572,8 +588,46 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 		return  functor_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
-	                                        	newOP2(+,plus_op)
-	//FUNCTOR2(+,,plus_action)                	OP2(+,plus_action)
+	newOP2(+,plus_op)
+       	newOP2(-,minus_action)
+       	newOP2(*,multiply_action)
+       	newOP2(/,divide_action)
+       	newOP2(%,remainder_action)
+
+       	newOP2(+=,plus_assign_action)
+       	newOP2(-=,minus_assign_action)
+       	newOP2(*=,multiply_assign_action)
+       	newOP2(/=,divide_assign_action)
+       	newOP2(%=,remainder_assign_action)
+
+
+       	newOP2(<<,leftshift_action)
+       	newOP2(>>,rightshift_action)
+       	newOP2(^,xor_action)
+
+       	newOP2(<<=,leftshift_assign_action)
+       	newOP2(>>=,rightshift_assign_action)
+       	newOP2(^=,xor_assign_action)
+
+       	newOP2(||,logical_or_action)
+       	newOP2(&&,logical_and_action)
+
+       	newOP2(|,bitwise_or_action)
+       	newOP2(&,bitwise_and_action)
+       	newOP2(|=,bitwise_or_assign_action)
+       	newOP2(&=,bitwise_and_assign_action)
+
+
+       	newOP2(<,less_action)
+       	newOP2(>,greater_action)
+       	newOP2(<=,lessorequal_action)
+       	newOP2(>=,greaterorequal_action)
+       	newOP2(==,equal_action)
+       	newOP2(!=,notequal_action)
+
+
+	/*
+	FUNCTOR2(+,,plus_action)                	OP2(+,plus_action)
 	FUNCTOR2(-,,minus_action)               	OP2(-,minus_action)
 	FUNCTOR2(*,,multiply_action)            	OP2(*,multiply_action)
 	FUNCTOR2(/,,divide_action)              	OP2(/,divide_action)
@@ -596,8 +650,6 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 
 	FUNCTOR2(||,,logical_or_action)    		OP2(||,logical_or_action)
 	FUNCTOR2(&&,,logical_and_action)	       	OP2(&&,logical_and_action)
-	//FUNCTOR2(||=,,logical_or_assign_action)    	OP2(||=,logical_or_assign_action)
-	//FUNCTOR2(&&=,,logical_and_assign_action)    	OP2(&&=,logical_and_assign_action)
 
 	FUNCTOR2(|,,bitwise_or_action)    		OP2(|,bitwise_or_action)
 	FUNCTOR2(&,,bitwise_and_action)    		OP2(&,bitwise_and_action)
@@ -611,6 +663,7 @@ template<class Arg1>		struct  is_range_op<multiply_action   ,Arg1>	{ enum {value
 	FUNCTOR2(>,,greaterorequal_action)		OP2(>=,greaterorequal_action)
 	FUNCTOR2(==,,equal_action)			OP2(==,equal_action)
 	FUNCTOR2(!=,,notequal_action)	       		OP2(!=,notequal_action)
+	*/
 
 
 /////  MEMBER-ONLY OVERLOADS
