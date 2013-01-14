@@ -782,6 +782,18 @@ MISC
 	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
 
+BOOST LAMBDA
+	BLL:  int i = 1;  (_1 = 2, _1 + i)(i);    	// ==3
+	BLL:  int i = 1;  (_1 = 2, _1 + ref(i))(i);	// == 4
+
+	scc 'int i=1; (_1 = 2)(i); i'			// TOFIX, TOADD operator,()
+	2
+
+	-------
+	int i = 1; int j = 2; 
+	(_1 + _2)(i, j); // ok
+	(_1 + _2)(1, 2); // BLL - error, STO - ok
+
 
 RANGES
 	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3350.html

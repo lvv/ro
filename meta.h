@@ -382,8 +382,9 @@ struct is_callable<F, R(Args...)> {					// plain callable
 
 		template<class U> static
 		eIF<
-			//std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
-			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
+			//old old 	std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
+			//old 		std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
+			std::is_convertible<decltype(std::declval<U>()(std::declval<Args>()...)),R>::value,
 			int16_t
 		>
 	test(int){return int16_t();};
@@ -399,8 +400,7 @@ struct is_callable<F, R(*)(Args...)> {					// pointer to callable
 
 		template<class U> static
 		eIF<
-			//std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
-			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
+			std::is_convertible<decltype(std::declval<U>()(std::declval<Args>()...)),R>::value,
 			int16_t
 		>
 	test(int);
@@ -416,8 +416,7 @@ struct is_callable<F, R(&)(Args...)> {					// ref to callable
 
 		template<class U> static
 		eIF<
-			//std::is_same<decltype(std::declval<rm_qualifier<U>>()(std::declval<Args>()...)), R>::value,
-			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
+			std::is_convertible<decltype(std::declval<U>()(std::declval<Args>()...)), R> ::value,
 			int16_t
 		>
 	test(int);
@@ -433,7 +432,7 @@ struct is_callable<F, R(&&)(Args...)> {					// rval-ref to callable
 
 		template<class U> static
 		eIF<
-			std::is_same<decltype(std::declval<U>()(std::declval<Args>()...)), R>::value,
+			std::is_convertible<decltype(std::declval<U>()(std::declval<Args>()...)), R> ::value,
 			int16_t
 		>
 	test(int);

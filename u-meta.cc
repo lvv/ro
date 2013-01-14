@@ -195,7 +195,7 @@ CHECK( ! (is_callable<int,   bool(int)>::value))
 CHECK( ! (is_callable<void*, bool(int)>::value))
 CHECK( ! (is_callable<void,  bool(int)>::value))
 CHECK( ! (is_callable<bool(),bool(int)>::value))
-CHECK( ! (is_callable<bool(int), int (int)>::value))
+CHECK(   (is_callable<bool(int), int (int)>::value))
 CHECK( ! (is_callable<bool(int), int ()>::value))
 
 CHECK(   (is_callable<bool(int), bool(int)>::value))		// is
