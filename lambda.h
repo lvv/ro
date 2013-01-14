@@ -113,7 +113,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////   MEMBER OP MACRO
 
-#define  newDECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
+#define  MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
 														\
 		/* This OP Fr */	      									\
 		template<class Arg2>	                                                                	\
@@ -165,8 +165,8 @@
 			return   Op::eval(this->value(FWD(Arg,arg)));
 		}
 		typedef 	 fr1_t<Op,Fr> 	self_type;
-		newDECLARE_MEMBER_OP2(=, 	assign_op, self_type)
-		newDECLARE_MEMBER_OP2([],	subscript_op, self_type)
+		MEMBER_OP2(=, 	assign_op, self_type)
+		MEMBER_OP2([],	subscript_op, self_type)
 
 	 };
 	
@@ -207,8 +207,8 @@
 
 		/*  MEMBER-ONLY OVERLOADS */
 		typedef 	 fr2_t<Op,Fr1,Fr2> 	self_type;
-		newDECLARE_MEMBER_OP2(=, 	assign_op, self_type)
-		newDECLARE_MEMBER_OP2([],	subscript_op, self_type)
+		MEMBER_OP2(=, 	assign_op, self_type)
+		MEMBER_OP2([],	subscript_op, self_type)
 
 	 };
 	
@@ -258,8 +258,8 @@ struct  ph {
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 ph<N>	self_type;
-	newDECLARE_MEMBER_OP2(=, assign_op, self_type)
-	newDECLARE_MEMBER_OP2([],subscript_op, self_type)
+	MEMBER_OP2(=, assign_op, self_type)
+	MEMBER_OP2([],subscript_op, self_type)
 
 };
 
@@ -288,8 +288,8 @@ struct  var_t : ref_container<T&&> {
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 var_t<T>	self_type;
-	newDECLARE_MEMBER_OP2(=, assign_op, self_type)
-	newDECLARE_MEMBER_OP2([],subscript_op, self_type)
+	MEMBER_OP2(=, assign_op, self_type)
+	MEMBER_OP2([],subscript_op, self_type)
 
 };
 
@@ -314,8 +314,8 @@ struct  constant_t {
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 constant_t<T>	self_type;
-	newDECLARE_MEMBER_OP2(=, assign_op, self_type)
-	newDECLARE_MEMBER_OP2([],subscript_op, self_type)
+	MEMBER_OP2(=, assign_op, self_type)
+	MEMBER_OP2([],subscript_op, self_type)
 
 };
 
@@ -325,7 +325,7 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////   FUNCTOR_T
 
-#define  newOP1(OP,OP_CLASS)				       	\
+#define  OP1(OP,OP_CLASS)				       	\
 									\
 		template<class Fr>					\
 		eIF<IS_FR(Fr), fr1_t<OP_CLASS,Fr&&>>		\
@@ -333,7 +333,7 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 		return  fr1_t<OP_CLASS,Fr&&>(FWD(Fr,fr));	\
 	 }
 
-#define  newPOSTFIX_OP1(OP,OP_CLASS)				\
+#define  POSTFIX_OP1(OP,OP_CLASS)				\
 									\
 		template<class Fr>					\
 		eIF<IS_FR(Fr), fr1_t<OP_CLASS,Fr&&>>		\
@@ -343,17 +343,17 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 
 
-	newOP1(+,plus1_op)
-	newOP1(-,minus1_op)
-	newOP1(++,increment_op)
-	newOP1(--,decrement_op)
-	newPOSTFIX_OP1(++,postfix_increment_op)
-	newPOSTFIX_OP1(--,postfix_decrement_op)
+	OP1(+,plus1_op)
+	OP1(-,minus1_op)
+	OP1(++,increment_op)
+	OP1(--,decrement_op)
+	POSTFIX_OP1(++,postfix_increment_op)
+	POSTFIX_OP1(--,postfix_decrement_op)
 
-	newOP1(!,logical_not_op)
-	newOP1(~,bitwise_not_op)
-	newOP1(&,addressof_op)
-	newOP1(*,contentsof_op)
+	OP1(!,logical_not_op)
+	OP1(~,bitwise_not_op)
+	OP1(&,addressof_op)
+	OP1(*,contentsof_op)
 
 
 
@@ -389,7 +389,7 @@ template<class Arg1>		struct  is_range_op<bitwise_or_op ,Arg1>	{ enum {value=is_
 template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 	
 
-#define  newOP2(OP,OP_CLASS)										\
+#define  OP2(OP,OP_CLASS)										\
                                                                                                                 \
 		/*  Fr  OP  Fr  */											\
 		template<class Fr1, class Fr2>	                                                                \
@@ -430,42 +430,42 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 	 }
 	*/
 
-	newOP2(+,plus_op)
-       	newOP2(-,minus_op)
-       	newOP2(*,multiply_op)
-       	newOP2(/,divide_op)
-       	newOP2(%,remainder_op)
+	OP2(+,plus_op)
+       	OP2(-,minus_op)
+       	OP2(*,multiply_op)
+       	OP2(/,divide_op)
+       	OP2(%,remainder_op)
 
-       	newOP2(+=,plus_assign_op)
-       	newOP2(-=,minus_assign_op)
-       	newOP2(*=,multiply_assign_op)
-       	newOP2(/=,divide_assign_op)
-       	newOP2(%=,remainder_assign_op)
-
-
-       	newOP2(<<,leftshift_op)
-       	newOP2(>>,rightshift_op)
-       	newOP2(^,xor_op)
-
-       	newOP2(<<=,leftshift_assign_op)
-       	newOP2(>>=,rightshift_assign_op)
-       	newOP2(^=,xor_assign_op)
-
-       	newOP2(||,logical_or_op)
-       	newOP2(&&,logical_and_op)
-
-       	newOP2(|,bitwise_or_op)
-       	newOP2(&,bitwise_and_op)
-       	newOP2(|=,bitwise_or_assign_op)
-       	newOP2(&=,bitwise_and_assign_op)
+       	OP2(+=,plus_assign_op)
+       	OP2(-=,minus_assign_op)
+       	OP2(*=,multiply_assign_op)
+       	OP2(/=,divide_assign_op)
+       	OP2(%=,remainder_assign_op)
 
 
-       	newOP2(<,less_op)
-       	newOP2(>,greater_op)
-       	newOP2(<=,lessorequal_op)
-       	newOP2(>=,greaterorequal_op)
-       	newOP2(==,equal_op)
-       	newOP2(!=,notequal_op)
+       	OP2(<<,leftshift_op)
+       	OP2(>>,rightshift_op)
+       	OP2(^,xor_op)
+
+       	OP2(<<=,leftshift_assign_op)
+       	OP2(>>=,rightshift_assign_op)
+       	OP2(^=,xor_assign_op)
+
+       	OP2(||,logical_or_op)
+       	OP2(&&,logical_and_op)
+
+       	OP2(|,bitwise_or_op)
+       	OP2(&,bitwise_and_op)
+       	OP2(|=,bitwise_or_assign_op)
+       	OP2(&=,bitwise_and_assign_op)
+
+
+       	OP2(<,less_op)
+       	OP2(>,greater_op)
+       	OP2(<=,lessorequal_op)
+       	OP2(>=,greaterorequal_op)
+       	OP2(==,equal_op)
+       	OP2(!=,notequal_op)
 
 
 	
