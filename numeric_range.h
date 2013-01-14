@@ -2,7 +2,6 @@
 						#define  STO_NUMERIC_RANGE_H
 
 						#include <sto/meta.h>
-						#include <sto/functor.h>
 					
 						#include <cassert>
 
