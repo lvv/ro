@@ -1,0 +1,48 @@
+// vim:ft=graphviz
+
+digraph G {
+        //rankdir=LR;
+
+        //   MODULES
+        {  node [shape=box];   
+			"mapped_range.h";
+			"predicated_range.h";
+			"iterator_range.h"; 
+			"numeric_range.h";
+		"range.h";
+		"lambda.h";
+		"io.h";
+		"stl.h";
+		"regex.h";
+	}
+
+
+        {  rank=same;         
+		"mapped_range.h"; 
+		"predicated_range.h"; 
+		"iterator_range.h"; 
+		"numeric_range.h";
+	}
+
+        "meta.h"         ->  "stl.h" -> "basic_range.h"                                      ;
+					"basic_range.h" ->  "mapped_range.h"            -> "range.h";
+                			"basic_range.h"	->  "predicated_range.h"        -> "range.h";
+        "meta.h"           			      	->  "iterator_range.h"	        -> "range.h";
+        "meta.h"                                        ->  "numeric_range.h"           -> "range.h";
+
+        "meta.h"           ->  "functor.h";
+		"stl.h"           ->  "lambda.h";
+		"range.h"           ->  "lambda.h";
+		"range.h" -> "io.h";
+
+		"regex.h";
+		"debug.h";
+
+
+	"functor.h" -> "sto.h";
+	"range.h"   -> "sto.h";
+	"stl.h"     -> "sto.h";
+	"io.h"      -> "sto.h";
+	"regex.h"   -> "sto.h";
+
+}

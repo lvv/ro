@@ -57,7 +57,7 @@ scc 'auto r = range(0,1,.2);  r, endl, r * sin'
 -----------------------------------------------------------------------------
 
 Print operator are `_` and `__`.  Longer one terminates output with `endl`.
-With these, previous example would be:
+With these, equivalent to previous example would be:
 
 -----------------------------------------------------------------------------
 scc '__ range(0,1,.2);  __ range(0,1,.2) * sin;'
@@ -492,7 +492,6 @@ STO also defines some generic helper functions:
 * `endz(range) -> It` -- like `std::end(StlContainer)`, but will work with C-strings too
 * `clear(range) -> void`
 * all `ctype` functions reimplemented 
-* `is_odd`, `is_even`
 * `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`, etc
 
 
@@ -696,7 +695,7 @@ IO.H - Standalone Use
 
 File `io.h` can be used as standalone, independent include. 
 
---------------------------------------------
+-------------------------------------------
 #include <io.h>
 int main() {
 	__ "hello world";
@@ -736,6 +735,61 @@ CXXFLAGS+="-D__STRICT_ANSI__  -std=c++0x "
 
 To be able to run examples you need to http://volnitsky.com/project/scc/#_install[install SCC] too. 
 
+///////////////////////
+["graphviz", "include-deps.png"]
+---------------------------------------------------------------------
+// vim:ft=graphviz
+
+digraph G {
+        //rankdir=LR;
+
+        //   MODULES
+        {  node [shape=box];   
+			"mapped_range.h";
+			"predicated_range.h";
+			"iterator_range.h"; 
+			"numeric_range.h";
+		"range.h";
+		"lambda.h";
+		"io.h";
+		"stl.h";
+		"regex.h";
+	}
+
+
+        {  rank=same;         
+		"mapped_range.h"; 
+		"predicated_range.h"; 
+		"iterator_range.h"; 
+		"numeric_range.h";
+	}
+
+        "meta.h"         ->  "stl.h" -> "basic_range.h"                                      ;
+					"basic_range.h" ->  "mapped_range.h"            -> "range.h";
+                			"basic_range.h"	->  "predicated_range.h"        -> "range.h";
+        "meta.h"           			      	->  "iterator_range.h"	        -> "range.h";
+        "meta.h"                                        ->  "numeric_range.h"           -> "range.h";
+
+        "meta.h"           ->  "functor.h";
+		"stl.h"           ->  "lambda.h";
+		"range.h"           ->  "lambda.h";
+		"range.h" -> "io.h";
+
+		"regex.h";
+		"debug.h";
+
+
+	"functor.h" -> "sto.h";
+	"range.h"   -> "sto.h";
+	"stl.h"     -> "sto.h";
+	"io.h"      -> "sto.h";
+	"regex.h"   -> "sto.h";
+
+}
+--------------------------------------------------------------------
+///////////////////////
+
+image::include-deps.png
 
 Status 
 ------
