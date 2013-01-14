@@ -130,38 +130,6 @@
 	 }                                                                                                      \
 
 
-#define  old_newDECLARE_MEMBER_OP2(OP,OP_CLASS,THIS)					       			\
-														\
-		/* This OP Fr */	      									\
-		template<class Arg2>	                                                                	\
-		eIF<IS_FR(Arg2), fr2_t<OP_CLASS,THIS,Arg2&&>>							\
-	operator OP(Arg2&& fr);                                                                      	\
-														\
-		/* This OP T */                                                                                 \
-		template<class Arg2>                                   						\
-		eIF<!IS_FR(Arg2), fr2_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
-	operator OP(Arg2&& x);	                                                                      	\
-
-
-#define  newDEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)	 
-#define  XXXnewDEFINE_MEMBER_OP2(OP,OP_CLASS,TMPL, THIS)					       				\
-														\
-	/* This OP Fr */		       									\
-		TMPL												\
-		template<class Arg2>	                                                                	\
-		eIF<IS_FR(Arg2), fr2_t<OP_CLASS,THIS,Arg2&&>>						\
-	THIS::operator OP(Arg2&& fr) {                                                                  	\
-		return  fr2_t<OP_CLASS,THIS,Arg2&&> (FWD(THIS,*this), FWD(Arg2,fr));                        \
-	 }                                                                                                      \
-														\
-														\
-	/* This OP T */                                                                                 	\
-		TMPL												\
-		template<class Arg2>                                   						\
-		eIF<!IS_FR(Arg2), fr2_t<OP_CLASS,THIS,var_t<Arg2&&>>>                           		\
-	THIS::operator OP(Arg2&& x) {                                                                    	\
-		return  fr2_t<OP_CLASS,THIS,var_t<Arg2&&>> (FWD(THIS,*this), var_t<Arg2&&>(FWD(Arg2,x)));   \
-	 }                                                                                                      \
 
 	/////////////////////////////////////////////////////////////////////////////////////////  FR_T
 
@@ -404,6 +372,16 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 //
 //      range	||	λ	=> 	fold-range
 //      !	||	λ	=> 	λ
+//
+//      range	<<	elem	=> 	range
+//      elem	<< 	range	=> 	range
+//      range	<< 	range	=> 	range
+//      cout	<<	ioable	=> 	cout
+//      cout	<<	!ioable	=> 	cout
+//      cout	<<	λ	=> 	λ
+//
+//      out_t	,	X	=> 	out_t
+//      out_t	,	λ	=> 	λ
 
 template<class Op, class Arg1>	struct  is_range_op   			        { enum {value=false}; };
 template<class Arg1>		struct  is_range_op<logical_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
@@ -489,18 +467,6 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
        	newOP2(==,equal_op)
        	newOP2(!=,notequal_op)
 
-
-
-
-/////  MEMBER-ONLY OVERLOADS
-	newDEFINE_MEMBER_OP2(=,		assign_op,     	template<class T>,	var_t<T>)
-	newDEFINE_MEMBER_OP2([],	subscript_op,	template<class T>,	var_t<T>)
-
-	newDEFINE_MEMBER_OP2(=,	assign_op, 		template<class T>,	constant_t<T>)
-	newDEFINE_MEMBER_OP2([],	subscript_op,	template<class T>,	constant_t<T>)
-                                                                                
-	newDEFINE_MEMBER_OP2(=,  	assign_op,    	template<int N>,	ph<N>)
-	newDEFINE_MEMBER_OP2([], 	subscript_op, 	template<int N>,	ph<N>)
 
 	
 	//#define COMMA ,
