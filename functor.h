@@ -70,6 +70,12 @@ eval(Rg&& rg) {
 	}
 	return cnt;
  }
+/*
+*/
+struct nop_t {
+	template<class T>  size_t operator()(T&& a, T&& b) { return 0; };
+	template<class T> T fold_init_value(T) { return T(0); }	// indicator for folder
+ } nop   __attribute__((unused));
 
 
 				};
