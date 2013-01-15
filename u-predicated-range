@@ -5,12 +5,12 @@ set -o errexit
 set -v
 
 #################################################################  PIPE RANGE
-scc 'rd9|is_even'
-scc 'rd9|is_even = 42; rd9'
-scc 'for(auto c: range(v9)|sto::is_odd)  _ c;'
-scc 'for(auto c: range(s9)|sto::isdigit) _ c;'
-scc 'for(auto c: range(c9)|sto::isdigit) _ c;'
+scc 'rd9 | (_1%2 == 0)'
+scc 'rd9 | (_1%2 == 0) = 42;  rd9'
+scc 'for(auto c: range(v9) | (_1%2 == 1) )  _ c;'
+scc 'for(auto c: range(s9) | sto::isdigit) _ c;'
+scc 'for(auto c: range(c9) | sto::isdigit) _ c;'
 
 #################################################################   FUNCTORS
-scc 'v9|gt(5)'
+scc 'v9 | (_1 > 5)'
 

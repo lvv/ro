@@ -544,14 +544,14 @@ template<class T>	struct  ref_container2;
 
 template<class T>	struct  ref_container2<T& >  {
 	typedef void is_lvalue; 
-	typedef T& value_type; 
+	typedef T& value_type2; 
 	T& value2; 
 	explicit ref_container2(T&  x) : value2(x)         {}
  };
 
 template<class T>	struct  ref_container2<T&&>  {
 	typedef void is_rvalue;
-	typedef T&& value_type; 
+	typedef T&& value_type2; 
 	rm_ref<T>  value2;	
 	explicit ref_container2(T&& x) : value2(std::move(x)) {}
  };

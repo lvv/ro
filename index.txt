@@ -835,6 +835,8 @@ MISC
 	operators owl -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
 	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
+	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-history-of-live-programming.html
+	http://kotaku.com/5975610/the-exceptional-beauty-of-doom-3s-source-code
 
 BOOST LAMBDA
 	BLL:  int i = 1;  (_1 = 2, _1 + i)(i);    	// ==3

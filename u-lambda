@@ -74,12 +74,12 @@ scc -a1		'v9 || var(true)'
 scc -a0		'*+(v9 * _1);'
 
 ######################################   mapped_range
-scc		'range(9) * _1'
-scc		'for(auto i: v9 * _1) _ i;'
-scc		'range(9) * var(1)'
-scc		'range(9) * (_1+0)'
+scc -a10    	'range(5) * _1 || add'
+scc -a10        'range(10) * var(1) || add'
+scc -a10   	'range(5) * (_1+0)  || add'
+scc		'int sum=0;  for(auto i: range(5) * _1) sum+= i;'
 scc		'v9       * (_1+0)'
-scc		'v9 * (_1==5)'
+scc		'v9 * (_1==1)'
 scc		'v9 * _1'
 scc		'v9 * var(1)'
 

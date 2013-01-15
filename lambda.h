@@ -31,8 +31,8 @@
 			template <class Fr>                                                                     \
 			static auto                                                                             \
 		eval (Fr&& fr)                                                                                  \
-			-> decltype (PREFIX  FWD(Fr,fr)  POSTFIX)  {                                                      \
-			return       PREFIX  FWD(Fr,fr)  POSTFIX;                                                         \
+			-> decltype (PREFIX  FWD(Fr,fr)  POSTFIX)  {                                            \
+			return       PREFIX  FWD(Fr,fr)  POSTFIX;                                               \
 		};                                                                                              \
 	};
 
@@ -42,8 +42,8 @@
 			template <class Fr1, class Fr2>                                                         \
 			static auto                                                                             \
 		eval (Fr1&& fr1, Fr2&& fr2)                                                                     \
-			-> decltype(FWD(Fr1,fr1)  INFIX  FWD(Fr2,fr2)  POSTFIX) {                                                    \
-			return      FWD(Fr1,fr1)  INFIX  FWD(Fr2,fr2)  POSTFIX;                                                           \
+			-> decltype(FWD(Fr1,fr1)  INFIX  FWD(Fr2,fr2)  POSTFIX) {                               \
+			return      FWD(Fr1,fr1)  INFIX  FWD(Fr2,fr2)  POSTFIX;                                 \
 		};                                                                                              \
 	};
 
@@ -175,7 +175,13 @@
                                                                                  
 		template<class Op, class Fr1, class Fr2>
 	struct  fr2_t : ref_container<Fr1&&>, ref_container2<Fr2&&> {
-		typedef void is_lambda_functor;
+
+		using typename ref_container<Fr1&&>::value_type;
+		using typename ref_container2<Fr2&&>::value_type2;
+
+		typedef 	void			is_lambda_functor;
+		typedef 	fr2_t<Op,Fr1,Fr2> 	self_type;
+
 		explicit fr2_t(Fr1&& fr1, Fr2&& fr2) :
 			ref_container <Fr1&&>(FWD(Fr1,fr1)),
 			ref_container2<Fr2&&>(FWD(Fr2,fr2))
@@ -195,6 +201,8 @@
 			-> eIF<!is_tuple_or_pair<Arg&&>::value,
 			decltype(Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))))> {
 			return   Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))) ;
+			//decltype(Op::eval(std::forward<value_type>(this->value (FWD(Arg,arg)), std::forward<value_type2>(this->value2(FWD(Arg,arg))))))> {
+			//return   Op::eval(std::forward<value_type>(this->value (FWD(Arg,arg)), std::forward<value_type2>(this->value2(FWD(Arg,arg))))) ;
 		}
 
 			/*  Tuple    */
@@ -207,7 +215,6 @@
 		}
 
 		/*  MEMBER-ONLY OVERLOADS */
-		typedef 	 fr2_t<Op,Fr1,Fr2> 	self_type;
 		MEMBER_OP2(=, 	assign_op, self_type)
 		MEMBER_OP2([],	subscript_op, self_type)
 
@@ -471,8 +478,6 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 
 	
 	//#define COMMA ,
-	//DEFINE_MEMBER_OP2(=,  	assign_op,    	template<class Fr1 COMMA class Fr2>,		functor_t<assign_op COMMA Fr1 COMMA Fr2>)
-	//DEFINE_MEMBER_OP2([], 	subscript_op, 	template<class Fr1 COMMA class Fr2>,		functor_t<assign_op COMMA Fr1 COMMA Fr2>)
 
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS
