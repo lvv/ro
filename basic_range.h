@@ -4,14 +4,19 @@
 
 						#include <sto/meta.h>
 						#include <sto/stl.h>
-						#include <sto/lambda.h>
 
 						#include <cassert>
 
 						namespace sto {
 
+/////////////////////////////////////////////////////////////////////////////////////////  FORWARD
+
+	template<class Rg>  				struct  basic_range;
+	template<class Op, class Fr1, class Fr2> 	struct  fr2_t;
+	template<class T> 				struct  var_t;
+							struct 	subscript_op;
+
 /////////////////////////////////////////////////////////////////////////////////////////  CHAIN_RANGE_ITERATOR
-	template<class Rg>  struct  basic_range;
 
 	template <class Rg, bool RO>
 struct basic_range_iterator {
@@ -216,11 +221,24 @@ struct  basic_range : ref_container<Rg&&> {
 
 	template<class Fr2, class U=Rg>  auto  operator[] (Fr2&& fr2)           
 			-> eIF<is_lambda_functor<Fr2>::value,
+			fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>>;
+	/*
+	template<class Fr2, class U=Rg>  auto  operator[] (Fr2&& fr2)           
+			-> eIF<is_lambda_functor<Fr2>::value,
 			fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>>  {
 		return	fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
 	}
+	*/
  };
 
+	template<class Rg>
+	template<class Fr2, class U /*=Rg*/> 
+	auto  
+basic_range<Rg>::operator[] (Fr2&& fr2)           
+		-> eIF<is_lambda_functor<Fr2>::value,
+		fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>>  {
+	return	fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
+}
 
 
 ////////////////////////////////////////////////////////////////  TRAITS

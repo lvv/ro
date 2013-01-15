@@ -12,6 +12,7 @@
 #include <sto/regex.h>
 
 #ifndef scc_BOOST_LAMBDA
+	// lambda must be after stl.h, io.h, range,h
 	#include <sto/lambda.h>
 #endif
 

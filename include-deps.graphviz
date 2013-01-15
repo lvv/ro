@@ -31,8 +31,7 @@ digraph G {
         "meta.h"                                        ->  "numeric_range.h"           -> "range.h";
 
         "meta.h"           ->  "functor.h";
-		"stl.h"           ->  "lambda.h";
-		"range.h"           ->  "lambda.h";
+        "meta.h"           ->  "lambda.h";
 		"range.h" -> "io.h";
 
 		"regex.h";
@@ -44,5 +43,6 @@ digraph G {
 	"stl.h"     -> "sto.h";
 	"io.h"      -> "sto.h";
 	"regex.h"   -> "sto.h";
+	"lambda.h"   -> "sto.h";
 
 }

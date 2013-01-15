@@ -7,8 +7,7 @@
 				#include <functional>
 
 				#include <sto/meta.h>
-				#include <sto/stl.h>
-				#include <sto/range.h>
+				#include <sto/io.h>
 
 				namespace sto {
 
