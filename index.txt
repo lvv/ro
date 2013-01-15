@@ -35,14 +35,14 @@ On left-hand side of minus sign  can be not only STL container, but also STO
 range or C-string.  And unlike STL you do not need remember different erase
 syntax for `std::vector`, `std::list`, `std::set` or something else. 
 
-Of cause it not only about erase. Another example. You probably can figure out
+Of cause it not only about erase. In next example you probably can figure out
 what it does without explanation:
 
 ---------------------------------------------------------------------------
 vec <<  val1 << val2;
 ---------------------------------------------------------------------------
 
-Yes, it was two `push_back`.  Most STL container management function have
+Yes, this  was two `push_back`.  Most STL container management function have
 terser STO equivalent.  
 
 Classic filter:

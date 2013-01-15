@@ -420,22 +420,6 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 	 }
 
        
-	/*
-	 * Attempt to fix: scc '(cout <<  _1)(vint{1});' for clang
-	 *
-		//  cout  <<  Fr
-		template<class Fr2>
-		eIF<IS_FR(Fr2), fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,Fr2&&>>
-	operator <<(std::basic_ostream<char>& os, Fr2&& fr2) {
-		return  fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,Fr2&&> (var(os), FWD(Fr2,fr2));
-	 }
-
-		//  cout  <<  _1
-		        fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,ph<1>>
-	operator <<(std::basic_ostream<char>& os, ph<1> ph1) {
-		return  fr2_t<leftshift_op,var_t<std::basic_ostream<char>&>,ph<1>> (var(os), FWD(ph<1>,ph1));
-	 }
-	*/
 
 	OP2(+,plus_op)
        	OP2(-,minus_op)

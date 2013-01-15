@@ -190,7 +190,7 @@ operator*       (Rg&& rg,  F f)    {
 		class E = rg_elem_type<Rg>,
 		class O = typename F::result_type
 	> 
-	eIF <is_range<Rg>::value  &&  is_callable<F, O(E)>::value  && has_result_type<F>::value,   mapped_range<Rg&&,F,O>>
+	eIF <is_range<Rg>::value  &&  is_callable<F, O(E)>::value ,   mapped_range<Rg&&,F,O>>
 operator*       (Rg&& rg,  F f)    {
 	return   mapped_range<Rg&&,F,O> (std::forward<Rg>(rg),  f);
  };
