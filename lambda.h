@@ -414,11 +414,12 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
                                                                                                                 \
 		/*  T  OP  Fr  */											\
 		template<class T1, class Fr2>									\
-		eIF<AND<!IS_FR(T1), IS_FR(Fr2), !is_range_op<OP_CLASS,T1>::value>::value, fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
+		eIF<AND<!IS_FR(T1), IS_FR(Fr2), !is_range_op<rm_qualifier<OP_CLASS>,rm_qualifier<T1>>::value>::value, fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&>>                           	\
 	operator OP(T1&& t1, Fr2&& fr2) {                                                                      	\
 		return  fr2_t<OP_CLASS,var_t<T1&&>,Fr2&&> (var_t<T1&&>(FWD(T1,t1)), FWD(Fr2,fr2));         	\
 	 }
 
+       
        
 
 	OP2(+,plus_op)

@@ -94,8 +94,11 @@ scc		'v9 * (_1==1)'
 scc		'v9 * _1'
 scc		'v9 * var(1)'
 
+# side effects
+scc 'vint v; auto l = (v <<  _1+10);  vint{1,2,3} * l, "\n", v'		# works
+scc 'vint v; auto l = (v <<  _1+10);  vint{1,2,3} * l; "\n", v'		# mapped_range is not evaluated 
 
-# scc 'v9 * (cout << _1);'  TOFIX (empty output)
+scc 'eval(v9 * (cout <<  _1  ));'
 
 #scc 'vector<int*> va; v9 * (va << &_1); __ size(va); for(auto p:va) _ *p; '
 #scc 'v9 * (*oi = _1);'  
