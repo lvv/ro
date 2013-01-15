@@ -56,6 +56,21 @@ struct div_t {
 	template<class T> T fold_init_value(T) { return T(1); }
  } div  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
  						// http://stackoverflow.com/questions/10445586/c11-includes-cstdlib-at-times-when-c03-will-not
+						
+// UTILS
+
+
+	template<class Rg>
+	eIF<is_range<Rg>::value, size_t>
+eval(Rg&& rg) {
+	size_t cnt=0;  
+	for(auto i=rg.begin();  i!=rg.end();  ++i)  {
+		++cnt;
+		*i;
+	}
+	return cnt;
+ }
+
 
 				};
 
