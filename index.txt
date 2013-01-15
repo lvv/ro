@@ -1,5 +1,9 @@
+// vim:set ft=asciidoc:
+STO — STL Template Operators
+===========================
+:compact-option: compact
 
-include::/tmp/t.ad[]
+//include::/tmp/t.ad[]
 
 +++ <small> +++
 
@@ -9,6 +13,54 @@ include::/tmp/t.ad[]
 
 +++ </small> +++
 
+ABOUT
+-----
+
+STO is +++C++ +++ headers only library, which provides alternative
+interface to STL and some elements of functional programming.
+
+It allows to replace usual STL verbosity like this:
+
+---------------------------------------------------------------------------
+vec.erase(stl::remove(vec.begin(), vec.end(), val), vec.end()); 
+---------------------------------------------------------------------------
+
+with this:
+
+---------------------------------------------------------------------------
+vec - val;
+---------------------------------------------------------------------------
+
+On left-hand side of minus sign  can be not only STL container, but also STO
+range or C-string.  And unlike STL you do not need remember different erase
+syntax for `std::vector`, `std::list`, `std::set` or something else. 
+
+Of cause it not only about erase. Another example. You probably can figure out
+what it does without explanation:
+
+---------------------------------------------------------------------------
+vec <<  val1 << val2;
+---------------------------------------------------------------------------
+
+Yes, it was two `push_back`.  Most STL container management function have
+terser STO equivalent.  
+
+Classic filter:
+
+---------------------------------------------------------------------------
+vec | std::sort | std::unique | std::reverse;
+---------------------------------------------------------------------------
+
+Namespace `std::` was intentionally used to show that these are unmodified STL
+algorithms used as function pointers arguments for `operator|`
+
+
+Map/fold example: find (brute force algorithm) maximum of  `cos(x)` for `8 < x < 9`:
+
+------------------------------------------
+double cos_max = range(8, 9, 0.01) * std::cos  || std::max;
+------------------------------------------
+
 
 SCC
 ---
@@ -17,7 +69,7 @@ STO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++ sn
 It does not depends on SCC but we will use it in examples, so we need to
 tell about SCC first. 
 
-Without SCC, minimal complete example for `operator*(Range,Functor)` would be:
+Without SCC, minimal complete example for above erase code would be:
 
 ----------------------------------------------------------------------------
 #include <iostream>
@@ -28,30 +80,41 @@ using namespace std;
 using namespace sto;
 
 int main() {
-	string s = "Hello World!";
-	cout <<  (s * toupper) << endl;
+        vector<int> vec {1,2,3};
+        vec - 2; 
+        for (int i: vec) {
+                cout << i << " ";
+        }  
+        cout << endl;
 }
-----------------------------------------------------------------------------
-
-With SCC, equivalent which also shows output, is much shorter: 
 
 ----------------------------------------------------------------------------
-scc "str s = "Hello World!";  s * toupper'
-HELLO WORLD!
+
+With SCC, equivalent which also shows output, is: 
+
+----------------------------------------------------------------------------
+scc 'vector<int> vec{1,2,3};  vec - 2;  vec'
+{1, 3}
 ----------------------------------------------------------------------------
 
 1st line in above is what you type at your shell prompt.  2nd line is output.
 SCC includes all standard libraries includes; and it sends last
-statement-expression, if not terminated by semi-colon, to `std::cout`.  Typedef
-`str` is shortcut for `std::string`, similarly `vint` (in examples that will
-follow) is `std::vector<int>`.
+statement-expression, if not terminated by semi-colon, to `std::cout`. 
+
+In examples we will use two SCC types shortcuts: `str` is  `std::string`, and
+`vint`  is `std::vector<int>`.  So we can rewrite above as:
+
+----------------------------------------------------------------------------
+scc 'vint{1,2,3} - 2'
+{1, 3}
+----------------------------------------------------------------------------
 
 STO print operator can print almost any STL objects (containers, tuples, etc)
 directly.  Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
-scc 'auto r = range(0,1,.2);  r, endl, r * sin'
+scc 'auto r = range(0, 1, 0.2);   r, endl, r * sin'
 {0, 0.2, 0.4, 0.6, 0.8, 1}
 {0, 0.198669, 0.389418, 0.564642, 0.717356, 0.841471}
 -----------------------------------------------------------------------------
@@ -325,14 +388,6 @@ std::accumulate (
 	static_cast<const int& (*)(const int&, const int&)>(std::min<int>)
 );
 ------------------------------------------------
-
-
-Find (brute force algorithm) maximum of  `cos(x)` for `8 < x < 9`:
-
-------------------------------------------
-scc 'range(8, 9, 0.01) * cos  || max'
--0.1455
-------------------------------------------
 
 
 Integrate `sin(x)` from `0` to `pi`
