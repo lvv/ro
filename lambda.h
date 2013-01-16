@@ -1,19 +1,19 @@
 //  LAMBDA EXPRESSIONS
-				#ifndef  STO_LAMBDA_H
-				#define  STO_LAMBDA_H
+				#ifndef  RO_LAMBDA_H
+				#define  RO_LAMBDA_H
 
 
 				#include <iostream>
 				#include <functional>
 
-				#include <sto/meta.h>
-				#include <sto/io.h>
+				#include <ro/meta.h>
+				#include <ro/io.h>
 
-				namespace sto {
+				namespace ro {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////   META+FORWARDS
 
-	#define  IS_FR(F)  sto::is_lambda_functor<F>::value
+	#define  IS_FR(F)  ro::is_lambda_functor<F>::value
 	template<bool A, bool B, bool C=true, bool D=true>  struct  AND  { enum { value = A && B && C && D }; };
 
 
@@ -467,13 +467,13 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 ///////////////////////////////////////////////////////////////////////////////  TRAITS
 
 
-				};	// namespace sto
+				};	// namespace ro
 
 
 				namespace std {
-template<int N> 	struct 	is_placeholder<sto::ph<N>>		: std::integral_constant<int,N>  {};
+template<int N> 	struct 	is_placeholder<ro::ph<N>>		: std::integral_constant<int,N>  {};
 				};	// namespace std
 
 
-				#endif	// STO_LAMBDA_H
+				#endif	// RO_LAMBDA_H
 				// vim:ts=8

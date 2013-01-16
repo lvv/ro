@@ -1,4 +1,4 @@
-STO — STL Template Operators
+RO — STL Template Operators
 ===========================
 :compact-option: compact
 
@@ -6,7 +6,7 @@ STO — STL Template Operators
 
 +++ <small> +++
 
-* Repo: httpx://github.com/lvv/sto[GitHub],  httpx://bitbucket.org/lvv/sto[BitBucket] +
+* Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
 * Requires:  +++ C++11 +++   compiler.  Tested with GCC-4.7.2, GCC-4.8(pre release), CLANG-3.2(pre release) +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
 
@@ -15,7 +15,7 @@ STO — STL Template Operators
 ABOUT
 -----
 
-STO is +++C++ +++ headers only library, which provides alternative
+RO is +++C++ +++ headers only library, which provides alternative
 interface to STL and some elements of functional programming.
 
 It allows to replace usual STL verbosity like this:
@@ -30,7 +30,7 @@ with this:
 vec - val;
 ---------------------------------------------------------------------------
 
-On left-hand side of minus sign  can be not only STL container, but also STO
+On left-hand side of minus sign  can be not only STL container, but also RO
 range or C-string.  And unlike STL you do not need remember different erase
 syntax for `std::vector`, `std::list`, `std::set` or something else. 
 
@@ -42,7 +42,7 @@ vec <<  val1 << val2;
 ---------------------------------------------------------------------------
 
 Yes, this  was two `push_back`.  Most STL container management function have
-terser STO equivalent.  
+terser RO equivalent.  
 
 Classic filter:
 
@@ -64,7 +64,7 @@ double cos_max = range(8, 9, 0.01) * std::cos  || std::max;
 SCC
 ---
 
-STO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++ snippet evaluator at shell prompt).
+RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++ snippet evaluator at shell prompt).
 It does not depends on SCC but we will use it in examples, so we need to
 tell about SCC first. 
 
@@ -75,8 +75,8 @@ Without SCC, minimal complete example for above erase code would be:
 #include <string>
 using namespace std;
 
-#include <sto/sto.h>
-using namespace sto;
+#include <ro/ro.h>
+using namespace ro;
 
 int main() {
         vector<int> vec {1,2,3};
@@ -108,7 +108,7 @@ scc 'vint{1,2,3} - 2'
 {1, 3}
 ----------------------------------------------------------------------------
 
-STO print operator can print almost any STL objects (containers, tuples, etc)
+RO print operator can print almost any STL objects (containers, tuples, etc)
 directly.  Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
 
@@ -128,7 +128,7 @@ scc '__ range(0,1,.2);  __ range(0,1,.2) * sin;'
 
 This is all you need to know about SCC. You can read more, if you wish  on
 http://volnitsky.com/project/scc[SCC page].  To be able to run examples you
-need to <<_install, install STO>> and
+need to <<_install, install RO>> and
 http://volnitsky.com/project/scc/#_install[SCC] 
 
 
@@ -136,10 +136,10 @@ Ranges and Range Operators
 --------------------------
 
 Ranges are generalization of STL containers.
-They are STO ranges, STL containers, C-arrays and C-strings.  STO defines
+They are RO ranges, STL containers, C-arrays and C-strings.  RO defines
 C-strings as zero terminated arrays of `char` (not `signed char` or `unsigned chars`). 
 
-STO defines operators to work with ranges (and STL containers). 
+RO defines operators to work with ranges (and STL containers). 
 It have two groups of operators.  First is shortcuts for containers' member functions and simple
 extensions. Second is more complex operations like
 fold, reduce, filter and arbitrary transformation of ranges.
@@ -206,14 +206,14 @@ rg - it			// erase at iterator
 ----------------------------------------------------------------
 
 
-STO Ranges
+RO Ranges
 ----------
 
-_STO Ranges_ are  ranges that have extended and STL compliant interface.  They also
+_RO Ranges_ are  ranges that have extended and STL compliant interface.  They also
 do not contain range elements data, they refer to an existing STL container or generate its
 elements. 
 
-STO Ranges are:  iterator ranges, lazy-expression ranges and numeric ranges.
+RO Ranges are:  iterator ranges, lazy-expression ranges and numeric ranges.
 Lazy means that its elements are calculated at the moment when particular
 element is accessed.  Exact type of the range often is not important - these
 are types mostly of temporaries.
@@ -252,7 +252,7 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z
 scc 'vint V = range(5);   V' 
 {0, 1, 2, 3, 4}
 
-// is lazy, O(1) storage
+// is lazy, O(1) rorage
 scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
 5
 -----------------------------------
@@ -314,7 +314,7 @@ Operators: Map, Reduce, Filter
 Map/Transform
 ~~~~~~~~~~~~~
 
-Operator `sto::operator* (Range,Functor)` is map/transform operator,
+Operator `ro::operator* (Range,Functor)` is map/transform operator,
 where `Functor` have signature compatible with `return_type(*)(range_elem_type)`.
 Examples where `return_type` is the same as `elem_type`:
 
@@ -348,13 +348,13 @@ scc 'vector<str> V{"aa", "bbb", "c"};  V * size || max'
 3
 ----------------------------------------------------------------------
 
-Functor `size_t sto::size(Range)` is similar to `strlen` but will work  with any Range. 
+Functor `size_t ro::size(Range)` is similar to `strlen` but will work  with any Range. 
 
 
 Fold
 ~~~~
 
-Operator `sto::operator|| (Range,Functor)` is *fold* operator (aka reduce,
+Operator `ro::operator|| (Range,Functor)` is *fold* operator (aka reduce,
 accumulate, compress, catamorphisms, or inject).
 
 ------------------------------------------
@@ -510,26 +510,26 @@ Available Functors
 Functors are function object, lambdas and plain functions. 
 
 ///////////////////////////////////
-All STO operators are templated. Specifying concrete type for templated
+All RO operators are templated. Specifying concrete type for templated
 operators is impractical, and its concrete types must be deduced. Unfortunately
 +++C++ +++ can not deduce function type if it is overloaded. 
 ...
 ///////////////////////////////////
 
-Regrettably not all function, are usable with STO. 
+Regrettably not all function, are usable with RO. 
 
-For example STO relies on fact that functor have argument of the same type as
+For example RO relies on fact that functor have argument of the same type as
 range element type.  But for examples `ctype.h` functions, which work with
 c-strings, have not `char` but `int` as parameter and they can be defined as
 macros.  And what makes it even worse,  they are randomly injected into default
-namespace by +++ LIBSTDC++ +++.  As workaround STO put equivalent functions
-with correct signatures into `sto` namespace.
+namespace by +++ LIBSTDC++ +++.  As workaround RO put equivalent functions
+with correct signatures into `ro` namespace.
 
 Also, even if we do not use using-directive or using-declaration, +++C++11+++
 inject into default namespace old C names.  +++C++11+++ comity made this
 compiler defect a standard.  For example: `<string>` includes `<cstdlib>` which
 define in default namespace `div`.  So we are forced to use our `div` functor
-with `sto::`.
+with `ro::`.
 
 Also compiler have its own peculiarities.  Following compiles with CLANG, but not with GCC:
 
@@ -539,7 +539,7 @@ scc 'map<int,int> M{{1,11}, {2,22}};  M * get\<0>'
 -----------------------------------------------------
 
 
-STO also defines some generic helper functions:
+RO also defines some generic helper functions:
 
 * `size(range) -> size_t` 
 * `empty(range) -> bool`
@@ -555,7 +555,7 @@ LAMBDA
 
 BOOST DOC: 
 
-By default, temporary const copies of the bound arguments are stored in the
+By default, temporary const copies of the bound arguments are rored in the
 lambda functor. This means that the value of a bound argument is fixed at the
 time of the creation of the lambda function and remains constant during the
 lifetime of the lambda function object. For example:
@@ -567,10 +567,10 @@ The comma operator is overloaded to combine lambda expressions into a sequence;
 the resulting unary lambda functor first assigns 2 to its argument, then adds
 the value of i to it. The value of the expression in the last line is 3, not 4.
 
-Wrapping an argument with ref, or cref, instructs the library to store the
+Wrapping an argument with ref, or cref, instructs the library to rore the
 argument as a reference, or as a reference to const 
 
--- STO var uses lvalue ref for lvalues and for rvalues store value in functor (with  move-ctor).
+-- RO var uses lvalue ref for lvalues and for rvalues rore value in functor (with  move-ctor).
 ----------------------------------
 A general restriction for the actual arguments is that they cannot be non-const rvalues. For example:
 
@@ -578,15 +578,15 @@ int i = 1; int j = 2;
 (_1 + _2)(i, j); // ok
 (_1 + _2)(1, 2); // error (!)
 
---- sto do not have such limitations
+--- ro do not have such limitations
 
 ------------
-The call constant(' ') creates a nullary lambda functor which stores the
+The call constant(' ') creates a nullary lambda functor which rores the
 character constant ' ' and returns a reference to it when invoked. The function
-constant_ref is similar, except that it stores a constant reference to its
+constant_ref is similar, except that it rores a constant reference to its
 argument.
 
---- STO constant() always returns obj with  const T&
+--- RO constant() always returns obj with  const T&
 
 
 ------------------------
@@ -763,18 +763,18 @@ Install
 -------
 
 -----------------------------------------
-git clone http://github.com/lvv/sto /PATH/TO/INSTALL/STO/
+git clone http://github.com/lvv/ro /PATH/TO/INSTALL/RO/
 
 echo '
-	#include <sto/sto.h> 
-	using namespace sto;
+	#include <ro/ro.h> 
+	using namespace ro;
 	int main() {
 		return range(10) || add;
 	}
-' > /tmp/sto-test.cc
+' > /tmp/ro-test.cc
 
 # test compile
-CXXFLAGS+='-I/PATH/TO/INSTALL/ -std=c++11' make /tmp/sto-test  &&  /tmp/sto-test
+CXXFLAGS+='-I/PATH/TO/INSTALL/ -std=c++11' make /tmp/ro-test  &&  /tmp/ro-test
 ---------------------------------------
 
 If you install in includes default-searchable directory (like `/usr/include` or
@@ -833,11 +833,11 @@ digraph G {
 		"debug.h";
 
 
-	"functor.h" -> "sto.h";
-	"range.h"   -> "sto.h";
-	"stl.h"     -> "sto.h";
-	"io.h"      -> "sto.h";
-	"regex.h"   -> "sto.h";
+	"functor.h" -> "ro.h";
+	"range.h"   -> "ro.h";
+	"stl.h"     -> "ro.h";
+	"io.h"      -> "ro.h";
+	"regex.h"   -> "ro.h";
 
 }
 --------------------------------------------------------------------
@@ -848,7 +848,7 @@ image::include-deps.png
 Status 
 ------
 
-STO was tested with GCC-4.7.2/4.8-pre-release and CLANG-3.2-pre-release.
+RO was tested with GCC-4.7.2/4.8-pre-release and CLANG-3.2-pre-release.
 
 
 ///////////////////////////////////////////
@@ -889,7 +889,7 @@ MISC
 	operators owl -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
 	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
-	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-history-of-live-programming.html
+	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-hirory-of-live-programming.html
 	http://kotaku.com/5975610/the-exceptional-beauty-of-doom-3s-source-code
 	Functional Programming in C++ --- http://www.altdevblogaday.com/2012/04/26/functional-programming-in-c/
 
@@ -903,7 +903,7 @@ BOOST LAMBDA
 	-------
 	int i = 1; int j = 2; 
 	(_1 + _2)(i, j); // ok
-	(_1 + _2)(1, 2); // BLL - error, STO - ok
+	(_1 + _2)(1, 2); // BLL - error, RO - ok
 
 BOOST MULTI_INDEX
 	Использование boost::multi_index --- http://blog.alno.name/ru/2008/04/using-boost-multi-index

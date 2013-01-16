@@ -1,5 +1,5 @@
-					#ifndef  STO_STL_H
-					#define  STO_STL_H
+					#ifndef  RO_STL_H
+					#define  RO_STL_H
 
 					#include <stddef.h>
 
@@ -10,9 +10,9 @@
 					#include <tuple>
 					#include <cassert>
 
-					#include <sto/meta.h>
+					#include <ro/meta.h>
 
-					namespace sto {
+					namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  MEMBERS ALIASES
 
@@ -55,7 +55,7 @@ back      (Rg&& C) { return std::forward<rg_reference<Rg>>(C.back()); };
 
 	template<class Rg, class=eIF<!has_back<Rg>::value>>	// ! has_back
 	auto
-back      (Rg&& C) -> decltype(endz(C))  { return std::forward<decltype(endz(C))>(*std::prev(sto::endz(C))); };
+back      (Rg&& C) -> decltype(endz(C))  { return std::forward<decltype(endz(C))>(*std::prev(ro::endz(C))); };
 
 
 //  x << Rg >> x   ---  remove head / tail;   usage: scc 'dlong V{1,2,3};  i << V >> j; __ i, V, j;'   prints: 1 {2} 3 
@@ -414,4 +414,4 @@ template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ retu
 template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
 
 					};
-					#endif	// STO_STL_H
+					#endif	// RO_STL_H

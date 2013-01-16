@@ -1,8 +1,8 @@
 				#include <scc/simple.h>
 				#include <lvv/check.h>
-				#include <sto/debug.h>
-				#include <sto/sto.h>
-				using namespace sto;
+				#include <ro/debug.h>
+				#include <ro/ro.h>
+				using namespace ro;
 
 		///// func types (for testing is_callable)
 		bool   f(int )                         { return true; };
@@ -42,7 +42,7 @@ CHECK(   is_range<decltype(range(1,2))>::value   )
 CHECK(   is_range<decltype(range(v9))>::value  ) 
 CHECK(   is_range<decltype(range(range(v9)))>::value  ) 
 CHECK(   is_range<decltype(range(+v9,-v9))>::value ) 
-CHECK(   is_range<sto::basic_range<vector<int>>&&>::value )
+CHECK(   is_range<ro::basic_range<vector<int>>&&>::value )
 CHECK(   is_range<vector<int>&>::value)
 
 CHECK( ! is_range<int*(*)(int)>::value ) 
@@ -151,13 +151,13 @@ CHECK(   (is_const_iterator<std::array<int,3>::const_iterator>()))
 CHECK( ! (is_const_iterator<std::array<int,3>::iterator>()))
 
 // basic_range
-CHECK(   (is_sto_range_iterator	<decltype(+range(vint{1}))>::value))
-CHECK( ! (is_sto_range_iterator	<decltype( range(vint{1}))>::value))
+CHECK(   (is_ro_range_iterator	<decltype(+range(vint{1}))>::value))
+CHECK( ! (is_ro_range_iterator	<decltype( range(vint{1}))>::value))
 CHECK(   (is_random_access_iterator	<decltype(+range(vint{1}))>::value))
 CHECK( ! (is_random_access_iterator	<decltype(+range(lint{1}))>::value))
 CHECK(   (is_bidirectional_iterator	<decltype(+range(vint{1}))>::value))
-CHECK( ! (is_sto_range		<decltype(+range(vint{1}))>::value))
-CHECK(   (is_sto_range		<decltype( range(vint{1}))>::value))
+CHECK( ! (is_ro_range		<decltype(+range(vint{1}))>::value))
+CHECK(   (is_ro_range		<decltype( range(vint{1}))>::value))
 CHECK(   (is_range			<decltype( range(vint{1}))>::value))
 CHECK( ! (is_range			<decltype(+range(vint{1}))>::value))
 

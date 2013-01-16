@@ -19,7 +19,7 @@ CONSEPTS
 	value indexable - having op[x]
 
 
-STO COLLECTIONS
+RO COLLECTIONS
 container:
 	stl
 		container
@@ -30,7 +30,7 @@ container:
 
 	c-array				- range; rigit
 
-sto
+ro
 	numeric_range::		- range; rigit const
 	iterator_range::	- range; rigit
 	chane_range::		- range 

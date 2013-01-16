@@ -1,12 +1,12 @@
-						#ifndef  STO_RANGE_H
-						#define  STO_RANGE_H
+						#ifndef  RO_RANGE_H
+						#define  RO_RANGE_H
 
-						#include <sto/numeric_range.h>
-						#include <sto/iterator_range.h>
-						#include <sto/mapped_range.h>
-						#include <sto/predicated_range.h>
+						#include <ro/numeric_range.h>
+						#include <ro/iterator_range.h>
+						#include <ro/mapped_range.h>
+						#include <ro/predicated_range.h>
 
-						namespace sto {
+						namespace ro {
 
 /////////////////////////////////////////////////////////////////  OPERATORS - FREE FUNCTIONS
 
@@ -16,7 +16,7 @@
 ////  it - n
 	template <class RgI>
 	eIF<
-		( is_numeric_range_iterator<RgI>::value  ||  is_sto_range_iterator<RgI>::value )
+		( is_numeric_range_iterator<RgI>::value  ||  is_ro_range_iterator<RgI>::value )
 		&&  is_random_access_iterator<RgI>::value
 		, rm_ref<decltype(std::declval<RgI>().current-1, std::declval<RgI>())> 
 	>  
@@ -28,7 +28,7 @@ operator-  (RgI it, typename RgI::difference_type n) {
 ////  it + n
 	template <class RgI>
 	eIF<
-		( is_numeric_range_iterator<RgI>::value  ||  is_sto_range_iterator<RgI>::value )
+		( is_numeric_range_iterator<RgI>::value  ||  is_ro_range_iterator<RgI>::value )
 		&&  is_random_access_iterator<RgI>::value
 		, rm_ref<decltype(std::declval<RgI>().current+1, std::declval<RgI>())> 
 	>  
@@ -40,7 +40,7 @@ operator+  (RgI it, typename RgI::difference_type n) {
 ////  n + it
 	template <class RgI>
 	eIF<
-		( is_numeric_range_iterator<RgI>::value  ||  is_sto_range_iterator<RgI>::value )
+		( is_numeric_range_iterator<RgI>::value  ||  is_ro_range_iterator<RgI>::value )
 		&&  is_random_access_iterator<RgI>::value
 		, rm_ref<decltype(1 + std::declval<RgI>().current,  std::declval<RgI>())> 
 	>  
@@ -52,7 +52,7 @@ operator+  (typename RgI::difference_type n,  RgI it) {
 ////  it - it
 	template <class RgI>
 	eIF <
-		( is_numeric_range_iterator<RgI>::value  ||  is_sto_range_iterator<RgI>::value )
+		( is_numeric_range_iterator<RgI>::value  ||  is_ro_range_iterator<RgI>::value )
 		&&  is_random_access_iterator<RgI>::value
 		, rm_ref<decltype(std::declval<RgI>().current - std::declval<RgI>().current,  typename RgI::difference_type())> 
 	>  
@@ -63,5 +63,5 @@ operator-  (const RgI& it1, const RgI& it2) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-						}       // sto namespace
-						#endif	// STO_RANGE_H
+						}       // ro namespace
+						#endif	// RO_RANGE_H

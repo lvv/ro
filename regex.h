@@ -1,5 +1,5 @@
-					#ifndef  STO_REGEX_H
-					#define  STO_REGEX_H
+					#ifndef  RO_REGEX_H
+					#define  RO_REGEX_H
 
 					#include <regex>
 						using std::regex;
@@ -16,9 +16,9 @@
 						using std::sregex_token_iterator;
 						using std::cregex_token_iterator;
 
-					#include <sto/range.h>
+					#include <ro/range.h>
 
-					namespace sto {
+					namespace ro {
 
 std::regex operator "" _R (const char* p, size_t n)	{ return std::regex(p); };
 

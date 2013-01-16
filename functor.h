@@ -1,10 +1,10 @@
-				#ifndef  STO_FUNCTOR_H
-				#define  STO_FUNCTOR_H
+				#ifndef  RO_FUNCTOR_H
+				#define  RO_FUNCTOR_H
 
 				#include <cctype>
-				#include <sto/meta.h>
+				#include <ro/meta.h>
 
-				namespace sto {
+				namespace ro {
 
 
 //  CTYPE.H

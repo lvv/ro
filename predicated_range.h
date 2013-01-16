@@ -1,11 +1,11 @@
 
-						#ifndef  STO_PREDICATED_RANGE_H
-						#define  STO_PREDICATED_RANGE_H
+						#ifndef  RO_PREDICATED_RANGE_H
+						#define  RO_PREDICATED_RANGE_H
 
-						#include <sto/basic_range.h>
+						#include <ro/basic_range.h>
 						#include <cassert>
 
-						namespace sto {
+						namespace ro {
 
 	// forward dcl
 	template< class Rg, class F = void*>  struct  predicated_range;
@@ -154,7 +154,7 @@ struct  predicated_range : basic_range<Rg> {
 		template<class Rg2>			// TODO specialize for seq containers self-assignemet
 		eIF <have_same_elem<Rg,Rg2>::value, self_type>
 	operator= (const Rg2& rhs) { 			//std:: cout << " SSIGNMENT \n";
-		//sto::clear(rg);
+		//ro::clear(rg);
 		
 		auto e = endz(rhs);
 		for (auto it = std::begin(rhs);   it != e;  ++it)  {
@@ -183,8 +183,8 @@ struct  predicated_range : basic_range<Rg> {
 	reference const	front()  const	{ return  *begin(); }
 	reference  	front()		{ return  *begin(); }
 
-	reference const back()  const	{ return  *std::prev(sto::endz(b::rg)); }	// TOFIX
-	reference  	back()		{ return  *std::prev(sto::endz(b::rg)); }	// TOFIX
+	reference const back()  const	{ return  *std::prev(ro::endz(b::rg)); }	// TOFIX
+	reference  	back()		{ return  *std::prev(ro::endz(b::rg)); }	// TOFIX
 
 
 	////  INPORTED RG METHODS
@@ -203,9 +203,9 @@ struct  predicated_range : basic_range<Rg> {
 template<class Rg, class F>		struct is_range_t<predicated_range<Rg,F>>			: std::true_type  {};
 template<class Rg, class F, bool RO>	struct is_range_t<predicated_range_iterator<Rg,F,RO>>	: std::false_type {};
 
-template<class Rg, class F>		struct is_sto_range<predicated_range<Rg,F>>			: std::true_type {};
+template<class Rg, class F>		struct is_ro_range<predicated_range<Rg,F>>			: std::true_type {};
 
-template<class Rg, class F, bool RO>	struct is_sto_range_iterator <predicated_range_iterator<Rg,F,RO>> : std::true_type  {};
+template<class Rg, class F, bool RO>	struct is_ro_range_iterator <predicated_range_iterator<Rg,F,RO>> : std::true_type  {};
 
 ////////////////////////////////////////////////////////////////  PREDICATED
 
@@ -222,5 +222,5 @@ template<class Rg, class F>	eIF<is_range<Rg>::value && is_callable<F, bool(rg_el
 template<class Rg>		eIF<is_range<Rg>::value,  predicated_range<Rg&&, std::function<bool(rg_elem_type<Rg>)>      >>	operator|  (Rg&& rg,  const rg_elem_type<Rg>& value)                    { return   predicated_range<Rg&&, std::function<bool(rg_elem_type<Rg>)>>       (std::forward<Rg>(rg),  [value](const rg_elem_type<Rg>& el){return el==value;}); };
 		// Overload is better than SFINAE selection. With OL we do not need to specify functor template arguments
 						};
-						#endif //  STO_MAPPED_RANGE_H
+						#endif //  RO_MAPPED_RANGE_H
 

@@ -1,11 +1,11 @@
-						#ifndef  STO_NUMERIC_RANGE_H
-						#define  STO_NUMERIC_RANGE_H
+						#ifndef  RO_NUMERIC_RANGE_H
+						#define  RO_NUMERIC_RANGE_H
 
-						#include <sto/meta.h>
+						#include <ro/meta.h>
 					
 						#include <cassert>
 
-						namespace sto {
+						namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  NUMERIC_RANGE_ITERATOR
 	template<typename T>
@@ -126,7 +126,7 @@ struct  numeric_range {
 	operator Ct<value_type,A>(){
 		Ct<value_type,A>  C(size());
 		C.clear();
-		C << *this;							// TOFIX: remove dependance on STO
+		C << *this;							// TOFIX: remove dependance on RO
 
 		return std::move(C);
 	}
@@ -178,4 +178,4 @@ range(T to) { return numeric_range<T>(0, to-1, 1); };
 
 
 						};
-						#endif //  STO_NUMERIC_RANGE_H
+						#endif //  RO_NUMERIC_RANGE_H

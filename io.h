@@ -17,9 +17,9 @@
 						using	std::endl;
 						using	std::ostream;
 
-					#include <sto/range.h>
+					#include <ro/range.h>
 
-					namespace sto {
+					namespace ro {
 
 	std::filebuf cout_fb;
 
@@ -47,9 +47,9 @@ operator<<      (ostream& os, const IT& it) { std::cout << &*it << " "; return o
 
 
 #undef		_
-#define		_    sto::out()   ,
+#define		_    ro::out()   ,
 #undef		__
-#define		__   sto::outln() ,
+#define		__   ro::outln() ,
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	template<typename Rg >

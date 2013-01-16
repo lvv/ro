@@ -1,13 +1,13 @@
 
-						#ifndef  STO_CHAIN_RANGE_H
-						#define  STO_CHAIN_RANGE_H
+						#ifndef  RO_CHAIN_RANGE_H
+						#define  RO_CHAIN_RANGE_H
 
-						#include <sto/meta.h>
-						#include <sto/stl.h>
+						#include <ro/meta.h>
+						#include <ro/stl.h>
 
 						#include <cassert>
 
-						namespace sto {
+						namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  FORWARD
 
@@ -158,7 +158,7 @@ struct  basic_range : ref_container<Rg&&> {
 		template<class Rg2>			// TODO specialize for seq containers self-assignemet
 		eIF <have_same_elem<Rg,Rg2>::value, self_type>
 	operator= (const Rg2& rhs) { 			//std:: cout << " SSIGNMENT \n";
-		sto::clear(rg);
+		ro::clear(rg);
 		auto e = endz(rhs);
 		for (auto it = std::begin(rhs);   it != e;  ++it)  {
 			detail::append_elem(std::forward<Rg>(rg), *it);
@@ -177,17 +177,17 @@ struct  basic_range : ref_container<Rg&&> {
 
 
 	////  RG PROPERTIES
-	size_t		size  () const	{ return  sto::size (rg); };
-	bool		empty () const	{ return  sto::empty(rg); }
-	explicit operator bool() const	{ return !sto::empty(rg); }
+	size_t		size  () const	{ return  ro::size (rg); };
+	bool		empty () const	{ return  ro::empty(rg); }
+	explicit operator bool() const	{ return !ro::empty(rg); }
 
 
 	////  ELEM ACCESS
 	reference const	front()  const	{ return  *std::begin(rg); }
 	reference  	front()		{ return  *std::begin(rg); }
 
-	reference const back()  const	{ return  *std::prev(sto::endz(rg)); }  
-	reference  	back()		{ return  *std::prev(sto::endz(rg)); } 
+	reference const back()  const	{ return  *std::prev(ro::endz(rg)); }  
+	reference  	back()		{ return  *std::prev(ro::endz(rg)); } 
 
 
 	////  INPORTED RG METHODS
@@ -246,11 +246,11 @@ basic_range<Rg>::operator[] (Fr2&& fr2)
 template<class Rg>		struct is_range_t<basic_range<Rg>>		: std::true_type  {};
 template<class Rg, bool RO>	struct is_range_t<basic_range_iterator<Rg,RO>>	: std::false_type {};
 
-template<class Rg>		struct is_sto_range               		: std::false_type {};
-template<class Rg>		struct is_sto_range<basic_range<Rg>>		: std::true_type {};
+template<class Rg>		struct is_ro_range               		: std::false_type {};
+template<class Rg>		struct is_ro_range<basic_range<Rg>>		: std::true_type {};
 
-template<class It>		struct is_sto_range_iterator      		: std::false_type {};
-template<class Rg, bool RO>	struct is_sto_range_iterator <basic_range_iterator<Rg,RO>> 	: std::true_type {};
+template<class It>		struct is_ro_range_iterator      		: std::false_type {};
+template<class Rg, bool RO>	struct is_ro_range_iterator <basic_range_iterator<Rg,RO>> 	: std::true_type {};
 
 
 
@@ -306,4 +306,4 @@ operator| (Rg&& rg, void (*f)(rg_iterator<Rg> b, rg_iterator<Rg> e) )    {
  }
 	
 						}; 
-						#endif //  STO_CHAIN_RANGE_H
+						#endif //  RO_CHAIN_RANGE_H

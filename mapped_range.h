@@ -1,11 +1,11 @@
 
-						#ifndef  STO_MAPPED_RANGE_H
-						#define  STO_MAPPED_RANGE_H
+						#ifndef  RO_MAPPED_RANGE_H
+						#define  RO_MAPPED_RANGE_H
 
-						#include <sto/basic_range.h>
-						#include <sto/debug.h>
+						#include <ro/basic_range.h>
+						#include <ro/debug.h>
 
-						namespace sto {
+						namespace ro {
 
 	// forward dcl
 	template< class Rg, class F = void*, class O = rg_elem_type<Rg> >  struct  mapped_range;
@@ -140,8 +140,8 @@ struct  mapped_range : basic_range<Rg> {
 	reference const	front()  const	{ return  *std::begin(b::rg); }
 	reference  	front()		{ return  *std::begin(b::rg); }
 
-	reference const back()  const	{ return  *std::prev(sto::endz(b::rg)); }  
-	reference  	back()		{ return  *std::prev(sto::endz(b::rg)); } 
+	reference const back()  const	{ return  *std::prev(ro::endz(b::rg)); }  
+	reference  	back()		{ return  *std::prev(ro::endz(b::rg)); } 
 
 
 	////  INPORTED RG METHODS
@@ -160,9 +160,9 @@ struct  mapped_range : basic_range<Rg> {
 template<class Rg, class F, class O>		struct is_range_t<mapped_range<Rg,F,O>>			: std::true_type  {};
 template<class Rg, class F, class O, bool RO>	struct is_range_t<mapped_range_iterator<Rg,F,O,RO>>	: std::false_type {};
 
-template<class Rg, class F, class O>		struct is_sto_range<mapped_range<Rg,F,O>>		: std::true_type {};
+template<class Rg, class F, class O>		struct is_ro_range<mapped_range<Rg,F,O>>		: std::true_type {};
 
-template<class Rg, class F, class O, bool RO>	struct is_sto_range_iterator <mapped_range_iterator<Rg,F,O,RO>> 		: std::true_type {};
+template<class Rg, class F, class O, bool RO>	struct is_ro_range_iterator <mapped_range_iterator<Rg,F,O,RO>> 		: std::true_type {};
 
 
 ////////////////////////////////////////////////////////////////////////////////  MAP:  Rg<T> * F    --> Rg<U>
@@ -195,7 +195,7 @@ operator*       (Rg&& rg,  F f)    {
 	return   mapped_range<Rg&&,F,O> (std::forward<Rg>(rg),  f);
  };
 
-//// STO::LAMBDA_FUNCTOR 
+//// RO::LAMBDA_FUNCTOR 
 
 	template<
 		class Rg,
@@ -281,4 +281,4 @@ operator *       (Rg&& rg, O (*f)(E) )    {
  };
 
 						};
-						#endif //  STO_MAPPED_RANGE_H
+						#endif //  RO_MAPPED_RANGE_H

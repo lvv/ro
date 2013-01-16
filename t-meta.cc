@@ -7,10 +7,10 @@
 using namespace std;
 
 
-#include "sto/meta.h"
-#include "sto/range.h"
+#include "ro/meta.h"
+#include "ro/range.h"
 #include "scc/fld.h"
-using namespace sto;
+using namespace ro;
 
 
 /////////////////////////////////////////////////////////////////////////  IS_PRINTABLE

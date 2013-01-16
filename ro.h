@@ -1,23 +1,23 @@
-// include all STO headers
+// include all RO headers
 
-#ifndef  STO_H
-#define  STO_H
+#ifndef  RO_H
+#define  RO_H
 
-#include <sto/meta.h>
-#include <sto/functor.h>
+#include <ro/meta.h>
+#include <ro/functor.h>
 
-#include <sto/range.h>
-#include <sto/stl.h>
-#include <sto/io.h>
-#include <sto/regex.h>
+#include <ro/range.h>
+#include <ro/stl.h>
+#include <ro/io.h>
+#include <ro/regex.h>
 
 #ifndef scc_BOOST_LAMBDA
 	// lambda must be after stl.h, io.h, range,h
-	#include <sto/lambda.h>
+	#include <ro/lambda.h>
 #endif
 
 #ifndef NDEBUG
-#include "sto/debug.h"
+#include "ro/debug.h"
 #endif
 
 
@@ -33,11 +33,11 @@
 
 	/* WHY IS THIS NOT WORKING
 	 * #if  GNUC_VER < 470
-		#error  GNUC_VER "GCC of this version does not support STO"
+		#error  GNUC_VER "GCC of this version does not support RO"
 	#endif*/
 
 	#if  !defined(__GXX_EXPERIMENTAL_CXX0X__) 
-		#error  "GCC: not C++11 mode (needed by STO)"
+		#error  "GCC: not C++11 mode (needed by RO)"
 	#endif
 #endif
 
@@ -56,4 +56,4 @@
 #endif
 
 
-#endif // STO_H
+#endif // RO_H

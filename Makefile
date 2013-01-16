@@ -6,11 +6,11 @@ make:
 
 PREFIX=/usr/local
 install:
-	@echo "not implemented - just use this (sto/) directory."
+	@echo "not implemented - just use this (ro/) directory."
 #	mkdir -p  ${PREFIX}/bin/
-#	cp -v sto ${PREFIX}/bin/
-#	mkdir -p  ${PREFIX}/include/sto/
-#	cp -v *.h ${PREFIX}/include/sto/
+#	cp -v ro ${PREFIX}/bin/
+#	mkdir -p  ${PREFIX}/include/ro/
+#	cp -v *.h ${PREFIX}/include/ro/
 
 
 ############################################################################################### asciidoc gen

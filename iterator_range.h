@@ -1,9 +1,9 @@
 
-						#ifndef  STO_ITERATOR_RANGE_H
-						#define  STO_ITERATOR_RANGE_H
+						#ifndef  RO_ITERATOR_RANGE_H
+						#define  RO_ITERATOR_RANGE_H
 
-						#include <sto/meta.h>
-						namespace sto {
+						#include <ro/meta.h>
+						namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  ITERATOR_RANGE
 
@@ -85,4 +85,4 @@ operator| (Rg&& rg, rg_iterator<Rg> (*f)(rg_iterator<Rg> b, rg_iterator<Rg> e) )
  }
 
 						};
-						#endif //  STO_ITERATOR_RANGE_H
+						#endif //  RO_ITERATOR_RANGE_H

@@ -38,11 +38,11 @@ digraph G {
 		"debug.h";
 
 
-	"functor.h" -> "sto.h";
-	"range.h"   -> "sto.h";
-	"stl.h"     -> "sto.h";
-	"io.h"      -> "sto.h";
-	"regex.h"   -> "sto.h";
-	"lambda.h"   -> "sto.h";
+	"functor.h" -> "ro.h";
+	"range.h"   -> "ro.h";
+	"stl.h"     -> "ro.h";
+	"io.h"      -> "ro.h";
+	"regex.h"   -> "ro.h";
+	"lambda.h"   -> "ro.h";
 
 }

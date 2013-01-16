@@ -1,5 +1,5 @@
-				#ifndef  STO_DEBUG_H
-				#define  STO_DEBUG_H
+				#ifndef  RO_DEBUG_H
+				#define  RO_DEBUG_H
 
 				#include <iostream>
 				#include <vector>
@@ -13,12 +13,12 @@
 
 				#include <cxxabi.h>
 
-				#ifdef scc_STO
-				#include <sto/range.h>
+				#ifdef scc_RO
+				#include <ro/range.h>
 				#endif
 
 
-				namespace sto {
+				namespace ro {
 
 //////////////////////////////////////////////////////////////////////////////////////////////  PTYPE / PVTYPE
 
@@ -118,7 +118,7 @@ static std::vector<int>	__attribute__((unused))		mk_v23(){ return  v23; };
 static std::vector<int>	__attribute__((unused))		mk_v0()	{ return  v0; };
 static std::deque<int>	__attribute__((unused))		mk_d9()	{ return  d9; };
 
-#ifdef scc_STO
+#ifdef scc_RO
 std::forward_list<int>	__attribute__((unused)) 	fl9	{0,1,2,3,4,5,6,7,8,9},  fl0, fl23{2,3};
 
 //  range
@@ -130,6 +130,6 @@ auto __attribute__((unused))		rrd9	= range(rd9);
 auto __attribute__((unused))		n9	= range(9); 
 #endif
 
-				};	// namespace sto
-				#endif  // STO_DEBUG_H
+				};	// namespace ro
+				#endif  // RO_DEBUG_H
 				// vim:ts=8 smarttab

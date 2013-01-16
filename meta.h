@@ -1,5 +1,5 @@
-					#ifndef  STO_META_H
-					#define  STO_META_H
+					#ifndef  RO_META_H
+					#define  RO_META_H
 
 					#include <type_traits>
 					#include <functional>
@@ -17,7 +17,7 @@
 					#include <algorithm>
 					#include <string>
 
-					namespace sto {
+					namespace ro {
 
 // TODO
 // 	SFNIE with NOEXCEPT  --- http://nonchalantlytyped.net/blog/2012/06/27/yet-another-sfinae/
@@ -456,7 +456,7 @@ struct size_fo {
 
 	template<class Rg>    eIF<has_size<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return rg.size(); };
 	//template<class Rg>		auto	size_impl (const Rg& rg) ->decltype(rg.size())  const      { return rg.size(); };
-	template<class T, size_t N>	size_t	size_impl (const T (&C)[N]) const                          { return sto::endz(C) - std::begin(C); };
+	template<class T, size_t N>	size_t	size_impl (const T (&C)[N]) const                          { return ro::endz(C) - std::begin(C); };
 	template<class T, size_t N>	size_t	size_impl (const std::array<T,N>& A) const                 { return N; };
 	template<class... Types>	size_t	size_impl (const typename std::tuple<Types...>& Tpl) const { return  std::tuple_size<std::tuple<Types...> >::value; };
 	template<class U, class V>	size_t	size_impl (const std::pair<U,V>& P) const                  { return 2; };
@@ -472,7 +472,7 @@ size_fo  size;
 
 /////  EMPTY
 template<typename Rg>	eIF< has_empty<Rg>::value,bool>	empty(const Rg& rg)	{ return  rg.empty(); }
-template<typename Rg>	eIF<!has_empty<Rg>::value,bool>	empty(const Rg& rg)	{ return  sto::size(rg)==0; }
+template<typename Rg>	eIF<!has_empty<Rg>::value,bool>	empty(const Rg& rg)	{ return  ro::size(rg)==0; }
 
 /////  CLEAR
 template<typename Rg>	eIF< has_clear<Rg>::value>	clear(Rg&& rg) 		{ rg.clear(); }
