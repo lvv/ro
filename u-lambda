@@ -100,12 +100,10 @@ scc 		'eval(v9 * (cout <<  _1  ));'
 scc		'(v9 | (cout << _1)) || nop;'
 scc		'vector<int*> va;  eval(v9 * (va << &_1));  va * *_1 | reverse'
 
+#scc		'v9 * (*oi = _1);'  			# TOFIX
 
-#scc 'vector<int*> va; v9 * (va << &_1); __ size(va); for(auto p:va) _ *p; '
-#scc 'v9 * (*oi = _1);'  
-#scc 'v9 * (cout << _1);'
-
-# cl scc 'v9 * (cout << _1) | var(true);'   # TOFIX
+# multi index
+#scc 'typedef tuple<str,int> rec;  vector<rec> v {MT("xxx",3),MT("aaa",2),MT("zzz",1)};  vec<rec*> vp1, vp2;  v*(vp1<<&_1)||nop; vp1**_1|sort; vp2**_2'
 
 # function call
 #scc '(strlen(_1))("abc")'	# TOFIX

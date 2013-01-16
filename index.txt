@@ -892,6 +892,7 @@ MISC
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
 	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-history-of-live-programming.html
 	http://kotaku.com/5975610/the-exceptional-beauty-of-doom-3s-source-code
+	Functional Programming in C++ --- http://www.altdevblogaday.com/2012/04/26/functional-programming-in-c/
 
 BOOST LAMBDA
 	BLL:  int i = 1;  (_1 = 2, _1 + i)(i);    	// ==3
@@ -904,6 +905,11 @@ BOOST LAMBDA
 	int i = 1; int j = 2; 
 	(_1 + _2)(i, j); // ok
 	(_1 + _2)(1, 2); // BLL - error, STO - ok
+
+BOOST MULTI_INDEX
+	Использование boost::multi_index --- http://blog.alno.name/ru/2008/04/using-boost-multi-index
+	About Boost Multi-index Containers --- http://lynxline.com/about-boost-multi-index-containers/
+	TR http://library.developer.nokia.com/index.jsp?topic=/S60_5th_Edition_Cpp_Developers_Library/GUID-02F20077-73B5-4A63-85DB-D909E0ADE01C/html/con_multi_index_tutorial_key_extraction.html
 
 
 RANGES
