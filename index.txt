@@ -67,7 +67,7 @@ container - x;
 ---------------------------------------------------------------------------
 
 Above won't change if we use any container (or range) type or if `x` is not a  value, but
-a predicate, iterator or range.
+a predicate, iterator or sub-range .
 
 RO was designed to be composable.  Range/functors/RO-lambdas can
 be combined into complex expression, where actions flow from left to right.
@@ -96,9 +96,9 @@ double cos_max = range(8, 9, 0.01) * std::cos  || std::max;
 SCC
 ---
 
-RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++ snippet evaluator at shell prompt).
-It does not depends on SCC but we will use it in examples, so we need to
-tell about SCC first. 
+RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++
+snippet evaluator at shell prompt).  It does not depends on SCC but we will use
+it in examples, so we need to tell about SCC first. 
 
 Without SCC, minimal complete example for above erase code would be:
 
@@ -127,12 +127,12 @@ scc 'vector<int> vec{1,2,3};  vec - 2;  vec'
 {1, 3}
 ----------------------------------------------------------------------------
 
-1st line in above is what you type at your shell prompt.  2nd line is output.
+1st line in above is what you type at shell prompt.  2nd line is output.
 SCC includes RO and all standard libraries includes; and it sends last
 statement-expression, if not terminated by semi-colon, to `std::cout`. 
 
 In examples we will use two SCC types typedefs: `str` is  `std::string`, and
-`vint`  is `std::vector<int>`.  We need these these because most examples are
+`vint`  is `std::vector<int>`.  We need these because most examples are
 1-liners.  So we can rewrite above as:
 
 ----------------------------------------------------------------------------
