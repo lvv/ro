@@ -18,12 +18,11 @@ ABOUT
 RO is +++C++ +++ headers only library, which provides alternative
 interface to STL and some elements of functional programming.
 
-RO operates on _ranges_ which are STL containers, RO ranges, C-arrays or
-C-strings.  Most of operations are privided through overloaded operators.
+RO operates on _ranges_ which are STL containers, RO-ranges, C-arrays or
+C-strings.  Most of operations are provided through overloaded operators.
 
-Use of overloaded operators is controversial features and  some
-consider that overloaded operators, not having meaningfull names are confusing
-and ambigues.
+Some consider that overloaded operators, not having meaningful names are confusing
+and ambiguous.
 
 I would argue that it is not so. 
 
@@ -37,17 +36,20 @@ Yes, these are  two `push_back`.
 
 Or to be precise - if container is `std::vector` it is `push_back` .  
 If `std::set` it is `insert`.  If `std::stack` it will be `push`.
-If `x1` is container too, you probably will
-need to use `std::copy`. Or `std::slice` or low level for-loop.
-With STL you need to keep reference handy - it is difficult to 
-remeber all these IFs and ORs.  If container is a C-string, you will need close
+If `x1` is container too, you will need `std::copy`. Or `std::slice` or low level for-loop.
+If container is a C-string, you will need close
 your STL reference and start looking at `man string`.
 
+Of cause there is logical explanation for this STL's non uniformity and
+operations performed under the hood are very different for each case.  End
+result of this - after many years, I still need reference manual handy to
+use STL. 
+
 With RO, it will stay the same as shown in above example.  No IFs no ORs. And
-yes, RO treats C-strins, C-arrays and RO-Ranges the same way and it provides
+yes, RO treats STL containers, C-strings, C-arrays and RO-Ranges in the same way and it provides
 uniform interface for all of them.
 
-Another example.  We need to perform simple operation: remove value from a
+In next example we need to perform simple operation: remove value from a
 `std::vector`. This is why C++ is called "too expert friendly": 
 
 ---------------------------------------------------------------------------
@@ -55,30 +57,32 @@ container.erase(stl::remove(container.begin(), container.end(), x), container.en
 ---------------------------------------------------------------------------
 
 For above you need not only C++ reference, but you will need know erase-remove
-idiom and how to use it.  Af couse if container is not `std::vector`, there will
+idiom and how to use it.  Of cause if container is not `std::vector`, there will
 be another way how to do this.
 
-And people that use above call RO confusing:
+And people that use above call RO way confusing:
 
 ---------------------------------------------------------------------------
 container - x;
 ---------------------------------------------------------------------------
 
-Above woun't change if we use any containter (range) type or if `x` is a value,
-predicate, iterator or range.
+Above won't change if we use any container (or range) type or if `x` is not a  value, but
+a predicate, iterator or range.
 
-Yet another one. Very confusing for them too:
+RO was designed to be composable.  Range/functors/RO-lambdas can
+be combined into complex expression, where actions flow from left to right.
+Like classic:
 
 ---------------------------------------------------------------------------
-container | std::sort | std::unique | std::reverse;
+container | sort | unique | reverse;
 ---------------------------------------------------------------------------
 
-I won't say that with RO you won't need read manual.
-And there are some constructs that you probably never seen before.
+If RO used functions instead of operators, this would much more complex
+expression with 4-level deep parenthesis.
 
-But it is simpler, it is much terser and code
-written with it is easier to understand. It is similarly to STL, as efficient
-as hand written for-loop.
+RO strive to provide simpler than STL interface, terser and easier to
+understand code. It is similarly to STL has zero overhead, and as efficient as
+hand written for-loop.
 
 ///////////////////
 

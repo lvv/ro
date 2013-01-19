@@ -30,7 +30,7 @@ include $(INCLUDE)
 /tmp/t.ad:  README.asciidoc
 	head -n-1 README.asciidoc > /tmp/t.ad
 
-index.html:  /tmp/t.ad
+#index.html:  /tmp/t.ad
 
 #show:	index.html
 #	google-chrome index.html &
