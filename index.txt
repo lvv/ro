@@ -1,5 +1,5 @@
-RO — STL Template Operators
-===========================
+RO — Range Operators
+====================
 :compact-option: compact
 
 //include::/tmp/t.ad[]
@@ -7,7 +7,7 @@ RO — STL Template Operators
 +++ <small> +++
 
 * Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
-* Requires:  +++ C++11 +++   compiler.  Tested with GCC-4.7.2, GCC-4.8(pre release), CLANG-3.2(pre release) +
+* Requires:  +++ C++11 +++   compiler.  Tested with GCC-4.7.2, GCC-4.8(pre release), CLANG-3.2 +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
 
 +++ </small> +++
@@ -18,48 +18,76 @@ ABOUT
 RO is +++C++ +++ headers only library, which provides alternative
 interface to STL and some elements of functional programming.
 
-It allows to replace usual STL verbosity like this:
+RO operates on _ranges_ which are STL containers, RO ranges, C-arrays or
+C-strings.  Most of operations are privided through overloaded operators.
+
+Use of overloaded operators is controversial features and  some
+consider that overloaded operators, not having meaningfull names are confusing
+and ambigues.
+
+I would argue that it is not so. 
+
+Here is 1st example. You probably can figure out what it does without explanation:
 
 ---------------------------------------------------------------------------
-vec.erase(stl::remove(vec.begin(), vec.end(), val), vec.end()); 
+container << x1 << x2;
 ---------------------------------------------------------------------------
 
-with this:
+Yes, these are  two `push_back`.
+
+Or to be precise - if container is `std::vector` it is `push_back` .  
+If `std::set` it is `insert`.  If `std::stack` it will be `push`.
+If `x1` is container too, you probably will
+need to use `std::copy`. Or `std::slice` or low level for-loop.
+With STL you need to keep reference handy - it is difficult to 
+remeber all these IFs and ORs.  If container is a C-string, you will need close
+your STL reference and start looking at `man string`.
+
+With RO, it will stay the same as shown in above example.  No IFs no ORs. And
+yes, RO treats C-strins, C-arrays and RO-Ranges the same way and it provides
+uniform interface for all of them.
+
+Another example.  We need to perform simple operation: remove value from a
+`std::vector`. This is why C++ is called "too expert friendly": 
 
 ---------------------------------------------------------------------------
-vec - val;
+container.erase(stl::remove(container.begin(), container.end(), x), container.end()); 
 ---------------------------------------------------------------------------
 
-On left-hand side of minus sign  can be not only STL container, but also RO
-range or C-string.  And unlike STL you do not need remember different erase
-syntax for `std::vector`, `std::list`, `std::set` or something else. 
+For above you need not only C++ reference, but you will need know erase-remove
+idiom and how to use it.  Af couse if container is not `std::vector`, there will
+be another way how to do this.
 
-Of cause it not only about erase. In next example you probably can figure out
-what it does without explanation:
-
----------------------------------------------------------------------------
-vec <<  val1 << val2;
----------------------------------------------------------------------------
-
-Yes, this  was two `push_back`.  Most STL container management function have
-terser RO equivalent.  
-
-Classic filter:
+And people that use above call RO confusing:
 
 ---------------------------------------------------------------------------
-vec | std::sort | std::unique | std::reverse;
+container - x;
 ---------------------------------------------------------------------------
 
-Namespace `std::` was intentionally used to show that these are unmodified STL
-algorithms used as function pointers arguments for `operator|`
+Above woun't change if we use any containter (range) type or if `x` is a value,
+predicate, iterator or range.
 
+Yet another one. Very confusing for them too:
+
+---------------------------------------------------------------------------
+container | std::sort | std::unique | std::reverse;
+---------------------------------------------------------------------------
+
+I won't say that with RO you won't need read manual.
+And there are some constructs that you probably never seen before.
+
+But it is simpler, it is much terser and code
+written with it is easier to understand. It is similarly to STL, as efficient
+as hand written for-loop.
+
+///////////////////
 
 Map/fold example: find (brute force algorithm) maximum of  `cos(x)` for `8 < x < 9`:
 
 ------------------------------------------
 double cos_max = range(8, 9, 0.01) * std::cos  || std::max;
 ------------------------------------------
-
+/////////////////////////
 
 SCC
 ---
@@ -86,7 +114,6 @@ int main() {
         }  
         cout << endl;
 }
-
 ----------------------------------------------------------------------------
 
 With SCC, equivalent which also shows output, is: 
@@ -97,11 +124,12 @@ scc 'vector<int> vec{1,2,3};  vec - 2;  vec'
 ----------------------------------------------------------------------------
 
 1st line in above is what you type at your shell prompt.  2nd line is output.
-SCC includes all standard libraries includes; and it sends last
+SCC includes RO and all standard libraries includes; and it sends last
 statement-expression, if not terminated by semi-colon, to `std::cout`. 
 
-In examples we will use two SCC types shortcuts: `str` is  `std::string`, and
-`vint`  is `std::vector<int>`.  So we can rewrite above as:
+In examples we will use two SCC types typedefs: `str` is  `std::string`, and
+`vint`  is `std::vector<int>`.  We need these these because most examples are
+1-liners.  So we can rewrite above as:
 
 ----------------------------------------------------------------------------
 scc 'vint{1,2,3} - 2'
@@ -209,7 +237,7 @@ rg - it			// erase at iterator
 RO Ranges
 ----------
 
-_RO Ranges_ are  ranges that have extended and STL compliant interface.  They also
+_RO Ranges_ are  ranges that have extended but STL compliant interface.  They also
 do not contain range elements data, they refer to an existing STL container or generate its
 elements. 
 
@@ -252,7 +280,7 @@ a b c d e f g h i j k l m n o p q r s t u v w x y z
 scc 'vint V = range(5);   V' 
 {0, 1, 2, 3, 4}
 
-// is lazy, O(1) rorage
+// is lazy, O(1) storage
 scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
 5
 -----------------------------------

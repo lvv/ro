@@ -1,4 +1,4 @@
-//  LAMBDA EXPRESSIONS
+//  LAMBDA.H
 				#ifndef  RO_LAMBDA_H
 				#define  RO_LAMBDA_H
 
@@ -365,31 +365,32 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 
 
-//      λ	ANY	T	=>	λ
-//      T	ANY	λ	=>	λ	// default rules
-//
-//      range	*	λ	=> 	map-range
-//      !range	*	λ	=> 	λ
-//      λ	*	λ	=> 	λ o λ
-//
-//      range	|	algo	=> 	basic-range
-//      range	|	pred	=> 	predicated-range
-//      range	|	λ	=> 	predicated-range
-//      !	|	λ	=> 	λ
-//
-//      range	||	λ	=> 	fold-range
-//      !	||	λ	=> 	λ
-//
-//      range	<<	elem	=> 	range
-//      elem	<< 	range	=> 	range
-//      range	<< 	range	=> 	range
-//      cout	<<	ioable	=> 	cout
-//      cout	<<	!ioable	=> 	cout
-//      cout	<<	λ	=> 	λ
-//
-//      out_t	,	X	=> 	out_t
-//      out_t	,	λ	=> 	λ
+	//      λ	ANY	T	=>	λ
+	//      T	ANY	λ	=>	λ	// default rules
+	//
+	//      range	*	λ	=> 	map-range
+	//      !range	*	λ	=> 	λ
+	//      λ	*	λ	=> 	λ o λ
+	//
+	//      range	|	algo	=> 	basic-range
+	//      range	|	pred	=> 	predicated-range
+	//      range	|	λ	=> 	predicated-range
+	//      !	|	λ	=> 	λ
+	//
+	//      range	||	λ	=> 	fold-range
+	//      !	||	λ	=> 	λ
+	//
+	//      range	<<	elem	=> 	range
+	//      elem	<< 	range	=> 	range
+	//      range	<< 	range	=> 	range
+	//      cout	<<	ioable	=> 	cout
+	//      cout	<<	!ioable	=> 	cout
+	//      cout	<<	λ	=> 	λ
+	//
+	//      out_t	,	X	=> 	out_t
+	//      out_t	,	λ	=> 	λ
 
+// is_range_op
 template<class Op, class Arg1>	struct  is_range_op   			        { enum {value=false}; };
 template<class Arg1>		struct  is_range_op<logical_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 template<class Arg1>		struct  is_range_op<bitwise_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
