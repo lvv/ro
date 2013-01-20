@@ -21,12 +21,20 @@ interface to STL and some elements of functional programming.
 RO operates on _ranges_ which are STL containers, RO-ranges, C-arrays or
 C-strings.  Most of operations are provided through overloaded operators.
 
-Some consider that overloaded operators, not having meaningful names are confusing
-and ambiguous.
+Some consider that overloaded operators, not having meaningful names and having
+multiple overloads are confusing and ambiguous.
 
 I would argue that it is not so. 
 
-Here is 1st example. You probably can figure out what it does without explanation:
+Even in C you have to know the type of operands to understant what action is performed:
+
+--------------------
+x + 1 	// adds 1
+p + 1	// adds sizeof(*p)
+---------------------
+
+Here is an example of what is more confusing: member function or overload
+operator. You probably can figure out what it does without explanation:
 
 ---------------------------------------------------------------------------
 container << x1 << x2;
@@ -40,8 +48,8 @@ If `x1` is container too, you will need `std::copy`. Or `std::slice` or low leve
 If container is a C-string, you will need close
 your STL reference and start looking at `man string`.
 
-Of cause there is logical explanation for this STL's non uniformity and
-operations performed under the hood are very different for each case.  End
+Of cause there is logical explanation for STL's non-uniformity. 
+Operations performed under the hood are very different for each case.  End
 result of this - after many years, I still need reference manual handy to
 use STL. 
 
@@ -49,7 +57,7 @@ With RO, it will stay the same as shown in above example.  No IFs no ORs. And
 yes, RO treats STL containers, C-strings, C-arrays and RO-Ranges in the same way and it provides
 uniform interface for all of them.
 
-In next example we need to perform simple operation: remove value from a
+In next example we need to perform simple operation: remove a value from a
 `std::vector`. This is why C++ is called "too expert friendly": 
 
 ---------------------------------------------------------------------------
@@ -66,7 +74,7 @@ And people that use above call RO way confusing:
 container - x;
 ---------------------------------------------------------------------------
 
-Above won't change if we use any container (or range) type or if `x` is not a  value, but
+Above won't change if we use any container (or range) object or if `x` is not a  value, but
 a predicate, iterator or sub-range .
 
 RO was designed to be composable.  Range/functors/RO-lambdas can
@@ -77,12 +85,12 @@ Like classic:
 container | sort | unique | reverse;
 ---------------------------------------------------------------------------
 
-If RO used functions instead of operators, this would much more complex
+If RO used functions instead of operators, this would be much more complex
 expression with 4-level deep parenthesis.
 
-RO strive to provide simpler than STL interface, terser and easier to
-understand code. It is similarly to STL has zero overhead, and as efficient as
-hand written for-loop.
+RO strives to provide simpler than STL interface, terser and easier to
+understand code. RO, similarly to STL, has zero overhead, and is as efficient
+as hand written for-loop.
 
 ///////////////////
 
@@ -97,7 +105,7 @@ SCC
 ---
 
 RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++
-snippet evaluator at shell prompt).  It does not depends on SCC but we will use
+snippet evaluator at shell prompt).  RO does not depends on SCC but we will use
 it in examples, so we need to tell about SCC first. 
 
 Without SCC, minimal complete example for above erase code would be:
@@ -113,8 +121,8 @@ using namespace ro;
 int main() {
         vector<int> vec {1,2,3};
         vec - 2; 
-        for (int i: vec) {
-                cout << i << " ";
+        for (int x: vec) {
+                cout << x << " ";
         }  
         cout << endl;
 }
@@ -131,30 +139,32 @@ scc 'vector<int> vec{1,2,3};  vec - 2;  vec'
 SCC includes RO and all standard libraries includes; and it sends last
 statement-expression, if not terminated by semi-colon, to `std::cout`. 
 
-In examples we will use two SCC types typedefs: `str` is  `std::string`, and
+In examples we will use two SCC's types typedefs: `str` is  `std::string`, and
 `vint`  is `std::vector<int>`.  We need these because most examples are
-1-liners.  So we can rewrite above as:
+1-liners.  With these we can rewrite above as:
 
 ----------------------------------------------------------------------------
 scc 'vint{1,2,3} - 2'
 {1, 3}
 ----------------------------------------------------------------------------
 
-RO print operator can print almost any STL objects (containers, tuples, etc)
+RO print operator can print almost any STL objects
 directly.  Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
-scc 'auto r = range(0, 1, 0.2);   r, endl, r * sin'
-{0, 0.2, 0.4, 0.6, 0.8, 1}
-{0, 0.198669, 0.389418, 0.564642, 0.717356, 0.841471}
+scc  'range(3),  endl,  make_tuple("abc",42)'
+{0, 1, 2}
+⟨abc, 42⟩
 -----------------------------------------------------------------------------
 
 Print operator are `_` and `__`.  Longer one terminates output with `endl`.
 With these, equivalent to previous example would be:
 
 -----------------------------------------------------------------------------
-scc '__ range(0,1,.2);  __ range(0,1,.2) * sin;'
+scc  '__ range(3);  __ make_tuple("abc",42)'
+{0, 1, 2}
+⟨abc, 42⟩
 -----------------------------------------------------------------------------
 
 
@@ -921,6 +931,7 @@ MISC
 	operators owl -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
 	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
+	Pyhone: Functional Programming with Collections -- http://www.itmaybeahack.com/book/python-2.6/html/p02/p02c10_adv_seq.html
 	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-hirory-of-live-programming.html
 	http://kotaku.com/5975610/the-exceptional-beauty-of-doom-3s-source-code
 	Functional Programming in C++ --- http://www.altdevblogaday.com/2012/04/26/functional-programming-in-c/
@@ -936,6 +947,11 @@ BOOST LAMBDA
 	int i = 1; int j = 2; 
 	(_1 + _2)(i, j); // ok
 	(_1 + _2)(1, 2); // BLL - error, RO - ok
+	------------------
+	The logic(boolean) operators have by the default a short-circuiting way
+	of acting in expressions with multiple boolean operations.  This behavior does
+	not apply to operators that are overloaded by the programmer. 
+
 
 BOOST MULTI_INDEX
 	Использование boost::multi_index --- http://blog.alno.name/ru/2008/04/using-boost-multi-index

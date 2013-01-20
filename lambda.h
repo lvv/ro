@@ -11,6 +11,32 @@
 
 				namespace ro {
 
+
+	//      T	ANY	λ	=>	λ	// default rules
+	//      λ	ANY	T	=>	λ
+	//
+	//      range	*	λ	=> 	map-range
+	//      !range	*	λ	=> 	λ
+	//
+	//      range	|	algo	=> 	basic-range
+	//      range	|	pred	=> 	predicated-range
+	//      range	|	λ	=> 	predicated-range
+	//      !range	|	λ	=> 	λ
+	//
+	//      range	||	λ	=> 	fold-range
+	//      !	||	λ	=> 	λ
+	//
+	//      range	<<	elem	=> 	range
+	//      elem	<< 	range	=> 	range
+	//      range	<< 	range	=> 	range
+	//      cout	<<	ioable	=> 	cout
+	//      cout	<<	!ioable	=> 	cout
+	//      cout	<<	λ	=> 	λ
+	//
+	//      out_t	,	X	=> 	out_t
+	//      out_t	,	λ	=> 	λ
+	//      λ	,	λ	=> 	λ
+
 ////////////////////////////////////////////////////////////////////////////////////////////////   META+FORWARDS
 
 	#define  IS_FR(F)  ro::is_lambda_functor<F>::value
@@ -46,6 +72,7 @@
 		};                                                                                              \
 	};
 
+	// http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B
 
 	/////  UNARY ------------------------------------
 
@@ -61,13 +88,12 @@
 	DEF_OP1_CLASS(&,,addressof_op)
 	DEF_OP1_CLASS(*,,contentsof_op)
 
-	// other
-	// TODO
-  	//class comma_op {}; // boost special
-	//class member_pointer_op {}; // boost special
 
 	/////  BINARY ------------------------------------
 	
+	// TODO
+  	//class comma_op {}; // boost special
+       
 	DEF_OP2_CLASS(+,,plus_op)
        	DEF_OP2_CLASS(-,,minus_op)
        	DEF_OP2_CLASS(*,,multiply_op)
@@ -107,8 +133,9 @@
                                        
 
 	//  MEMBERS ONLY -----------------------------------------
-	DEF_OP2_CLASS(=,,assign_op)
-	DEF_OP2_CLASS([,],subscript_op)
+	DEF_OP2_CLASS(=,,assign_op)		
+	DEF_OP2_CLASS([,],subscript_op)        		// TODO:  add const version
+	//class member_pointer_op {}; // boost special
 	//DEF_OP2_CLASS( TODO call_op)
 
 /////////////////////////////////////////////////////////////////////////////////////////   MEMBER OP MACRO
@@ -363,32 +390,6 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 	OP1(*,contentsof_op)
 
 
-
-
-	//      λ	ANY	T	=>	λ
-	//      T	ANY	λ	=>	λ	// default rules
-	//
-	//      range	*	λ	=> 	map-range
-	//      !range	*	λ	=> 	λ
-	//      λ	*	λ	=> 	λ o λ
-	//
-	//      range	|	algo	=> 	basic-range
-	//      range	|	pred	=> 	predicated-range
-	//      range	|	λ	=> 	predicated-range
-	//      !	|	λ	=> 	λ
-	//
-	//      range	||	λ	=> 	fold-range
-	//      !	||	λ	=> 	λ
-	//
-	//      range	<<	elem	=> 	range
-	//      elem	<< 	range	=> 	range
-	//      range	<< 	range	=> 	range
-	//      cout	<<	ioable	=> 	cout
-	//      cout	<<	!ioable	=> 	cout
-	//      cout	<<	λ	=> 	λ
-	//
-	//      out_t	,	X	=> 	out_t
-	//      out_t	,	λ	=> 	λ
 
 // is_range_op
 template<class Op, class Arg1>	struct  is_range_op   			        { enum {value=false}; };
