@@ -12,30 +12,34 @@
 				namespace ro {
 
 
-	//      T	ANY	λ	=>	λ	// default rules
-	//      λ	ANY	T	=>	λ
+	//      T	ANY	λ      		=>	λ	// default rules
+	//      λ	ANY	T      		=>	λ
+	//                             		
+	//      range	*	λ      		=> 	map-range
+	//      !range	*	λ      		=> 	λ
+	//      range	*=      λ      		=> 	not-lazy map-range		// TO IMPL
+	//                             		
+	//      range	|	algo   		=> 	basic-range
+	//      range	|	pred   		=> 	predicated-range
+	//      range	|	λ      		=> 	predicated-range
+	//      !range	|	λ      		=> 	λ
+	//                             		
+	//      range	||	λ      		=> 	fold-range
+	//      !	||	λ      		=> 	λ
+	//                             		
+	//      range	<<	elem   		=> 	range   	// append elem
+	//      elem	<< 	range  		=> 	range           // remove 1st into elem
+	//      range	<< 	range  		=> 	range           // append range
+	//      cout	<<	ioable 		=> 	cout
+	//      cout	<<	!ioable		=> 	cout
+	//      cout	<<	λ      		=> 	λ
+	//                             		
+	//      out_t	,	X      		=> 	out_t
+	//      out_t	,	λ      		=> 	λ
+	//      λ	,	λ      		=> 	λ
 	//
-	//      range	*	λ	=> 	map-range
-	//      !range	*	λ	=> 	λ
-	//
-	//      range	|	algo	=> 	basic-range
-	//      range	|	pred	=> 	predicated-range
-	//      range	|	λ	=> 	predicated-range
-	//      !range	|	λ	=> 	λ
-	//
-	//      range	||	λ	=> 	fold-range
-	//      !	||	λ	=> 	λ
-	//
-	//      range	<<	elem	=> 	range
-	//      elem	<< 	range	=> 	range
-	//      range	<< 	range	=> 	range
-	//      cout	<<	ioable	=> 	cout
-	//      cout	<<	!ioable	=> 	cout
-	//      cout	<<	λ	=> 	λ
-	//
-	//      out_t	,	X	=> 	out_t
-	//      out_t	,	λ	=> 	λ
-	//      λ	,	λ	=> 	λ
+	//      range	= 	generator      	=> 	assign generated to all elems 	// TO IMPL
+	//      range   << 	generator       => 	append one generated elem
 
 ////////////////////////////////////////////////////////////////////////////////////////////////   META+FORWARDS
 

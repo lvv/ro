@@ -9,6 +9,7 @@ RO — Range Operators
 * Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
 * Requires:  +++ C++11 +++   compiler.  Tested with GCC-4.7.2, GCC-4.8(pre release), CLANG-3.2 +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
+* Status:  alpha
 
 +++ </small> +++
 
@@ -43,8 +44,8 @@ container << x1 << x2;
 Yes, these are  two `push_back`.
 
 Or to be precise - if container is `std::vector` it is `push_back` .  
-If `std::set` it is `insert`.  If `std::stack` it will be `push`.
-If `x1` is container too, you will need `std::copy`. Or `std::slice` or low level for-loop.
+If `std::set` it is `insert`. If `std::map` - `operator[]`.  If `std::stack` - `push`.
+If `x1` is container too, you will need `std::copy`. Or `std::slice`. Or plain for-loop.
 If container is a C-string, you will need close
 your STL reference and start looking at `man string`.
 
@@ -65,8 +66,8 @@ container.erase(stl::remove(container.begin(), container.end(), x), container.en
 ---------------------------------------------------------------------------
 
 For above you need not only C++ reference, but you will need know erase-remove
-idiom and how to use it.  Of cause if container is not `std::vector`, there will
-be another way how to do this.
+idiom and how to use it.  Of cause if container is not `std::vector`, you will
+have to find out how STL does erase for this particular container.
 
 And people that use above call RO way confusing:
 
@@ -76,6 +77,23 @@ container - x;
 
 Above won't change if we use any container (or range) object or if `x` is not a  value, but
 a predicate, iterator or sub-range .
+
+One more. Given as example of tersness and simplicity by Herb Sutter in
+http://channel9.msdn.com/Events/PDC/PDC10/FT13[Lambdas, Lambdas Everywhere]
+talk:
+
+------------------------
+find_if( v.begin(), v.end(), [=](int i) { return i > x && i < y; } );
+------------------------
+
+With RO (using RO's lambdas):
+
+---------------------------
+v / (_1>x  &&  _1<y)
+----------------------------
+
+Again, with STL, you will need different algorithm if you are looking for a value
+or sub-range. With RO, only right-hand-side of `/` will change.
 
 RO was designed to be composable.  Range/functors/RO-lambdas can
 be combined into complex expression, where actions flow from left to right.
