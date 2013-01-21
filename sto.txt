@@ -36,4 +36,67 @@ ro
 	chane_range::		- range 
 	c-str			- range
 
+====================================================================================
 
+(from SGI paper)
+
+Container Types:
+================
+Container:
+    Forward Container
+        Reverse Container
+            Random Access Container
+    Sequence
+        Front Insert Sequence
+        Back  Insert Sequence
+    Associative Container
+        Simple   Associative Container
+        Pair     Associative Container
+        Sorted   Associative Container
+        Multiple Associative Container
+
+Container Types mapped to Standard Containers
+==============================================
+
+std::vector:    Sequence    Back        Sequence                    Forward/Reverse/Random Container
+std::deque:     Sequence    Front/Back  Sequence                    Forward/Reverse/Random Container
+std::list:      Sequence    Front/Back  Seuqence                    Forward/Reverse Container
+std::set:       Sorted/Simple/Unique    Associative Container       Forward Container
+std::map:       Sorted/Pair/Unique      Associative Container       Forward Container
+std::multiset:  Sorted/Simple/Multiple  Associative Container       Forward Container
+std::multimap:  Sorted/Pair/Multiple    Associative Container       Forward Container
+
+
+Container Garantees:
+====================
+
+                                                                                  Simp
+                                                                                  or
+                          For   Rev  Rand        Front  Back  Assoc        Sort   Mult
+                    Cont: Cont: Cont Cont: Sequ: Sequ:  Sequ: Cont:        Cont:  Cont:
+Copy    Const:      O(n)
+Fill    Const:                             O(n)
+begin()             O(1)
+end()               O(1)
+rbegin()                        O(1)
+rend()                          O(1)
+front()                                    O(1)
+push_front()                                     O(1)
+pop_front()                                      O(1)
+push_back()                                             O(1)
+pop_back()                                              O(1)
+Insert()                                                                          O(ln(n))
+Insert: fill                               O(n)
+Insert: range                              O(n)                                   O(kln(n)+n)
+size()              O(n)
+swap()              O(1)
+erase key                                                     O(ln(n))
+erase element                                                 O(1)
+erase range                                                   O(ln(n)+S)
+count()                                                       O(log(n)+k)
+find()                                                        O(ln(n))
+equal range                                                   O(ln(n))
+Lower Bound/Upper Bound                                                    O(ln(n))
+Equality                  O(n)
+InEquality                O(n)
+Element Access                       O(1)
