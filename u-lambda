@@ -100,6 +100,10 @@ scc 		'eval(v9 * (cout <<  _1  ));'
 scc		'(v9 | (cout << _1)) || nop;'
 scc		'vector<int*> va;  eval(v9 * (va << &_1));  va * *_1 | reverse'
 
+# comma op
+scc -a1 	'i=0; (_1=1, ++_1)(i)==2  &&  i==2'
+scc -a1		'i=0; (++_1, ++_1)(i)==i  &&  i==2'
+
 #scc		'v9 * (*oi = _1);'  			# TOFIX
 
 # multi index

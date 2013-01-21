@@ -408,9 +408,10 @@ struct  out {
 	};
 
 
-	/* endl, hex, ..  */	out&  operator,  (std::ostream&  (*x) (std::ostream& ))	{ std::cout << x;		return *this; };
-				out&  operator,  (std::ios&      (*x) (std::ios&     ))	{ std::cout << x;		return *this; };
-				out&  operator,  (std::ios_base& (*x) (std::ios_base&))	{ std::cout << x;		return *this; };
+	/* endl, hex, ..  */   
+	out&  operator,  (std::ostream&  (*x) (std::ostream& ))	{ std::cout << x;  return *this; };
+	out&  operator,  (std::ios&      (*x) (std::ios&     ))	{ std::cout << x;  return *this; };
+	out&  operator,  (std::ios_base& (*x) (std::ios_base&))	{ std::cout << x;  return *this; };
 
 	operator bool   () {  return true; }
  };

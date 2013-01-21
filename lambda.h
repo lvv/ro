@@ -96,9 +96,12 @@
 	/////  BINARY ------------------------------------
 	
 	// TODO
+	#define COMMA ,
   	//class comma_op {}; // boost special
        
-	DEF_OP2_CLASS(+,,plus_op)
+	DEF_OP2_CLASS(COMMA,,comma_op)
+
+       	DEF_OP2_CLASS(+,,plus_op)
        	DEF_OP2_CLASS(-,,minus_op)
        	DEF_OP2_CLASS(*,,multiply_op)
        	DEF_OP2_CLASS(/,,divide_op)
@@ -220,8 +223,8 @@
 			template<class Arg1, class Arg2>
 			auto
 		operator() (Arg1&& arg1, Arg2&& arg2)
-			-> decltype(Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)), this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)))) {
-			return      Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)), this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)));
+			-> decltype(Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)), this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2))))
+		{	return      Op::eval(this->value (FWD(Arg1,arg1), FWD(Arg2,arg2)), this->value2(FWD(Arg1,arg1),FWD(Arg2,arg2)));
 		}
 
 			/*  Arity==1 */
@@ -229,10 +232,15 @@
 			auto
 		operator() (Arg&& arg)
 			-> eIF<!is_tuple_or_pair<Arg&&>::value,
-			decltype(Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))))> {
-			return   Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))) ;
-			//decltype(Op::eval(std::forward<value_type>(this->value (FWD(Arg,arg)), std::forward<value_type2>(this->value2(FWD(Arg,arg))))))> {
-			//return   Op::eval(std::forward<value_type>(this->value (FWD(Arg,arg)), std::forward<value_type2>(this->value2(FWD(Arg,arg))))) ;
+
+			// no sequance point  for comma_op
+			//decltype(Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))))> {
+			//return  (Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))));
+
+			// force sequance for comma op		 // TO ADD specialzation ( speed optimization?)
+			decltype(Op::eval(this->value (FWD(Arg,arg)), this->value2(FWD(Arg,arg))))>
+		{	decltype(this->value (FWD(Arg,arg))) tmp = this->value (FWD(Arg,arg));
+			return  (Op::eval(std::forward<decltype((tmp))>(tmp), this->value2(FWD(Arg,arg))));
 		}
 
 			/*  Tuple    */
@@ -240,8 +248,8 @@
 			auto
 		operator() (Arg&& arg)
 			-> eIF<is_tuple_or_pair<Arg&&>::value,
-			decltype(Op::eval(this->value(FWD(Arg,arg)),this->value2(FWD(Arg,arg))))> {
-			return   Op::eval(this->value(FWD(Arg,arg)),this->value2(FWD(Arg,arg)));
+			decltype(Op::eval(this->value(FWD(Arg,arg)),this->value2(FWD(Arg,arg))))>
+		{	return   Op::eval(this->value(FWD(Arg,arg)),this->value2(FWD(Arg,arg)));
 		}
 
 		/*  MEMBER-ONLY OVERLOADS */
@@ -250,8 +258,6 @@
 
 	 };
 	
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////   PLACEHOLDER
@@ -428,6 +434,8 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
        
        
 
+	OP2(COMMA,comma_op)
+
 	OP2(+,plus_op)
        	OP2(-,minus_op)
        	OP2(*,multiply_op)
@@ -467,7 +475,6 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 
 
 	
-	//#define COMMA ,
 
 
 ///////////////////////////////////////////////////////////////////////////////  TRAITS
