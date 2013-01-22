@@ -24,6 +24,10 @@
 	//      range	|	λ      		=> 	predicated-range
 	//      !range	|	λ      		=> 	λ
 	//                             		
+	//      range	-	pred   		=> 	predicated-range
+	//      range	-	λ      		=> 	predicated-range
+	//      !range	-	λ      		=> 	λ
+	//                             		
 	//      range	||	λ      		=> 	fold-range
 	//      !	||	λ      		=> 	λ
 	//                             		
@@ -403,6 +407,8 @@ constant_t<T>  constant(const T& t) { return constant_t<T>(t); }
 
 // is_range_op
 template<class Op, class Arg1>	struct  is_range_op   			        { enum {value=false}; };
+template<class Arg1>		struct  is_range_op<minus_op ,Arg1>		{ enum {value=is_range<Arg1>::value}; };
+template<class Arg1>		struct  is_range_op<divide_op ,Arg1>		{ enum {value=is_range<Arg1>::value}; };
 template<class Arg1>		struct  is_range_op<logical_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 template<class Arg1>		struct  is_range_op<bitwise_or_op ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
 template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_range<Arg1>::value}; };
