@@ -7,7 +7,7 @@ RO — Range Operators
 +++ <small> +++
 
 * Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
-* Requires:  +++ C++11 +++   compiler.  Tested with GCC-4.7.2, GCC-4.8(pre release), CLANG-3.2 +
+* Requires:  +++ C++11 +++   compiler.  Tested with gcc-4.8(pre release) and clang-3.2 +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
 * Status:  alpha
 
@@ -17,9 +17,9 @@ ABOUT
 -----
 
 RO is +++C++ +++ headers only library, which provides alternative
-interface to STL and some elements of functional programming.
+interface to STL with some elements of functional programming.
 
-RO operates on _ranges_ which are STL containers, RO-ranges, C-arrays or
+RO operates on _ranges_ which are STL containers, RO-ranges, Tuples, C-arrays or
 C-strings.  Most of operations are provided through overloaded operators.
 
 Some consider that overloaded operators, not having meaningful names and having
@@ -27,12 +27,14 @@ multiple overloads are confusing and ambiguous.
 
 I would argue that it is not so. 
 
+//////////////
 Even in C you have to know the type of operands to understant what action is performed:
 
 --------------------
 x + 1 	// adds 1
 p + 1	// adds sizeof(*p)
 ---------------------
+//////////////
 
 Here is an example of what is more confusing: member function or overload
 operator. You probably can figure out what it does without explanation:
@@ -43,71 +45,78 @@ container << x1 << x2;
 
 Yes, these are  two `push_back`.
 
-Or to be precise - if container is `std::vector` it is `push_back` .  
-If `std::set` it is `insert`. If `std::map` - `operator[]`.  If `std::stack` - `push`.
-If `x1` is container too, you will need `std::copy`. Or `std::slice`. Or plain for-loop.
-If container is a C-string, you will need close
-your STL reference and start looking at `man string`.
+Or to be precise, if container is `std::vector` - we will need to use `push_back` .  If
+`std::set` - we need `insert`. If `std::map` - we need `operator[]` or `insert`.  If
+`std::stack` - that would be `push`.  If `x1` is container too, you will need `std::copy`. Or
+`std::slice`. Or plain for-loop.  If container is a C-string, you will need to
+close your STL reference and start looking at `man string`.
 
-Of cause there is logical explanation for STL's non-uniformity. 
-Operations performed under the hood are very different for each case.  End
-result of this - after many years, I still need reference manual handy to
-use STL. 
+Of cause there is logical explanation for STL's non-uniformity.  Operations
+performed under the hood are very different for each case.  End result is that
+even after many years of using it, I still need reference manual handy.
 
-With RO, it will stay the same as shown in above example.  No IFs no ORs. And
-yes, RO treats STL containers, C-strings, C-arrays and RO-Ranges in the same way and it provides
-uniform interface for all of them.
+With RO, it will stay the same as shown in above example.  No IFs no ORs.
+RO will treats STL containers, C-strings, C-arrays and RO-Ranges in the same way and it provides
+uniform interface for all of them.  Using operators interface actually enforces uniformity:
+there are no so many operators to choose from, and they have fixed number of arguments.
 
 In next example we need to perform simple operation: remove a value from a
 `std::vector`. This is why C++ is called "too expert friendly": 
 
 ---------------------------------------------------------------------------
-container.erase(stl::remove(container.begin(), container.end(), x), container.end()); 
+vec.erase(stl::remove(vec.begin(), vec.end(), x), vec.end()); 
 ---------------------------------------------------------------------------
 
-For above you need not only C++ reference, but you will need know erase-remove
-idiom and how to use it.  Of cause if container is not `std::vector`, you will
-have to find out how STL does erase for this particular container.
+For above you need not only C++ reference, but you will need know erase-remove idiom.
+Of cause if container is not `std::vector`, you will have to find out how STL
+does erase for your particular container.
 
-And people that use above call RO way confusing:
+And people that use above, are saying that overloaded operators are confusing:
 
 ---------------------------------------------------------------------------
 container - x;
 ---------------------------------------------------------------------------
 
-Above won't change if we use any container (or range) object or if `x` is not a  value, but
-a predicate, iterator or sub-range .
+Above expression won't change if we use any container (or range) object or if
+`x` is not a  value, but a predicate, iterator or sub-range .
 
-One more. Given as example of tersness and simplicity of +++C++11+++ by Herb Sutter in
+One more. Given as example of terseness and simplicity of +++C++11+++ by Herb Sutter in
 http://channel9.msdn.com/Events/PDC/PDC10/FT13[Lambdas, Lambdas Everywhere]
 talk:
 
 ------------------------
-find_if(v.begin(), v.end(), [=](int i){ return i > x})
+find_if(vec.begin(), vec.end(), [=](int i){ return i > val})
 ------------------------
 
 With RO (using RO's lambdas):
 
 ---------------------------
-v / (_1 > x)
+vec / (_1 > val)
 ----------------------------
 
 Again, with STL, you will need different algorithm if you are looking for a value
-or sub-range. With RO, it will be the same `v / ...`
+or sub-range. With RO, it will be same `v / ...`.
 
-RO was designed to be composable.  Range/functors/RO-lambdas can
-be combined into complex expression, where actions usually flow from left to right.
-Like classic:
+With `operator/` was shown equivalent of `find_if`.  Finding, than comparing
+to `vec.endl()` and wrapping whole thing in loop - rather low level of doing
+things.  RO provides mulch simpler to use - filtered (and lazy) range: `vec | (_1>val)`.
+
+One of the reasons why RO choose to use operators was because it was designed
+to be composable.  Range/functors/RO-lambdas can be combined into complex
+expression, where actions usually flow from left to right.  Like classic:
 
 ---------------------------------------------------------------------------
 container | sort | unique | reverse;
 ---------------------------------------------------------------------------
 
 If RO used functions instead of operators, this would be much more complex
-expression with 4-level deep parenthesis.  Also note that functions here are not
-called directly, but treated as objects which are passed to `operator|`.
+expression with 4-level deep parenthesis. 
 
-RO strives to provide simpler than STL interface, terser and easier to
+Note that functions are not called directly in this example, but treated as
+objects (function pointers from `<algorithm>` include), and passed to
+`operator|`.
+
+RO strives to provide simpler interface, terser and easier to
 understand code. RO, similarly to STL, has zero overhead, and is as efficient
 as hand written for-loop.
 
@@ -200,82 +209,38 @@ Ranges are generalization of STL containers.
 They are RO ranges, STL containers, C-arrays and C-strings.  RO defines
 C-strings as zero terminated arrays of `char` (not `signed char` or `unsigned chars`). 
 
-RO defines operators to work with ranges (and STL containers). 
-It have two groups of operators.  First is shortcuts for containers' member functions and simple
-extensions. Second is more complex operations like
+RO have two groups of operators.  First provides simple container management
+functions.  This is roughly equivalent to what STL member functions (begin,
+You've already seen some ops from this group: 
+
+-----------------------------
+rg  << value	 -> rg   //  add value to rg
+rg1 << rg2	 -> rg1  //  add rg2 to rg1
+                
+rg / value	 -> it   //  find()
+rg / pred	 -> it   //  find_if()
+rg / rg2       	 -> rg3  //  search for sub-range
+                
+rg - value	 -> rg   //  erase all elements equal to value
+rg - pred	 -> rg   //  erase all elements for which pred evaluated to 'true` 
+rg - rg2	 -> rg   //  erase subrange 
+rg - it		 -> rg   //  erase at iterator
+-----------------------------
+
+Full list of 1st group operators can be found in Appendix A.
+
+Second is more complex operations like
 fold, reduce, filter and arbitrary transformation of ranges.
-
-In table below are 1st group - simple shortcuts for container member functions.
-Unlike STL member functions (which often return `void`), they usually return
-result of operation (so it can be used in expressions).  In comments shown
-semantic, not exact operation which will be performed - these might  be very
-different for different type of range.
-
-----------------------------------------------------------------
-			//  This is just approximate semantic, not exact impl
-+rg			//  rg.begin()
--rg			//  rg.end()
-++rg			//  rg.front()
-rg++			//  rg.back()
---rg			//  rg.pop_front()
-rg--			//  rg.pop_back()
-
-rg << value		//  rg.push_back(value)  or similar in semantic operators
-value >> rg		//  rg.push_front(value)
-rg >> value		//  value = rg.back(value);   rg.pop_back();
-value << rg		//  value = rg.front(value);  rg.pop_front();
-rg1 << rg2		//  copy(rg2.begin(), rg2.end(), back_inserter(rg1));
-rg1 >> rg2		//  copy(rg1.rbegin(), rg1.rend(), front_inserter(rg2)); 
-
-++pair			//  pair.first
-pair++			//  pair.second
-
-++tuple			//  get\<0>(tuple)
-tuple++			//  get<tuple_size<tuple<Types...> >::value-1>(tuple)
-
-
-stack << value		//  stack.push(value)
-stack++ 		//  stack.top()
-stack-- 		//  stack.pop()
-stack >> value		//  value = stack.top(value);  stack.pop()
-		
-queue++ 		//  queue.back()
-++queue 		//  queue.front()
---queue 		//  queue.pop()
-queue << value		//  queue.push(value)
-value << queue		//  value = queue.front(value);  queue.pop()
-
-rg = rg2 		//  underlying containers can be of different type
-rg = value 		//  fill(rg.begin(), rg.end(), value)
-
-// SEARCH
-
-rg / value		// find(+rg, -rg, value)
-rg % value		// find(+rg, -rg, value) != -rg
-rg / Pred		// find_if(+rg, -rg, pred) 	
-rg % Pred		// find_if(+rg, -rg, pred) != -rg
-rg / rg			// search(+rg, -rg, +rg, -rg) 
-
-
-// GENERIC ERASE
-
-rg - value		// erase all elements equal to value
-rg - pred		// erase all elements for which pred evaluated to 'true` 
-rg - rg2		// erase subrange 
-rg - it			// erase at iterator
-
-----------------------------------------------------------------
-
 
 RO Ranges
 ----------
 
-_RO Ranges_ are  ranges that have extended but STL compliant interface.  They also
-do not contain range elements data, they refer to an existing STL container or generate its
-elements. 
+_RO Ranges_ are  ranges that have extended but STL compliant interface.  They
+also often do not contain range elements data, they refer to an existing STL
+container or generate its elements. 
 
-RO Ranges are:  iterator ranges, lazy-expression ranges and numeric ranges.
-Lazy means that its elements are calculated at the moment when particular
+RO Ranges are:  iterator range, lazy-expression range and numeric range.
+Lazy means that its elements are calculated at the moment when range
 element is accessed.  Exact type of the range often is not important - these
 are types mostly of temporaries.
 
@@ -285,15 +250,15 @@ Numeric range
 Numeric range is simple numeric sequence generator :
 
 -----------------------------------
-// [0,N)  open-ended range. Only range from 1-arg  range() is open-ended.
+// [0,arg1)  open-ended range. Only range from 1-arg  range() is open-ended.
 scc 'range(5)'
 {0, 1, 2, 3, 4}
 
-// [0,N]  closed range
+// [arg1,arg2]  closed range
 scc 'range(1,5)'
 {1, 2, 3, 4, 5}
 
-// same thing, with explicit step
+// same, with explicit step
 scc 'range(1,5,1)'
 {1, 2, 3, 4, 5}
 
@@ -314,7 +279,7 @@ scc 'vint V = range(5);   V'
 {0, 1, 2, 3, 4}
 
 // is lazy, O(1) storage
-scc 'auto NR = range(1,999999999999999999l);  *find(NR.begin(), NR.end(), 5)'
+scc 'auto ints = range(1,999999999999999999l);  *find(ints.begin(), ints.end(), 5)'
 5
 -----------------------------------
 
@@ -349,7 +314,7 @@ scc  'vint V;  auto R=range(V);  R=range(1,10);  R, V'
 Operation with C-strings 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-We first assign a c-string, then append `"XYZ"` and then remove `"bc"` substring :
+We first assign "abc" to a c-string, then append `"XYZ"` and then remove `"bc"` substring :
 
 -----------------------------------------
 scc 'char s[99];  range(s) = "abc";  (range(s) << "XYZ") - "bc"'
@@ -422,19 +387,19 @@ accumulate, compress, catamorphisms, or inject).
 scc 'vint V{1,2,3};  V || plus<int>()'
 6
 
-scc 'vint V{1,2,3};  V || add'  	// add -  similar to std::plus<T>(),  T - deduced
+scc 'vint V{1,2,3};  V || add'  		// add -  similar to std::plus<T>(), but will handle empty ranges too
 6
 
-scc 'range(1,3) || mul'			// fuctorial;   mul -  similar std::multiplies<T>()
+scc 'range(1,3) || mul'				// fuctorial;   mul -  similar std::multiplies<T>()
 6
 
-scc 'vstr V{"aa", "bb", "cc"};  V || add'
+scc 'vstr V{"aa", "bb", "cc"};  V || add'	// concantenest
 aabbcc
 
-scc 'vint V{1,2,3};  V || min'		// uses std::min
+scc 'vint V{1,2,3};  V || min'			// uses std::min
 1
 
-scc 'vstr V{"aaa", "bb", "cccc"};  V * size ||  min'
+scc 'vstr V{"aaa", "bb", "cccc"};  V * size ||  min'	// length of shortest string
 2
 ------------------------------------------
 
@@ -476,7 +441,7 @@ Filter:  `range|predicate`
 
 Filter are defined with `operators|(Range, Predicate)` and `operator|(Range, elem_type)`. 
 
-Predicate is functor with signature `bool(*)(elem_type)`. If such is used
+Predicate is functor with signature compatible with `bool(*)(elem_type)`. If such is used
 with pipe operator, all elements which evaluate to `false` with predicate - are
 filtered out:
 
@@ -549,6 +514,8 @@ scc 'vint V{3,1,2};  sort(+V,-V);  reverse(+V,-V);  V'
 
 -----------------------------------------------------------------
 
+Unary `+` and `-` corresponds to members `begin()` and `end()`.
+
 Another signature which can be matched is  `operator|(Range, It(*)(It,It))` -
 this can match algorithms like `std::unique`:
 
@@ -565,8 +532,8 @@ scc 'vint V{3,1,2,3};  sort(+V,-V);  auto e=unique(+V, -V);  V.erase(e,-V);  V'
 -----------------------------------------------------------------
 
 
-Available Functors
-~~~~~~~~~~~~~~~~~~
+RO Functors
+~~~~~~~~~~~
 
 Functors are function object, lambdas and plain functions. 
 
@@ -592,7 +559,7 @@ compiler defect a standard.  For example: `<string>` includes `<cstdlib>` which
 define in default namespace `div`.  So we are forced to use our `div` functor
 with `ro::`.
 
-Also compiler have its own peculiarities.  Following compiles with CLANG, but not with GCC:
+Also compiler have its own peculiarities.  Following compiles with clang, but not with gcc:
 
 -----------------------------------------------------
 scc 'map<int,int> M{{1,11}, {2,22}};  M * get\<0>'
@@ -697,15 +664,16 @@ copy(V.begin(), V.end(), ostream_iterator<int>   (cout, " "));
 copy(S.begin(), S.end(), ostream_iterator<string>(cout, " "));
 -------------------------------------------------------------------
 
-Include `io.h` defines `oi` object - SCC replacement for `ostream_iterator`, which can work with any type and
-is pre-defined.  With `oi`, above example will be:
+Include `io.h` defines `oi` object - SCC replacement for `ostream_iterator`,
+which can work with any type and is pre-defined.  With `oi`, above example will
+be:
 
 -------------------------------------------------------------------
 copy(V.begin(), V.end(), oi);
 copy(S.begin(), S.end(), oi);
 -------------------------------------------------------------------
 
-Same using range operators, more about these later: 
+Same using range operators:
 
 -------------------------------------------------------------------
 copy(+V, -V, oi);
@@ -909,7 +877,73 @@ image::include-deps.png
 Status 
 ------
 
-RO was tested with GCC-4.7.2/4.8-pre-release and CLANG-3.2-pre-release.
+RO was tested with GCC-4.8-pre-release and CLANG-3.2.
+It is knows that it will not work with GCC-4.7.2
+
+Appendix A
+----------
+
+In table below are 1st group - simple shortcuts for container member functions.
+Unlike STL member functions (which often return `void`), they usually return
+result of operation (so it can be used in expressions).  In comments shown
+semantic, not exact operation which will be performed - these might  be very
+different for different type of range.
+
+----------------------------------------------------------------
+			//  This is just approximate semantic, not exact impl
++rg			//  rg.begin()
+-rg			//  rg.end()
+++rg			//  rg.front()
+rg++			//  rg.back()
+--rg			//  rg.pop_front()
+rg--			//  rg.pop_back()
+
+rg << value		//  rg.push_back(value)  or similar in semantic operators
+value >> rg		//  rg.push_front(value)
+rg >> value		//  value = rg.back(value);   rg.pop_back();
+value << rg		//  value = rg.front(value);  rg.pop_front();
+rg1 << rg2		//  copy(rg2.begin(), rg2.end(), back_inserter(rg1));
+rg1 >> rg2		//  copy(rg1.rbegin(), rg1.rend(), front_inserter(rg2)); 
+
+++pair			//  pair.first
+pair++			//  pair.second
+
+++tuple			//  get\<0>(tuple)
+tuple++			//  get<tuple_size<tuple<Types...> >::value-1>(tuple)
+
+
+stack << value		//  stack.push(value)
+stack++ 		//  stack.top()
+stack-- 		//  stack.pop()
+stack >> value		//  value = stack.top(value);  stack.pop()
+		
+queue++ 		//  queue.back()
+++queue 		//  queue.front()
+--queue 		//  queue.pop()
+queue << value		//  queue.push(value)
+value << queue		//  value = queue.front(value);  queue.pop()
+
+rg = rg2 		//  underlying containers can be of different type
+rg = value 		//  fill(rg.begin(), rg.end(), value)
+
+// SEARCH
+
+rg / value		// find(+rg, -rg, value)
+rg % value		// find(+rg, -rg, value) != -rg
+rg / Pred		// find_if(+rg, -rg, pred) 	
+rg % Pred		// find_if(+rg, -rg, pred) != -rg
+rg / rg			// search(+rg, -rg, +rg, -rg) 
+
+
+// GENERIC ERASE
+
+rg - value		// erase all elements equal to value
+rg - pred		// erase all elements for which pred evaluated to 'true` 
+rg - rg2		// erase subrange 
+rg - it			// erase at iterator
+
+----------------------------------------------------------------
+
 
 
 ///////////////////////////////////////////
