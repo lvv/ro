@@ -206,7 +206,8 @@ operator*       (Rg&& rg,  F f)    {
 auto operator*       (Rg&& rg,  F f) ->  
 	eIF <is_range<Rg>::value,   mapped_range<Rg&&,F,decltype(f(std::declval<E>()))>> {
 	return                      mapped_range<Rg&&,F,decltype(f(std::declval<E>()))> (std::forward<Rg>(rg),  f);
- };
+};
+
 ///////////////////////////////////  TUPLES
 
 
