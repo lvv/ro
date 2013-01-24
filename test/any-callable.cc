@@ -34,13 +34,17 @@ apply_update(identity<T>&&(*updater)(identity<T>&&), T&& x) { return updater(FWD
 		long  	 replacer(long x)        	{ cout << " replacer(long       )   ";	return 42; }
 
 
-/* OVERLOADS
+/* VALUNESS OVERLOADS
 */
 	template<class T>
 	rm_qualifier<T>
 apply_replace(rm_qualifier<T>(*replacer)(T&&), T&& x) { return replacer(FWD(T,x)); }
 
-/* LAMBDAS, can't match overloaded
+/* ABS-like functions
+*/
+int apply_replace(int(*replacer)(int), int x) { return replacer(x); }	// can catch std::abs(int)
+
+/* LAMBDAS, BIND,  can't match overloaded
  */
 	template<class T, class F>
 	eIF<is_callable<F,rm_qualifier<T>(T&&)>::value,rm_qualifier<T>>
@@ -77,9 +81,16 @@ int main() {
 	cout << "arg:  int&               " << apply_replace(replacer, i)	<< endl;
 	cout << "arg:  const int&         " << apply_replace(replacer, ci)	<< endl;
 
-	cout << "arg:  int                " << apply_replace([](int  i) ->int{cout << "[](int  )\t\t";  return 11;}, 4)		<< endl;
-	cout << "arg:  int&&              " << apply_replace([](int&& i)->int{cout << "[](int&&)\t\t";  return 22;}, int())	<< endl;
-	cout << "arg:  int&               " << apply_replace([](int&  i)->int{cout << "[](int& )\t\t";  return 33;}, i)		<< endl;
+	cout << "arg:  int                " << apply_replace([](int  i) ->int{cout << "λ [](int  )\t\t";  return 11;}, 4)		<< endl;
+	cout << "arg:  int&&              " << apply_replace([](int&& i)->int{cout << "λ [](int&&)\t\t";  return 22;}, int())	<< endl;
+	cout << "arg:  int&               " << apply_replace([](int&  i)->int{cout << "λ [](int& )\t\t";  return 33;}, i)		<< endl;
+
+	cout << "arg:  int&               RO λ          " << apply_replace(var(100), i)				<< endl;
+	cout << "arg:  int&               bind(plus...) " << apply_replace(bind(std::plus<int>(),_1,200), i)   	<< endl;
+	cout << "arg:  int                ro:abs        " << apply_replace(ro::abs, -300)			<< endl;
+	cout << "arg:  int                std::abs      " << apply_replace(abs, -400)				<< endl;
+	cout << "arg:  int                abs           " << apply_replace(abs, -500)				<< endl;
+	cout << "arg:  int                function<>    " << apply_replace(function<int(int)>([](int i)->int{return 1;}) , -600)		<< endl;
 
 	cout << "\n***  UPDATE VALUE AT REF \n";
 	cout << "arg:  int                " << apply_update(updater, 0)		<< endl;
