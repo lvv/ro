@@ -279,12 +279,12 @@ struct  ph {
 		// non-tuple
 		template<class Arg>
 		eIF<!is_tuple_or_pair<Arg>::value && N==1, Arg&&>
-	operator() (Arg&& arg) const { return FWD(Arg,arg); }
+	operator() (Arg&& arg) { return FWD(Arg,arg); }
 
 		// tuple                                                     // FIXME: ref-correctness
 		template<class Arg>
 		eIF<is_tuple_or_pair<Arg>::value, typename std::tuple_element<N,Arg>::type >
-	operator() (Arg arg) const { return std::get<N>(arg); }
+	operator() (Arg arg) { return std::get<N>(arg); }
 
 	////// 2-ARG
 	
@@ -292,13 +292,13 @@ struct  ph {
 		template<class Arg1, class Arg2>
 		//eIF<(sizeof(Arg1),N==1), Arg1>			// this dosn't work, gcc bug
 		typename std::enable_if<(sizeof(Arg1),N==1), Arg1&&>::type
-	operator() (Arg1&& arg1, Arg2&& arg2) const { return FWD(Arg1,arg1); }
+	operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(Arg1,arg1); }
 
 		//  N==2
 		template<class Arg1, class Arg2>
 		//eIF<(sizeof(Arg1), N==2), Arg2>			// this dosn't work, gcc bug
 		typename std::enable_if<(sizeof(Arg1),N==2), Arg2&&>::type
-	operator() (Arg1&& arg1, Arg2&& arg2) const { return FWD(Arg2,arg2); }
+	operator() (Arg1&& arg1, Arg2&& arg2) { return FWD(Arg2,arg2); }
 
 
 	///////  Convertion to std:placeholder::...
@@ -355,10 +355,10 @@ struct  constant_t {
 	explicit constant_t(const T& t)  : value_cref(t)   {};
 
 		template<class Arg>
-	const T& operator() (Arg&& arg) const { return value_cref; }
+	const T& operator() (Arg&& arg) { return value_cref; }
 
 		template<class Arg1, class Arg2>
-	const T& operator() (Arg1&& arg1, Arg2&& arg2) const { return value_cref; }
+	const T& operator() (Arg1&& arg1, Arg2&& arg2) { return value_cref; }
 
 	/*  MEMBER-ONLY OVERLOADS */
 	typedef 	 constant_t<T>	self_type;

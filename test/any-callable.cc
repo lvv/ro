@@ -116,8 +116,9 @@ cout << "\n***  UPDATE REFERENCED VALUE \n";
 	cout << "arg:  int&               λ             " << apply_update([](int&  i)->int&{return i+=100;}, i)		<< endl;
 	cout << "arg:  int&               function<>    " << apply_update(function<int&(int&)>([](int&i)->int&{return i+=200;}) , i)		<< endl;
 
-	cout << "arg:  int&&              λ             " << apply_update([](int&&  i)->int&&{return move(i+=100);}, int())		<< endl;
-	//cout << "arg:  int&&            RO λ          " << apply_update((_1=3), int())       	<< endl;
+	cout << "arg:  int&&              λ(&&)         " << apply_update(     [](int&&  i)->int&&{return move(i+=100);},     int())		<< endl;
+	//cout << "arg:  int&&              bind(&&)      " << apply_update(bind([](int&&  i)->int&&{return move(i+=100);}, _1) int())     	<< endl;
+	//cout << "arg:  int&&            RO λ(&&)      " << apply_update((_1=3), int())       	<< endl;
 
 cout << "\n***  TRANSFORM TYPE \n";
 	cout << "arg:  int                " << apply_transform(transformer, 0)	<< endl;
