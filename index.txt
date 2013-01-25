@@ -991,6 +991,7 @@ FP
 	FP -- http://www.dev.gd/20121224-understanding-map-filter-and-fold.html
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
 	overview of map in Haskel, F#, Java, Scala -- http://insightfullogic.com/blog/2012/dec/9/are-all-map-functions-same/
+	First-class function  -- http://en.wikipedia.org/wiki/First-class_function
 
 SQL/LINQ
 	http://en.wikipedia.org/wiki/SQL
@@ -1011,6 +1012,14 @@ BOOST LAMBDA
 	The logic(boolean) operators have by the default a short-circuiting way
 	of acting in expressions with multiple boolean operations.  This behavior does
 	not apply to operators that are overloaded by the programmer. 
+	--------------------------------
+	BLL and std::bind/function: does not support std::abs:
+	scc 'bind(abs,_1)(-1)'	 // error
+
+	RO supports:
+	scc 'vint{-1,0,1} * abs'
+	{1, 0, 1}
+
 
 
 BOOST MULTI_INDEX

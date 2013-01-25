@@ -20,12 +20,21 @@ using namespace ro;
 */
 	template<class T>
 	T&& 
-apply_update(identity<T>&&(*updater)(identity<T>&&), T&& x) { return updater(FWD(T,x)); } // identity needed for clang
+apply_update(identity<T>&&(*f)(identity<T>&&), T&& x) { return f(FWD(T,x)); } // identity needed for clang
 
 
+                           
 	template<class T, class F>
-	eIF<is_callable<F, T&&(T&&)>::value, T&&>
-apply_update (F replacer, T&& x) { return replacer(FWD(T,x)); }
+	eIF<is_callable<F, T(T)>::value, T&&>
+apply_update (F f, T&& x) { return f(FWD(T,x)); }
+/*
+                           
+	template<class T, class F>
+	auto
+apply_update (F f, T&& x) 
+	-> eIF<is_callable<F, T&&(T&&)>::value, T&&>
+	{ return f(FWD(T,x)); }
+*/
                            
 //////////////////////////////////////////////////////////////////////////   REAPLCE   T(T&&)
 	
@@ -104,14 +113,21 @@ cout << "\n***  UPDATE REFERENCED VALUE \n";
 	cout << "arg:  int&               " << apply_update(updater, i)		<< endl;
 	cout << "arg:  int&               RO λ          " << apply_update((_1=2), i)		<< endl;
 	cout << "arg:  int&               bind()        " << apply_update(bind(_1,_1), i)     	<< endl;
-	cout << "arg:  int&               λ             " << apply_replace([](int&  i)->int&{return i+=100;}, i)		<< endl;
-	cout << "arg:  int&               function<>    " << apply_replace(function<int&(int&)>([](int&i)->int&{return i+=200;}) , i)		<< endl;
+	cout << "arg:  int&               λ             " << apply_update([](int&  i)->int&{return i+=100;}, i)		<< endl;
+	cout << "arg:  int&               function<>    " << apply_update(function<int&(int&)>([](int&i)->int&{return i+=200;}) , i)		<< endl;
 
+	cout << "arg:  int&&              λ             " << apply_update([](int&&  i)->int&&{return move(i+=100);}, int())		<< endl;
+	//cout << "arg:  int&&            RO λ          " << apply_update((_1=3), int())       	<< endl;
 
 cout << "\n***  TRANSFORM TYPE \n";
 	cout << "arg:  int                " << apply_transform(transformer, 0)	<< endl;
 	cout << "arg:  int&&              " << apply_transform(transformer, int())	<< endl;
 	cout << "arg:  int&               " << apply_transform(transformer, i)	<< endl;
 	cout << "arg:  const int&         " << apply_transform(transformer, ci)	<< endl << endl;
+
+	//cout << "arg:  int&               RO λ          " << apply_replace(var(100), i)				<< endl;
+	//cout << "arg:  int&               bind(plus...) " << apply_replace(bind(std::plus<int>(),_1,200), i)   	<< endl;
+	//cout << "arg:  int                function<>    " << apply_replace(function<int(int)>([](int i)->int{return 1;}) , -600)		<< endl;
+
 }
 
