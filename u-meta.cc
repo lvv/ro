@@ -51,6 +51,8 @@ CHECK(   is_range<int(&)[2]>::value    )
 
 CHECK(   is_range<decltype(range(v9))>::value    ) 
 CHECK( ! is_range<decltype(+range(v9))>::value    ) 
+CHECK( ! (is_range<std::move_iterator<std::__cxx1998::_Deque_iterator<long int, long int&, long int*> >::iterator_type>::value))
+CHECK( ! (is_range<std::__cxx1998::_Deque_iterator<long int, long int&, long int*>>::value))
 
 
 //  IS_STRING

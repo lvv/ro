@@ -205,7 +205,8 @@ struct is_range_t {
 
 		template <
 			class U,
-			class I = typename U::const_iterator
+			class I = typename U::const_iterator,
+			class B = decltype(std::declval<U>().begin())
 		>
 		static int8_t
 	test(U* u);

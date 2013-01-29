@@ -985,6 +985,8 @@ MISC
 	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-hirory-of-live-programming.html
 	http://kotaku.com/5975610/the-exceptional-beauty-of-doom-3s-source-code
 FP
+	TODO  select --  http://paulkeir.wordpress.com/2012/12/03/building-tuple-indices/
+
 	Functional Programming in C++ --- http://www.altdevblogaday.com/2012/04/26/functional-programming-in-c/
 	F# -- ref: op on ranges -- http://msdn.microsoft.com/en-us/library/ee353635.aspx
 	Pyhone: Functional Programming with Collections -- http://www.itmaybeahack.com/book/python-2.6/html/p02/p02c10_adv_seq.html
@@ -992,6 +994,7 @@ FP
 	FP -- http://richardminerich.com/2012/07/functional-programming-is-dead-long-live-expression-oriented-programming/
 	overview of map in Haskel, F#, Java, Scala -- http://insightfullogic.com/blog/2012/dec/9/are-all-map-functions-same/
 	First-class function  -- http://en.wikipedia.org/wiki/First-class_function
+
 
 SQL/LINQ
 	http://en.wikipedia.org/wiki/SQL

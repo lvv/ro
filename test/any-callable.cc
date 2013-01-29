@@ -6,6 +6,7 @@ using namespace std;
 using namespace ro;
 
 
+typedef   vector<int>   vint;
 
 
 //////////////////////////////////////////////////////////////////////////   UPDATE  T&&(T&&)
@@ -25,8 +26,11 @@ apply_update(identity<T>&&(*f)(identity<T>&&), T&& x) { return f(FWD(T,x)); } //
 
                            
 	template<class T, class F>
-	eIF<is_callable<F, T(T)>::value, T&&>
+	eIF<is_callable<F, T&&(T&&)>::value, T&&>
 apply_update (F f, T&& x) { return f(FWD(T,x)); }
+
+
+
 /*
                            
 	template<class T, class F>
@@ -116,9 +120,16 @@ cout << "\n***  UPDATE REFERENCED VALUE \n";
 	cout << "arg:  int&               λ             " << apply_update([](int&  i)->int&{return i+=100;}, i)		<< endl;
 	cout << "arg:  int&               function<>    " << apply_update(function<int&(int&)>([](int&i)->int&{return i+=200;}) , i)		<< endl;
 
-	cout << "arg:  int&&              λ(&&)         " << apply_update(     [](int&&  i)->int&&{return move(i+=100);},     int())		<< endl;
-	//cout << "arg:  int&&              bind(&&)      " << apply_update(bind([](int&&  i)->int&&{return move(i+=100);}, _1) int())     	<< endl;
-	//cout << "arg:  int&&            RO λ(&&)      " << apply_update((_1=3), int())       	<< endl;
+	// R-VAL
+	cout << "arg:  vint&&             λ(&&)         " << apply_update(     [](vint&&  v)->vint&&{return move(v=vint{99});},      vint{})		<< endl;
+	cout << "arg:  vint&&             bind(&&)      " << apply_update(bind([](vint&&  v)->vint&&{return move(v=vint{99});}, _1), vint{})     	<< endl;
+
+	vint lv_v; 
+	cout << "arg:  vint&              λ(&)          " << apply_update([](vint&  v)->vint&{return v=vint{99};}, lv_v)		<< endl;
+	cout << "arg:  vint&              RO λ(&)       " << apply_update((_1=vint{99}),                            lv_v)       	<< endl;
+
+	// ERROR
+	cout << "arg:  vint&&             RO λ(&&)      " << apply_update((_1=vint{99}),                          vint{})       	<< endl;
 
 cout << "\n***  TRANSFORM TYPE \n";
 	cout << "arg:  int                " << apply_transform(transformer, 0)	<< endl;

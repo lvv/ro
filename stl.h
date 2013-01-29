@@ -223,6 +223,7 @@ erase_predicate_impl(Rg&& rg,  F&& f, list_erasable) {
 	return  std::forward<Rg>(rg);
  };
 
+
 /*
 ///// Rg - pred
 	template<class Rg>
@@ -232,6 +233,7 @@ operator-(Rg&& rg, bool(*f)(const rg_elem_type<Rg>&)) {
  };
 
  */
+
 
 ///// Rg - pred
 	template<class Rg, class F>
@@ -251,6 +253,7 @@ operator-(Rg&& rg, F&& f) {
 	}
 	return  std::forward<Rg>(rg);
  };
+
 
 // Rg - it
 	template<typename Rg>
@@ -273,6 +276,7 @@ operator-(Rg&& rg,  sub_Rg&& sub_rg) {
 	rg.erase(b,e); 
 	return  std::forward<Rg>(rg);
  };
+
 
 // cstr - sub_rg
 	template<class Rg, class sub_Rg>
