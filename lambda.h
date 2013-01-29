@@ -311,10 +311,10 @@ struct  ph {
 
 };
 
-ph<0>	_0;
-ph<1>	_1;
-ph<2>	_2;
-ph<3>	_3;
+ph<0>  	__attribute__((unused))      _0;
+ph<1>  	__attribute__((unused))      _1;
+ph<2>  	__attribute__((unused))      _2;
+ph<3>  	__attribute__((unused))      _3;
 
 template<class T> 	struct 	is_ph	 			: std::false_type  {};
 template<int N> 	struct 	is_ph<ph<N>>			: std::true_type  {};
