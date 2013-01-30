@@ -183,6 +183,17 @@ erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, map_erasable) {
 	return  std::forward<Rg>(rg);
  };
 
+/*
+// rigit - value
+	template<typename Rg>
+	Rg&&
+erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, non_erasable) {
+	static_assert(true,"cannot erase element from rigit range");
+	return  std::forward<Rg>(rg);
+ };
+ */
+
+
 
 ///// rg - value
 	template<class Rg>

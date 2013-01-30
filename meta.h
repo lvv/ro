@@ -93,13 +93,17 @@ template<typename Rg>   using rg_const_reference	= typename rg_traits<Rg>::const
 
 struct non_erasable{};
 struct cstr_erasable{};
+struct string_erasable{};
 struct vector_erasable{};
 struct list_erasable{};
 struct map_erasable{};
 
 								non_erasable		erasable_category(...)                                 { return non_erasable(); }; 
 
-template<size_t N>						cstr_erasable		erasable_category(char(&)[N])                          { return cstr_erasable(); }; 
+template<size_t N>						cstr_erasable		erasable_category(char(&)[N])                          { return cstr_erasable(); };
+
+//template<class CharT, class Traits, class A>			string_erasable		erasable_category(std::basic_string<CharT,Traits,A>)        { return string_erasable(); }; 
+template<class CharT, class Traits, class A>			vector_erasable		erasable_category(std::basic_string<CharT,Traits,A>)        { return vector_erasable(); }; 
 
 template<class T, class A>					vector_erasable		erasable_category(std::vector<T,A>)                    { return vector_erasable(); }; 
 template<class T, class A>					vector_erasable		erasable_category(std::deque<T,A>)                     { return vector_erasable(); }; 
