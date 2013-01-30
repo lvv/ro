@@ -108,7 +108,7 @@ scc '	front(c9),     		back(c9),		size(c9)'
 scc '	front(cc9),    		back(cc9),		size(cc9)'
 scc '	front(s9),    		back(s9),		size(s9)'
 scc ' 	front(range(9)),	back(range(9)),		size(range(9))'
-#scc ' 	front(range(+v9,-v9)),	back(range(+v9,-v9)),	size(range(+v9,-v9))'
+scc ' 	front(range(+v9,-v9)),	back(range(+v9,-v9)),	size(range(+v9,-v9))'
 '
 
 

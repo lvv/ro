@@ -45,6 +45,7 @@ struct  iterator_range {
 	iterator	end()		{ return e_; };
 	const_iterator	begin() const	{ return b_; };
 	const_iterator	end()   const	{ return e_; };
+	size_t		size()   const	{ return std::distance(b_,e_); };
 
 
 

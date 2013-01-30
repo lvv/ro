@@ -48,17 +48,8 @@ operator!      (const Rg& C) { return C.empty(); };
 front    (Rg&& C)  -> decltype(*std::begin(C))  { return std::forward<decltype(*std::begin(C))>(*std::begin(C)); };
 
 
-/*
-	template<typename Rg>		// has_back
-	eIF <has_back<Rg>::value,  rg_reference<Rg>>
-back      (Rg&& C) { return std::forward<rg_reference<Rg>>(C.back()); };
-*/
-
-
-//	template<class Rg, class=eIF<!has_back<Rg>::value>>	// ! has_back
 	template<class Rg>
 	auto
-//back      (Rg&& C) -> decltype(endz(C))  { return std::forward<rm_ref<decltype(endz(C))>>(*std::prev(ro::endz(C))); };
 back      (Rg&& C) -> decltype(*endz(C))  { return *std::prev(ro::endz(C)); };
 
 
