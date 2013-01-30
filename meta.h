@@ -467,7 +467,6 @@ struct size_fo {
 
 size_fo  size;
 
-
 //template<class X>   		size_t			size 	(const X& x)  { return size_impl(x); };
 
 
@@ -483,11 +482,6 @@ template<typename Rg>	eIF<!has_clear<Rg>::value>	clear(Rg&& rg) 		{}
 template<typename Rg>	eIF< has_resize<Rg>::value>	resize(Rg&& rg, size_t n) 		{ rg.resize(n); }
 template<typename Rg>	eIF<!has_resize<Rg>::value>	resize(Rg&& rg, size_t n) 		{}
                                               void	resize(char*rg, size_t n) 		{ *(rg+n) = '\0'; }
-
-/////  FRONT/BACK
-//template<typename Rg>	eIF<!has_clear<Rg>::value, rg_elem_type<Rg>>		front(Rg&& rg) 		{ return *std::begin(rg); }
-
-	// TODO: spceialization for c-str, arrays
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -540,7 +534,7 @@ template<class T>	struct  ref_container<T const&&>  {
 /*
  */
 
-// 2
+// 2								// ugly - TODO refactor
 template<class T>	struct  ref_container2;
 
 template<class T>	struct  ref_container2<T& >  {

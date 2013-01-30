@@ -106,8 +106,8 @@ struct basic_range_iterator {
 	template<class U=org_iterator, class=decltype(std::declval<U>()--)> 			self_type	operator--(int)			{ self_type tmp=*this;  --current;   return std::move(tmp); }
 	                                                          
 	// random access
-	template<class U=org_iterator, class=decltype(std::declval<U>()+=1)>			iterator	operator+= (difference_type n)	{ current+=n;  return *this; }
-	template<class U=org_iterator, class=decltype(std::declval<U>()-=1)>			iterator	operator-= (difference_type n)	{ current-=n;  return *this; }
+	template<class U=org_iterator, class=decltype(std::declval<U&>()+=1)>			iterator	operator+= (difference_type n)	{ current+=n;  return *this; }
+	template<class U=org_iterator, class=decltype(std::declval<U&>()-=1)>			iterator	operator-= (difference_type n)	{ current-=n;  return *this; }
 	template<class U=org_iterator, class=decltype(std::declval<U>() <  std::declval<U>())>	bool		operator<  (self_type other)	{ return current <  other.current; } 
 	template<class U=org_iterator, class=decltype(std::declval<U>() <= std::declval<U>())>	bool		operator<= (self_type other)	{ return current <= other.current; } 
 	template<class U=org_iterator, class=decltype(std::declval<U>() >  std::declval<U>())>	bool		operator>  (self_type other)	{ return current >  other.current; } 
