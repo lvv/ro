@@ -52,17 +52,8 @@ struct basic_range_iterator {
 	typedef		ptrdiff_t 					difference_type;
 	typedef		SEL <RO, const rm_ref<value_type>*, rm_ref<value_type>*>   	pointer;
 
-	//typedef         rg_const_reference<Rg>     			const_reference;
-
-	/*
-	typedef		typename std::conditional <
-				std::is_const<Rg>::value || RO,
-				rg_const_reference<Rg>,
-				rg_reference<Rg>
-			>::type						reference;
-	*/
-	typedef		decltype(*current)	     			reference;
-	typedef		typename std::add_const<decltype(*current)>::type const_reference;
+	typedef		decltype(*current)	     				reference;
+	typedef		typename std::add_const<decltype(*current)>::type	const_reference;
 
 
 	// non-STL

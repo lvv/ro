@@ -165,47 +165,47 @@ operator >>  (sRn&& src, tRn&& trg)  {
 ///////////////////////////////////////////////////////////////////////////////////////////////  OP-  (ERASE)
 
 	
-// vector - value
-	template<typename Rg>
-	Rg&&
-erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, vector_erasable) {
-	rg.erase(std::remove(rg.begin(), rg.end(), value), rg.end());
-	return  std::forward<Rg>(rg);
- };
+	// vector - value
+		template<typename Rg>
+		Rg&&
+	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, vector_erasable) {
+		rg.erase(std::remove(rg.begin(), rg.end(), value), rg.end());
+		return  std::forward<Rg>(rg);
+	 };
 
-// list - value
-	template<typename Rg>
-	Rg&&
-erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, list_erasable) {
-	rg.remove(value);
-	return  std::forward<Rg>(rg);
- };
+	// list - value
+		template<typename Rg>
+		Rg&&
+	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, list_erasable) {
+		rg.remove(value);
+		return  std::forward<Rg>(rg);
+	 };
 
-// set - value
-	template<typename Rg>
-	Rg&&
-erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, map_erasable) {
-	rg.erase(value);
-	return  std::forward<Rg>(rg);
- };
+	// set - value
+		template<typename Rg>
+		Rg&&
+	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, map_erasable) {
+		rg.erase(value);
+		return  std::forward<Rg>(rg);
+	 };
 
-// basic_range - value
-	template<typename Rg>
-	Rg&&
-erase_value_impl (Rg&& rg, rg_elem_type<Rg> elem, basic_range_erasable) {
-	erase_value_impl(rg.value, elem,  erasable_category(rg.value));
-	return std::forward<Rg>(rg);
- };
+	// basic_range - value
+		template<typename Rg>
+		Rg&&
+	erase_value_impl (Rg&& rg, rg_elem_type<Rg> elem, basic_range_erasable) {
+		erase_value_impl(rg.value, elem,  erasable_category(rg.value));
+		return std::forward<Rg>(rg);
+	 };
 
 
-// cstr - value
-	template<typename Cstr>
-	Cstr&&
-erase_value_impl (Cstr&& s, rg_elem_type<Cstr> c, cstr_erasable) {
-	auto p=std::find(s,endz(s),c); 
-	if (p!=endz(s))   std::copy(p+1,endz(s)+1, p);
-	return std::forward<Cstr>(s);
- };
+	// cstr - value
+		template<typename Cstr>
+		Cstr&&
+	erase_value_impl (Cstr&& s, rg_elem_type<Cstr> c, cstr_erasable) {
+		auto p=std::find(s,endz(s),c); 
+		if (p!=endz(s))   std::copy(p+1,endz(s)+1, p);
+		return std::forward<Cstr>(s);
+	 };
 
 /*
 // rigit - value
@@ -221,13 +221,13 @@ erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, non_erasable) {
 
 ///// rg - value
 	template<class Rg>
-	eIF <is_range<Rg>::value   &&  !is_map<Rg>::value, Rg>
+	eIF <is_range<Rg>::value, Rg>
 operator- (Rg&& rg, rg_elem_type<Rg> value)    {
 	return  erase_value_impl(std::forward<Rg>(rg), value, erasable_category(rg));
  };
 
 	
-// map - value
+// map - key
 	template<class Rg>
 	eIF <is_range<Rg>::value   &&  is_map<Rg>::value, Rg>
 operator- (Rg&& rg, typename rm_qualifier<Rg>::key_type value)    {
@@ -284,14 +284,59 @@ operator-(Rg&& rg, F&& f) {
 	return  std::forward<Rg>(rg);
  };
 
+	
+	/*
+	// vector - value
+		template<typename Rg>
+		Rg&&
+	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, vector_erasable) {
+		rg.erase(std::remove(rg.begin(), rg.end(), value), rg.end());
+		return  std::forward<Rg>(rg);
+	 };
+
+	// list - value
+		template<typename Rg>
+		Rg&&
+	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, list_erasable) {
+		rg.remove(value);
+		return  std::forward<Rg>(rg);
+	 };
+
+	 */
+
+	// set - value
+		template<typename Rg>
+		Rg&&
+	erase_it_impl (Rg&& rg, rg_iterator<Rg> it, map_erasable) {
+		rg.erase(it);
+		return  std::forward<Rg>(rg);
+	 };
+
+		// cstr - it
+			template<typename Cstr>
+			Cstr&&
+		erase_it_impl (Cstr&& s, rg_iterator<Cstr> p, cstr_erasable) {
+			if (p!=endz(s))   std::copy(p+1,endz(s)+1, p);
+			return std::forward<Cstr>(s);
+		 };
+
+	// basic_range - value
+		template<typename Rg>
+		Rg&&
+	erase_it_impl (Rg&& rg, rg_iterator<Rg> it, basic_range_erasable) {
+		erase_it_impl(rg.value, it.current,  erasable_category(rg.value));
+		return std::forward<Rg>(rg);
+	 };
+
+
 
 // Rg - it
 	template<typename Rg>
 	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value,  Rg&&>
 operator-(Rg&& rg,  rg_iterator<Rg> it) {
-	rg.erase(it);
-	return  std::forward<Rg>(rg);
+	return  erase_it_impl(std::forward<Rg>(rg), it, erasable_category(rg));
  };
+
 
 
 // rg - sub_rg
