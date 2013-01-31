@@ -187,8 +187,18 @@ erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, map_erasable) {
 	template<typename Rg>
 	Rg&&
 erase_value_impl (Rg&& rg, rg_elem_type<Rg> elem, basic_range_erasable) {
-	rg.value - elem;
+	erase_value_impl(rg.value, elem,  erasable_category(rg.value));
 	return std::forward<Rg>(rg);
+ };
+
+
+// cstr - value
+	template<typename Cstr>
+	Cstr&&
+erase_value_impl (Cstr&& s, rg_elem_type<Cstr> c, cstr_erasable) {
+	auto p=std::find(s,endz(s),c); 
+	if (p!=endz(s))   std::copy(p+1,endz(s)+1, p);
+	return std::forward<Cstr>(s);
  };
 
 /*

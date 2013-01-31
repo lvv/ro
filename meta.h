@@ -104,6 +104,7 @@ template<class Rg>  				struct  basic_range;
 								non_erasable		erasable_category(...)                                 { return non_erasable(); }; 
 
 template<size_t N>						cstr_erasable		erasable_category(char(&)[N])                          { return cstr_erasable(); };
+template<size_t N>						cstr_erasable		erasable_category(const char(&)[N])                          { return cstr_erasable(); };
 
 //template<class CharT, class Traits, class A>			string_erasable		erasable_category(std::basic_string<CharT,Traits,A>)        { return string_erasable(); }; 
 template<class Rg>						basic_range_erasable	erasable_category(basic_range<Rg>)        		{ return basic_range_erasable(); }; 
