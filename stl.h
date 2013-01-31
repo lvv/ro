@@ -43,9 +43,15 @@ operator!      (const Rg& C) { return C.empty(); };
 
 //  ++T, T++  ---  front()/back()/.first/.second  (n/a for c-arrays)
 
+//	template<typename Rg>
+//	auto
+//front    (Rg&& C)  -> decltype(*std::begin(C))  { return std::forward<decltype(*std::begin(C))>(*std::begin(C)); };
 	template<typename Rg>
 	auto
-front    (Rg&& C)  -> decltype(*std::begin(C))  { return std::forward<decltype(*std::begin(C))>(*std::begin(C)); };
+front    (Rg&& C) 
+	-> decltype(*std::begin(std::forward<Rg>(C)))  {
+	return      *std::begin(C);
+}
 
 
 	template<class Rg>

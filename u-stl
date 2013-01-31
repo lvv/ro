@@ -102,18 +102,18 @@ scc 'v9 - v23'
 
 
 # GENERICS
-scc '-DZ=v9'	       		'front(Z),   back(Z),  size(Z),  Z-front(Z)'
-scc '-DZ=l9'	       		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=a9'	       		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=c9'	       		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=cc9'	       		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=s9'	       		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=range(v9)'    		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=range(l9)'    		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=range(9)'     		'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=range(+v9,-v9)'	'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=range(v9|(_1%2))'	'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
-scc '-DZ=range(v9*(_1%2))'	'front(Z),   back(Z),  size(Z),	 Z-front(Z)'
+scc '-DZ=v9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
+scc '-DZ=l9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
+scc '-DZ=a9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
+scc '-DZ=c9'	       		'front(Z)   ,back(Z)   ,size(Z)              '
+scc '-DZ=cc9'	       		'front(Z)   ,back(Z)   ,size(Z)              '
+scc '-DZ=s9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
+scc '-DZ=range(v9)'    		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
+scc '-DZ=range(l9)'    		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
+scc '-DZ=range(9)'     		'front(Z)   ,back(Z)   ,size(Z)              '
+scc '-DZ=range(+v9,-v9)'	'front(Z)   ,back(Z)   ,size(Z)              '
+scc '-DZ=range(v9|(_1%2))'	'front(Z)   ,back(Z)   ,size(Z)              '
+scc '-DZ=range(v9*(_1%2))'	'front(Z)   ,back(Z)   ,size(Z)              '
 
 
 
