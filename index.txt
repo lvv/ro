@@ -1071,6 +1071,8 @@ STL
 TABLE 
 	http://en.wikipedia.org/wiki/Language_Integrated_Query
 	linq -- http://stackoverflow.com/questions/8910045/template-argument-deduction
+	http://stackoverflow.com/questions/14633478/c-table-collection-of-heterogenuously-types-columns
+	http://en.wikipedia.org/wiki/Join_(SQL)
 
 SIMILAR PROJECTS
 

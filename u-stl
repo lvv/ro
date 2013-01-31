@@ -101,7 +101,11 @@ scc 'v9 - v23'
 
 
 
+
 # GENERICS
+
+scc -a1 'vector<to> V;  V.emplace_back();  back(V).instances'
+
 scc '-DZ=v9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
 scc '-DZ=l9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
 scc '-DZ=a9'	       		'front(Z)   ,back(Z)   ,size(Z)   ,Z-front(Z)'
