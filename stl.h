@@ -1,3 +1,4 @@
+
 					#ifndef  RO_STL_H
 					#define  RO_STL_H
 
@@ -14,75 +15,82 @@
 
 					namespace ro {
 
-/////////////////////////////////////////////////////////////////////////////////////////  MEMBERS ALIASES
+//##########################################################################  MEMBERS FUNC SHORTCUTS
 
-//  +Rg   ---   begin(),  	(n/a for c-arrays, use std::begin)
+/////  +Rg   ---   begin(),  	(n/a for c-arrays, use std::begin)
 
 	template<typename Rg>		// do we need to care about r-value-ness here?
 	eIF <is_range<Rg>::value  &&  !std::is_array<Rg>::value,  rg_iterator<Rg>>
-operator+      (Rg&& rg) { return std::begin(rg); };	// does not work with r-values
+ operator+      (Rg&& rg) { return std::begin(rg); };	// does not work with r-values
 
 
-//  -Rg   ---   end(),  	(n/a for c-arrays, use std::end)
+/////  -Rg   ---   end(),  	(n/a for c-arrays, use std::end)
 	template<typename Rg>
 	eIF <is_range<Rg>::value  &&  !std::is_array<Rg>::value,  rg_iterator<Rg>>
-operator-      (Rg&& rg) { return  std::end(rg); };
+ operator-      (Rg&& rg) { return  std::end(rg); };
 
 
+ /*
 	template<typename Rg>
 	eIF <has_size<Rg>::value, size_t>
-operator~      (const Rg& rg) { return size(rg); };
+ operator~      (const Rg& rg) { return size(rg); };
+ */
 
 
-//  if(!Rg)  --- (!Rg.empty())
-//  if(Rg)   --- not implemented,  use  !!Rg instead
+/////  bool(Rg)
+			//  if(!Rg)  --- (!Rg.empty())
+			//  if(Rg)   --- not implemented,  use  !!Rg instead
 	template<typename Rg>
 	eIF <has_empty<Rg>::value, bool>
-operator!      (const Rg& rg) { return rg.empty(); };
+ operator!      (const Rg& rg) { return rg.empty(); };
 
 
-//  ++T, T++  ---  front()/back()/.first/.second  (n/a for c-arrays)
+/////  ++T, T++  ---  front()/back()/.first/.second  (n/a for c-arrays)
 
 	template<typename Rg>
 	auto
-front    (Rg&& rg) 
+ front    (Rg&& rg) 
 	-> decltype(*std::begin(rg))  {
 	return      *std::begin(rg);
-}
+ }
 
 
 	template<class Rg>
 	auto
-back      (Rg&& rg)
+ back      (Rg&& rg)
 	-> decltype(*endz(rg))  {
 	return *std::prev(ro::endz(rg));
-};
+ };
+
+ template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ return front(rg); }
+ template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
 
 
-//  x << Rg >> x   ---  remove head / tail;   usage: scc 'dlong V{1,2,3};  i << V >> j; __ i, V, j;'   prints: 1 {2} 3 
+
+/////  x << Rg >> x   ---  remove head / tail
 	template<typename Rg, typename T>
 	eIF <is_elem_of<T, Rg>::value &&   has_pop_back<Rg>::value,   Rg&&>
-operator>>      (Rg&& rg, T&& x)    { x = rg.back();   rg.pop_back();   return  std::forward<Rg>(rg); };
+ operator>>      (Rg&& rg, T&& x)    { x = rg.back();   rg.pop_back();   return  std::forward<Rg>(rg); };
 
 
 	template<typename Rg, typename T>
 	eIF <is_elem_of<T,Rg>::value  &&   has_pop_front<Rg>::value,   Rg&&>
-operator<<      (T& x, Rg&& rg)    { x = rg.front();  rg.pop_front();  return  std::forward<Rg>(rg); };
+ operator<<      (T& x, Rg&& rg)    { x = rg.front();  rg.pop_front();  return  std::forward<Rg>(rg); };
 
 
 
-// --Rg, Rg--  ---  pop_back/pop_front;     usage:   scc 'vint V{1,2}, W;  W << --V;  __ V, W;'   prints:    {2}, {1}
+/////  --Rg, Rg--  ---  pop_back/pop_front
 	template<typename Rg>
 	eIF <is_range<Rg>::value, Rg>
-operator--      (Rg&& rg)         { rg.pop_front();   return  std::forward<Rg>(rg); };
+ operator--      (Rg&& rg)         { rg.pop_front();   return  std::forward<Rg>(rg); };
 
 
 	template<typename Rg>
 	eIF <is_range<Rg>::value, Rg>
-operator--      (Rg&& rg, int)    { rg.pop_back();    return  std::forward<Rg>(rg); };
+ operator--      (Rg&& rg, int)    { rg.pop_back();    return  std::forward<Rg>(rg); };
 
 
-//////  X >> Rg << X
+/////  X >> Rg << X
 
 	namespace detail {
 		template<class Rg, class X>  eIF<has_push_back  <Rg>::value, Rg&&>	append_elem(Rg&& rg1, X&& x)   { rg1.push_back (std::forward<X>(x));  return std::forward<Rg>(rg1); };
@@ -103,27 +111,26 @@ operator--      (Rg&& rg, int)    { rg.pop_back();    return  std::forward<Rg>(r
 	// Rg << x
 	template<class Rg, class X>
 	eIF <is_elem_of<X,Rg>::value,  Rg&&>
-operator << (Rg&& rg1, X&& x)            {  detail::append_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
+ operator << (Rg&& rg1, X&& x)            {  detail::append_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
 
 
 	// Rg << Cl2
 	template<class Rg, class Rg2> 
 	eIF <have_same_elem<Rg,Rg2>::value,  Rg&&>
-//operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), rg_elem_fwd<Rg2>(*i));   return  std::forward<Rg>(rg1); };
-operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), std::move(*i));   return  std::forward<Rg>(rg1); };
+ operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), std::move(*i));   return  std::forward<Rg>(rg1); };
 
 
-//////  T >> Rg 
+/////  T >> Rg 
 	// x >> Rg 
 	template<class X, class Rg>
 	eIF <is_elem_of<X,Rg>::value,  Rg&&>
-operator >> (X&& x, Rg&& rg1)            {  detail::prepend_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
+ operator >> (X&& x, Rg&& rg1)            {  detail::prepend_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
 
 
 	// sRn >> tRn
 	template<class sRn, class tRn> 
 	eIF <have_same_elem<tRn,sRn>::value,  tRn&&>
-operator >>  (sRn&& src, tRn&& trg)  {
+ operator >>  (sRn&& src, tRn&& trg)  {
 
 	if (std::begin(src) == endz(src)) 
 		return  std::forward<tRn>(trg);
@@ -138,32 +145,12 @@ operator >>  (sRn&& src, tRn&& trg)  {
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////  Rg op T
+//##############################################################################################  RG - X
 
-	namespace detail {
-
-
-		// Rg / x     usage: scc 'copy(v9/2, v9/5,oi)'
-			template<typename Rg, typename X>
-			eIF <is_elem_of<X, Rg>::value, rg_iterator<Rg>>
-		find_elem(Rg&& rg, const X& x)   { return std::find(std::begin(rg), endz(rg), x); };
-
-
-
-		// Rg / f
-			template<typename Rg, typename F>
-			eIF <is_callable<F, bool(rg_elem_type<Rg>)>::value, rg_iterator<Rg>>
-		find_elem(Rg&& rg, const F& pred)  { return  std::find_if(std::begin(rg), endz(rg), pred); };
-
-			
-		//  Rg1 / Rg2   ---  search() --> it
-			template<typename Rg1, typename Rg2>
-			eIF <have_same_elem<Rg1, Rg2>::value, rg_iterator<Rg1>>
-		find_elem(Rg1&& rg1, const Rg2& rg2)    {  return std::search(std::begin(rg1), endz(rg1), std::begin(rg2), endz(rg2)); }; }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////// RG - VALUE
+////////////////////////////////////////////////////////////////////////////////////////////////  RG - VALUE
 	
+/////  IMPL
+
 	// vector - value
 		template<typename Rg>
 		Rg&&
@@ -207,24 +194,27 @@ operator >>  (sRn&& src, tRn&& trg)  {
 	 };
 
 
-///// rg - value
+/////  rg - value
 	template<class Rg>
 	eIF <is_range<Rg>::value, Rg>
-operator- (Rg&& rg, rg_elem_type<Rg> value)    {
+ operator- (Rg&& rg, rg_elem_type<Rg> value)    {
 	return  erase_value_impl(std::forward<Rg>(rg), value, erasable_category(rg));
  };
 
 	
-// map - key
-	template<class Rg>
-	eIF <is_range<Rg>::value   &&  is_map<Rg>::value, Rg>
-operator- (Rg&& rg, typename rm_qualifier<Rg>::key_type value)    {
-	rg.erase(value);
-	return  std::forward<Rg>(rg);
- };
+		// map - key
+		template<class Rg>
+		eIF <is_range<Rg>::value   &&  is_map<Rg>::value, Rg>
+	operator- (Rg&& rg, typename rm_qualifier<Rg>::key_type value)    {
+		rg.erase(value);
+		return  std::forward<Rg>(rg);
+	 };
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////// RG - PRED
+
+
+/////  IMPL
 
 	// vector - pred
 		template<class Rg, class F>
@@ -254,24 +244,24 @@ operator- (Rg&& rg, typename rm_qualifier<Rg>::key_type value)    {
 	 */
 
 
-///// Rg - pred
+/////  Rg - pred
 	template<class Rg, class F>
 	eIF<is_range<Rg>::value  &&  ! is_map<Rg>::value  && is_callable<F, bool(rg_elem_type<Rg>)>::value, Rg>
-operator-(Rg&& rg, F&& f) {
+ operator-(Rg&& rg, F&& f) {
 	return  erase_predicate_impl(std::forward<Rg>(rg), f, erasable_category(rg));
  };
 
 
-// map - pred
-	template<class Rg, class F>
-	eIF<is_range<Rg>::value  &&  is_map<Rg>::value && is_callable<F, bool(typename rm_qualifier<Rg>::key_type)>::value, Rg>
-operator-(Rg&& rg, F&& f) {
-	for (auto i = rg.begin();  i != rg.end(); ) {
-		if (f(i->first))	rg.erase(i++);
-		else		++i;
-	}
-	return  std::forward<Rg>(rg);
- };
+	// map - pred
+		template<class Rg, class F>
+		eIF<is_range<Rg>::value  &&  is_map<Rg>::value && is_callable<F, bool(typename rm_qualifier<Rg>::key_type)>::value, Rg>
+	operator-(Rg&& rg, F&& f) {
+		for (auto i = rg.begin();  i != rg.end(); ) {
+			if (f(i->first))	rg.erase(i++);
+			else		++i;
+		}
+		return  std::forward<Rg>(rg);
+	 };
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////// RG - IT
@@ -294,18 +284,18 @@ operator-(Rg&& rg, F&& f) {
 
 
 
-// Rg - it
+/////  Rg - it
+
 	template<typename Rg>
 	eIF<is_range<Rg>::value  &&  !has_erase1<Rg>::value,  Rg&&>
-operator-(Rg&& rg,  rg_iterator<Rg> it) {
+ operator-(Rg&& rg,  rg_iterator<Rg> it) {
 	return  erase_it_impl(std::forward<Rg>(rg), it, erasable_category(rg));
  };
 
 
-// Rg - it
 	template<typename Rg>
 	eIF<is_range<Rg>::value  &&  has_erase1<Rg>::value,  Rg&&>
-operator-(Rg&& rg,  rg_iterator<Rg> it) {
+ operator-(Rg&& rg,  rg_iterator<Rg> it) {
 	rg.erase(it);
 	return  rg;
  };
@@ -313,10 +303,11 @@ operator-(Rg&& rg,  rg_iterator<Rg> it) {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////// RG - SUB_RG
-// rg - sub_rg
+
+/////  rg - sub_rg
 	template<class Rg, class sub_Rg>
 	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elem<Rg,sub_Rg>::value,  Rg&&>
-operator-(Rg&& rg,  sub_Rg&& sub_rg) {
+ operator-(Rg&& rg,  sub_Rg&& sub_rg) {
 	auto rg_e = endz(rg);
 	auto b    = std::search(std::begin(rg), rg_e, std::begin(sub_rg), endz(sub_rg));
 	if (b==rg_e)  return  std::forward<Rg>(rg);
@@ -327,10 +318,10 @@ operator-(Rg&& rg,  sub_Rg&& sub_rg) {
  };
 
 
-// cstr - sub_rg
+/////  cstr - sub_rg
 	template<class Rg, class sub_Rg>
 	eIF<is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elem<Rg,sub_Rg>::value,  Rg&&>
-operator-(Rg&& rg,  sub_Rg&& sub_rg) {
+ operator-(Rg&& rg,  sub_Rg&& sub_rg) {
 	auto rg_e = endz(rg);
 	auto b    = std::search(std::begin(rg), rg_e, std::begin(sub_rg), endz(sub_rg));
 	if (b==rg_e)  return  std::forward<Rg>(rg);
@@ -341,140 +332,146 @@ operator-(Rg&& rg,  sub_Rg&& sub_rg) {
  };
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////  OP/  (SEARCH)
 
-////////  Rg / T  
-// ---  non callable
+//############################################################################################  Rg / X
+
+/////  IMPL
+	namespace detail {
+
+
+		// Rg / x
+			template<typename Rg, typename X>
+			eIF <is_elem_of<X, Rg>::value, rg_iterator<Rg>>
+		find_elem(Rg&& rg, const X& x)   { return std::find(std::begin(rg), endz(rg), x); };
+
+
+
+		// Rg / f
+			template<typename Rg, typename F>
+			eIF <is_callable<F, bool(rg_elem_type<Rg>)>::value, rg_iterator<Rg>>
+		find_elem(Rg&& rg, const F& pred)  { return  std::find_if(std::begin(rg), endz(rg), pred); };
+
+			
+		//  Rg1 / Rg2
+			template<typename Rg1, typename Rg2>
+			eIF <have_same_elem<Rg1, Rg2>::value, rg_iterator<Rg1>>
+		find_elem(Rg1&& rg1, const Rg2& rg2)    {  return std::search(std::begin(rg1), endz(rg1), std::begin(rg2), endz(rg2)); };
+	}
+
+
+/////  Rg / X  
+	
+	// ---  non callable
 	template<typename Rg, typename T>
 	eIF <is_range<Rg>::value , rg_iterator<Rg>>
-operator / (Rg&& rg, const T& t)                                { return  detail::find_elem(std::forward<Rg>(rg), t); };
+ operator / (Rg&& rg, const T& t)                                { return  detail::find_elem(std::forward<Rg>(rg), t); };
 
-// ---  plain func
+	// ---  plain func
 	template<typename Rg>
 	eIF <is_range<Rg>::value , rg_iterator<Rg>>
-operator / (Rg&& rg, bool(*t)(rg_elem_type<Rg>))                { return  detail::find_elem(std::forward<Rg>(rg), t); };
+ operator / (Rg&& rg, bool(*t)(rg_elem_type<Rg>))                { return  detail::find_elem(std::forward<Rg>(rg), t); };
 
-// ---  func obj, lambda
+	// ---  func obj, lambda
 	template<typename Rg>
 	eIF <is_range<Rg>::value , rg_iterator<Rg>>
-operator / (Rg&& rg, std::function<bool(rg_elem_type<Rg>)> t)   { return  detail::find_elem(std::forward<Rg>(rg), t); };
+ operator / (Rg&& rg, std::function<bool(rg_elem_type<Rg>)> t)   { return  detail::find_elem(std::forward<Rg>(rg), t); };
 
 
 
-////////  Rg % T
+/////  Rg % T
 
-//  ---  non callable
+	//  ---  non callable
 	template<typename Rg, typename T>
 	eIF <is_range<Rg>::value, bool>
-operator % (Rg&& rg, const T& t)                               { return  endz(rg) != detail::find_elem(std::forward<Rg>(rg), t); };
+ operator % (Rg&& rg, const T& t)                               { return  endz(rg) != detail::find_elem(std::forward<Rg>(rg), t); };
 
-//  ---  plain func
+	//  ---  plain func
 	template<typename Rg>
 	eIF <is_range<Rg>::value, bool>
-operator % (Rg&& rg, bool(*t)(rg_elem_type<Rg>))               { return  endz(rg) != detail::find_elem(std::forward<Rg>(rg), t); };
+ operator % (Rg&& rg, bool(*t)(rg_elem_type<Rg>))               { return  endz(rg) != detail::find_elem(std::forward<Rg>(rg), t); };
 
-//  ---  func obj, lambda
+	//  ---  func obj, lambda
 	template<typename Rg>
 	eIF <is_range<Rg>::value, bool>
-operator % (Rg&& rg, std::function<bool(rg_elem_type<Rg>)> t)  { return  endz(rg) != detail::find_elem(std::forward<Rg>(rg), t); };
+ operator % (Rg&& rg, std::function<bool(rg_elem_type<Rg>)> t)  { return  endz(rg) != detail::find_elem(std::forward<Rg>(rg), t); };
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////  TUPLE / PAIR
-
+///////////////////////////////////////////////////////////////////////////////////////////////////  TUPLE / PAIR
 template<class U, class V>   U&    front  (std::pair<U,V>&  P)		{ return           P.first;   };
 template<class U, class V>   U&&   front  (std::pair<U,V>&& P)		{ return std::move(P.first);  };
-
 template<class U, class V>   V&    back   (std::pair<U,V>&  P)		{ return           P.second;  };
 template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::move(P.second); };
 
 
-// ++Tpl 
+/////  ++Tpl 
 	template <class... Types>
 	typename std::tuple_element<std::tuple_size<std::tuple<Types...> >::value-1, typename std::tuple<Types...> >::type&
-back	(typename std::tuple<Types...>& Tpl)  {  return  std::get<std::tuple_size<std::tuple<Types...> >::value-1>(Tpl); };
+ back	(typename std::tuple<Types...>& Tpl)  {  return  std::get<std::tuple_size<std::tuple<Types...> >::value-1>(Tpl); };
 
-// ++Tpl  (const)
+
+/////  ++Tpl  (const)
 	template <class... Types>
 	const typename std::tuple_element<std::tuple_size<std::tuple<Types...> >::value-1, typename std::tuple<Types...> >::type&
-back	(const typename std::tuple<Types...>& Tpl)  {  return  std::get<std::tuple_size<std::tuple<Types...> >::value-1>(Tpl); };
+ back	(const typename std::tuple<Types...>& Tpl)  {  return  std::get<std::tuple_size<std::tuple<Types...> >::value-1>(Tpl); };
 
 
-// Tpl++ 
+/////  Tpl++ 
 	template <class... Types>
 	typename std::tuple_element<0, std::tuple<Types...> >::type&
-front	(typename std::tuple<Types...>& Tpl)  {  return  std::get<0>(Tpl); };
+ front	(typename std::tuple<Types...>& Tpl)  {  return  std::get<0>(Tpl); };
 
-// Tpl++  (const) 
+
+/////  Tpl++  (const) 
 	template <class... Types>
 	const typename std::tuple_element<0, std::tuple<Types...> >::type&
-front	(const typename std::tuple<Types...>& Tpl)  {  return  std::get<0>(Tpl); };
-
-
-	template <class... Types>
-	constexpr size_t
-operator~	(const typename std::tuple<Types...>& Tpl)  {  return  std::tuple_size<std::tuple<Types...> >::value; };
+ front	(const typename std::tuple<Types...>& Tpl)  {  return  std::get<0>(Tpl); };
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////  STACK
 
 
-//  Stack--
+/////  Stack--
 	template<typename Rg>
 	eIF <is_stack<Rg>::value, Rg>
-operator--      (Rg&& rg, int)    { rg.pop();   return std::forward<Rg>(rg); };
+ operator--      (Rg&& rg, int)    { rg.pop();   return std::forward<Rg>(rg); };
 
-//  Stack >> x
-//	scc 'int i=10; (stack<int>() << 1 << 2) >> i;  i'
-//	3
-//	scc 'int i=10; stack<int> st; st << 1 << 2 << 3;  st >> i; __ st, i;'
-//	[1, 2] 3
-
+/////  Stack >> x
 	template<typename Rg, typename Xt>
 	eIF <has_pop<Rg>::value  &&  is_elem_of<Xt,Rg>::value,  Rg>
-operator>>      (Rg&& rg, Xt&& x)    { x = rg.top();  rg.pop();   return std::forward<Rg>(rg); };
+ operator>>      (Rg&& rg, Xt&& x)    { x = rg.top();  rg.pop();   return std::forward<Rg>(rg); };
 
 
-//  Stack++
-//	scc ' __ (stack<int>() << 1 << 2 << 3)++;'
-//	3
-//	scc 'stack<int> st; st << 1 << 2 << 3; st++'
-//	3
-
+/////  Stack++
 	template<typename Rg>
  	eIF <has_top<Rg>::value, rg_elem_type<Rg>>
-back      (Rg&& rg)    { return rg.top(); };
+ back      (Rg&& rg)    { return rg.top(); };
 
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////  QUEUE
 
 
-//  --Queue
+/////  --Queue
 	template<class Rg, class Xt>
 	eIF <is_queue<Rg>::value, Rg&&> 
-operator--      (Rg&& rg)    { rg.pop();   return std::forward<Rg>(rg); };
+ operator--      (Rg&& rg)    { rg.pop();   return std::forward<Rg>(rg); };
 
-//  x << Queue
+
+/////  x << Queue
 	template<class Rg, class Xt>
 	eIF <has_pop<Rg>::value  &&  is_elem_of<Xt,Rg>::value, Rg&&> &
-operator<<      (Xt& x, Rg&& rg)    { x = rg.front();  rg.pop();   return std::forward<Rg>(rg); };
+ operator<<      (Xt& x, Rg&& rg)    { x = rg.front();  rg.pop();   return std::forward<Rg>(rg); };
 
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////  ITERATOR
 
 
-//  It / x   ---  find() --> it	   usage: scc 'copy(+v9/2, +v9/5, oi),  does not work with pointers (rg++ constrain)
+/////  It / x   ---  find() --> it	   usage: scc 'copy(+v9/2, +v9/5, oi),  does not work with pointers (rg++ constrain)
 	template<typename It>
 	eIF <is_iterator<It>::value,  It>
-operator/       (It&& i, const typename std::iterator_traits<It>::value_type x)    {  while(*i != x) ++i;    return std::forward<It>(i); };
+ operator/       (It&& i, const typename std::iterator_traits<It>::value_type x)    {  while(*i != x) ++i;    return std::forward<It>(i); };
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////  GENERICS 
-
-template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ return front(rg); }
-//template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg))&& 		{ return std::forward<rg_reference<Rg>>(front(std::forward<Rg>(rg))); }
-template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
 
 					};
 					#endif	// RO_STL_H

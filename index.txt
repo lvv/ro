@@ -116,8 +116,8 @@ Note that functions are not called directly in this example, but treated as
 objects (function pointers from `<algorithm>` include), and passed to
 `operator|`.
 
-RO strives to provide simpler interface, terser and easier to
-understand code. RO, similarly to STL, has zero overhead, and is as efficient
+RO strives to provide simpler interface and more comprehensible code.
+RO, similarly to STL, has zero overhead, and is as efficient
 as hand written for-loop.
 
 ///////////////////

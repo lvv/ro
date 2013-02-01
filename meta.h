@@ -466,10 +466,11 @@ struct size_fo {
 
 	template<class Rg>    eIF<has_size<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return rg.size(); };
 	//template<class Rg>		auto	size_impl (const Rg& rg) ->decltype(rg.size())  const      { return rg.size(); };
-	template<class T, size_t N>	size_t	size_impl (const T (&C)[N]) const                          { return ro::endz(C) - std::begin(C); };
-	template<class T, size_t N>	size_t	size_impl (const std::array<T,N>& A) const                 { return N; };
-	template<class... Types>	size_t	size_impl (const typename std::tuple<Types...>& Tpl) const { return  std::tuple_size<std::tuple<Types...> >::value; };
-	template<class U, class V>	size_t	size_impl (const std::pair<U,V>& P) const                  { return 2; };
+	template<class T, size_t N>	size_t constexpr  size_impl (const T    (&C)[N]) const                       { return N; };
+	template<class T, size_t N>	size_t 		  size_impl (const char (&C)[N]) const                       { return ro::endz(C) - std::begin(C); };
+	template<class T, size_t N>	size_t constexpr  size_impl (const std::array<T,N>& A) const                 { return N; };
+	template<class... Types>	size_t 		  size_impl (const typename std::tuple<Types...>& Tpl) const { return  std::tuple_size<std::tuple<Types...> >::value; };
+	template<class U, class V>	size_t constexpr  size_impl (const std::pair<U,V>& P) const                  { return 2; };
 
 	template<class X>		size_t	operator() (const X& x)  const                             { return size_impl(x); };
 };
