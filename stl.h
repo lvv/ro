@@ -162,8 +162,7 @@ operator >>  (sRn&& src, tRn&& trg)  {
 		find_elem(Rg1&& rg1, const Rg2& rg2)    {  return std::search(std::begin(rg1), endz(rg1), std::begin(rg2), endz(rg2)); }; }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////  OP-  (ERASE)
-
+//////////////////////////////////////////////////////////////////////////////////////////////// RG - VALUE
 	
 	// vector - value
 		template<typename Rg>
@@ -207,17 +206,6 @@ operator >>  (sRn&& src, tRn&& trg)  {
 		return std::forward<Cstr>(s);
 	 };
 
-/*
-// rigit - value
-	template<typename Rg>
-	Rg&&
-erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, non_erasable) {
-	static_assert(true,"cannot erase element from rigit range");
-	return  std::forward<Rg>(rg);
- };
- */
-
-
 
 ///// rg - value
 	template<class Rg>
@@ -236,33 +224,34 @@ operator- (Rg&& rg, typename rm_qualifier<Rg>::key_type value)    {
  };
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////// RG - PRED
 
-// vector - pred
-	template<class Rg, class F>
-	Rg&&
-erase_predicate_impl(Rg&& rg,  F&& f, vector_erasable) {
-	rg.erase(std::remove_if(rg.begin(), rg.end(), f), rg.end());
-	return  std::forward<Rg>(rg);
- };
+	// vector - pred
+		template<class Rg, class F>
+		Rg&&
+	erase_predicate_impl(Rg&& rg,  F&& f, vector_erasable) {
+		rg.erase(std::remove_if(rg.begin(), rg.end(), f), rg.end());
+		return  std::forward<Rg>(rg);
+	 };
 
-// list - pred
-	template<class Rg, class F>
-	Rg&&
-erase_predicate_impl(Rg&& rg,  F&& f, list_erasable) {
-	rg.remove_if(f);
-	return  std::forward<Rg>(rg);
- };
+	// list - pred
+		template<class Rg, class F>
+		Rg&&
+	erase_predicate_impl(Rg&& rg,  F&& f, list_erasable) {
+		rg.remove_if(f);
+		return  std::forward<Rg>(rg);
+	 };
 
 
-/*
-///// Rg - pred
-	template<class Rg>
-	eIF<is_range<Rg>::value  &&  ! is_map<Rg>::value, Rg>
-operator-(Rg&& rg, bool(*f)(const rg_elem_type<Rg>&)) {
-	return  erase_predicate_impl(std::forward<Rg>(rg), f, erasable_category(rg));
- };
+	/*
+	///// Rg - pred
+		template<class Rg>
+		eIF<is_range<Rg>::value  &&  ! is_map<Rg>::value, Rg>
+	operator-(Rg&& rg, bool(*f)(const rg_elem_type<Rg>&)) {
+		return  erase_predicate_impl(std::forward<Rg>(rg), f, erasable_category(rg));
+	 };
 
- */
+	 */
 
 
 ///// Rg - pred
@@ -284,33 +273,8 @@ operator-(Rg&& rg, F&& f) {
 	return  std::forward<Rg>(rg);
  };
 
-	
-	/*
-	// vector - value
-		template<typename Rg>
-		Rg&&
-	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, vector_erasable) {
-		rg.erase(std::remove(rg.begin(), rg.end(), value), rg.end());
-		return  std::forward<Rg>(rg);
-	 };
 
-	// list - value
-		template<typename Rg>
-		Rg&&
-	erase_value_impl (Rg&& rg, rg_elem_type<Rg> value, list_erasable) {
-		rg.remove(value);
-		return  std::forward<Rg>(rg);
-	 };
-
-	 */
-
-	// set - value
-		template<typename Rg>
-		Rg&&
-	erase_it_impl (Rg&& rg, rg_iterator<Rg> it, map_erasable) {
-		rg.erase(it);
-		return  std::forward<Rg>(rg);
-	 };
+//////////////////////////////////////////////////////////////////////////////////////////////// RG - IT
 
 		// cstr - it
 			template<typename Cstr>
@@ -332,13 +296,23 @@ operator-(Rg&& rg, F&& f) {
 
 // Rg - it
 	template<typename Rg>
-	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value,  Rg&&>
+	eIF<is_range<Rg>::value  &&  !has_erase1<Rg>::value,  Rg&&>
 operator-(Rg&& rg,  rg_iterator<Rg> it) {
 	return  erase_it_impl(std::forward<Rg>(rg), it, erasable_category(rg));
  };
 
 
+// Rg - it
+	template<typename Rg>
+	eIF<is_range<Rg>::value  &&  has_erase1<Rg>::value,  Rg&&>
+operator-(Rg&& rg,  rg_iterator<Rg> it) {
+	rg.erase(it);
+	return  rg;
+ };
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////// RG - SUB_RG
 // rg - sub_rg
 	template<class Rg, class sub_Rg>
 	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elem<Rg,sub_Rg>::value,  Rg&&>

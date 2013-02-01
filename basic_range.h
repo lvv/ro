@@ -199,8 +199,8 @@ struct  basic_range : ref_container<Rg&&> {
 	template<class U=Rg>   eIF<has_pop_front<U>::value>	pop_front()				{ rg.pop_front();}
 
 	// erase
-	template<class U=Rg>   eIF<has_erase2<U>::value>	erase(rg_iterator<Rg> b, rg_iterator<Rg> e)	{ rg.erase(b,e);}
-	template<class U=Rg>   eIF<has_erase1<U>::value>	erase(rg_iterator<Rg> p)			{ rg.erase(p);  }
+	template<class U=Rg>   eIF<has_erase2<U>::value>	erase(iterator b, iterator e)	{ rg.erase(b.current,e.current);}
+	template<class U=Rg>   eIF<has_erase1<U>::value>	erase(iterator p)	       	{ rg.erase(p.current);  }
 
 	// cstr
 	template<class U=Rg>   eIF<is_cstr<U>::value>		push_back(const elem_type&  value)	{ auto e=endz(rg);  *e=value; *++e='\0';}
