@@ -44,21 +44,19 @@ scc 'stack<int> s; s << 1 << 2 << 3;  int x;  s >> x;  _ x, s++; __ "", size(s--
 scc 'deque<int> c{1,2,3};      _ ++c; _ c++; _ c--; __ --c;'
 scc 'dint d{1,2};   3 >> d;   d'
 #scc 'map<int,int> m;   m<<MP(1,2);  m'
-scc -- '__(-- dint{0,1,2,3,4,5} -- -- );'
+scc -a1		'size(-- -- dint{0,1,2,3,4} -- --)'
 
 # SIZE
-scc 'stack<int> sk;  sk << 1<< 2;  set<int> st;  st << 1<< 2;  __ size(vint{1,2}), size(MT(1,2)), size(sk), size(st);' 
-scc '__ v9, ((!!v9) ? "-- not empty" : "-- empty");   __ v0, ((!!v0) ? "-- not empty " : "-- empty");' 
+scc -a1		'size(stack<int>() << 1<< 2) == 2  &&  size(sint{1,2}) == 2  &&   size(vint{1,2}) == 2 &&  size(MT(1,2)) == 2'
+scc -a1		'!!v9  &&  !v0'
 
 # FIND
-scc 'v9 % 3,  v9 % 33'
-scc '__ vint{1,2,3} % 3,  vint{1,2,3} % 33;'
-scc '__ v9 % vint{3,4},  v9 % vint{}, v9 % vint{3,444};'
-scc '__ v9 % [](int i){return i==3;}, v9 % [](int i){return i==30;};'
-scc 's9 % "bc",  s9 % "n/a"'
+scc -a1		'v9 % 3  &&  ! (v9 % 33)   &&   vint{1,2,3} % 3   &&  !(  vint{1,2,3} % 33)'
+scc -a1		'v9 % vint{3,4}   &&   v9 % vint{}   &&  !(v9 % vint{3,444})'
+scc    		'assert(v9 % [](int i){return i==3;}    &&   !(v9 % [](int i){return i==30;}));'
+scc -a1		's9 % "bc"  &&   !(s9 % "n/a")'
 
-#scc 'v9 /= 22 = 33; v9'
-#scc 'v9 /= 3  = 33; v9'
+scc '*(v9 / 3)  = 33; v9'
 scc 'copy(v9/2, v9/5, oi)'
 #scc 'copy(v9/vint{3,4}, v9/vint{8}, oi); endl'
 
