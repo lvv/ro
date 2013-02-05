@@ -58,10 +58,10 @@ scc -a1		's9 % "bc"  &&   !(s9 % "n/a")'
 
 scc '*(v9 / 3)  = 33; v9'
 scc 'copy(v9/2, v9/5, oi)'
-#scc 'copy(v9/vint{3,4}, v9/vint{8}, oi); endl'
+scc 'copy(v9/vint{3,4}, v9/vint{8}, oi); endl'
 
 # Ct / x
-scc 'v9 / 3 - +v9'
+scc -a3		'*(v9 / 3)'
 # Ct / F
 scc '__ v9 / [](int i){return i==3;} - +v9;'
 # Ct / F (lambdas)
