@@ -1064,9 +1064,12 @@ MAP
 			http://www.augustana.ca/~mohrj/courses/1999.fall/csc210/lecture_notes/hashing.html
 			http://svn.python.org/view/python/trunk/Objects/dictnotes.txt?view=markup&pathrev=53782
 	http://stackoverflow.com/questions/11614106/is-gcc-stdunordered-map-implementation-slow-if-so-why
+	B-Tree -- https://code.google.com/p/cpp-btree/
 
 STL
 	map adapter: https://github.com/krig/k11/blob/master/src/tests/iter.cpp
+	STXXL: Standard Template Library for Extra Large Data Sets --- http://stxxl.sourceforge.net/
+	Thread Safe Template Library -- http://freecode.com/projects/tstl
 
 TABLE 
 	http://en.wikipedia.org/wiki/Language_Integrated_Query

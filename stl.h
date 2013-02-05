@@ -62,9 +62,6 @@
 	return *std::prev(ro::endz(rg));
  };
 
- template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ return front(rg); }
- template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
-
 
 
 /////  x << Rg >> x   ---  remove head / tail
@@ -472,6 +469,12 @@ template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::mo
 	eIF <is_iterator<It>::value,  It>
  operator/       (It&& i, const typename std::iterator_traits<It>::value_type x)    {  while(*i != x) ++i;    return std::forward<It>(i); };
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////  GENERICS
+								 // this must be after all front(X) definitions
+								
+ template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ return front(rg); }
+ template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
 
 					};
 					#endif	// RO_STL_H
