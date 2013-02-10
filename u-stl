@@ -93,7 +93,9 @@ scc 'l9-+l9, v9-+v9, m9-+m9, st9-+st9'
 scc 'str("abcd") - "bc"'
 scc 'v9 - v23' 
 
-# scc "str(\"abcd\") - 'b'"		       		// TOFIX
+scc "str(\"abcd\") - 'b'"
+scc "str(\"abcd\") - ro::isalpha"
+scc "dchar s;  s << \"abcd123\";  s - ro::isalpha"
 # scc "str(\"abcd\") - isalpha"	 		       	// TOFIX
 # scc "dchar s;  s << \"abcd123\";  s - isalpha"	// TOFIX
 
