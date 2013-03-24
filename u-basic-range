@@ -62,4 +62,7 @@ scc 'vint{3,1,2} | sort | reverse'
 scc 'str s("HELLOW WORLD 321"); s | isalpha | sort ; s' 	# TOFIX
 scc 'v9 | random_shuffle'
 
+# TODO 
+# scc 'char s[99]="abc"; char* p=s;   range(p) | reverse'
+
 

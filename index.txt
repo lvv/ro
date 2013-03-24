@@ -58,7 +58,7 @@ even after many years of using it, I still need reference manual handy.
 With RO, it will stay the same as shown in above example.  No IFs no ORs.
 RO will treats STL containers, C-strings, C-arrays and RO-Ranges in the same way and it provides
 uniform interface for all of them.  Using operators interface actually enforces uniformity:
-there are no so many operators to choose from, and they have fixed number of arguments.
+there are not so many operators to choose from, and they have fixed number of arguments.
 
 In next example we need to perform simple operation: remove a value from a
 `std::vector`. This is why C++ is called "too expert friendly": 
@@ -77,7 +77,7 @@ And people that use above, are saying that overloaded operators are confusing:
 container - x;
 ---------------------------------------------------------------------------
 
-Above expression won't change if we use any container (or range) object or if
+Above expression won't change if we use any container (or range) or if
 `x` is not a  value, but a predicate, iterator or sub-range .
 
 One more. Given as example of terseness and simplicity of +++C++11+++ by Herb Sutter in
@@ -95,11 +95,15 @@ vec / (_1 > val)
 ----------------------------
 
 Again, with STL, you will need different algorithm if you are looking for a value
-or sub-range. With RO, it will be same `v / ...`.
+or sub-range. With RO, syntax will be the same `v / x`.
 
-With `operator/` was shown equivalent of `find_if`.  Finding, than comparing
-to `vec.endl()` and wrapping whole thing in loop - rather low level of doing
-things.  RO provides mulch simpler to use - filtered (and lazy) range: `vec | (_1>val)`.
+Usually result of what is found
+in above is used in loop that process all found elements. 
+Writing this loop and comparing found iterator to `vec.end()` is rather low level way of doing
+things. 
+
+RO provides mulch simpler to use - filtered (and lazy) range for this: `vec | (_1>val)`.
+Result of `operator|` is range from all found elements.
 
 One of the reasons why RO choose to use operators was because it was designed
 to be composable.  Range/functors/RO-lambdas can be combined into complex
@@ -110,11 +114,9 @@ container | sort | unique | reverse;
 ---------------------------------------------------------------------------
 
 If RO used functions instead of operators, this would be much more complex
-expression with 4-level deep parenthesis. 
+expression with 4-level deep parenthesis.  Here RO under the hood passes
+function pointers from `<algorithm>` to `operator|`.
 
-Note that functions are not called directly in this example, but treated as
-objects (function pointers from `<algorithm>` include), and passed to
-`operator|`.
 
 RO strives to provide simpler interface and more comprehensible code.
 RO, similarly to STL, has zero overhead, and is as efficient
@@ -210,12 +212,12 @@ They are RO ranges, STL containers, C-arrays and C-strings.  RO defines
 C-strings as zero terminated arrays of `char` (not `signed char` or `unsigned chars`). 
 
 RO have two groups of operators.  First provides simple container management
-functions.  This is roughly equivalent to what STL member functions (begin,
+functions.  This is roughly equivalent to STL container member functions.
 You've already seen some ops from this group: 
 
 -----------------------------
-rg  << value	 -> rg   //  add value to rg
-rg1 << rg2	 -> rg1  //  add rg2 to rg1
+rg  << value	 -> rg   //  append value to range
+rg1 << rg2	 -> rg1  //  append range2 to range1
                 
 rg / value	 -> it   //  find()
 rg / pred	 -> it   //  find_if()
@@ -250,7 +252,7 @@ Numeric range
 Numeric range is simple numeric sequence generator :
 
 -----------------------------------
-// [0,arg1)  open-ended range. Only range from 1-arg  range() is open-ended.
+// [0,arg1)  open-ended range. Only 1-arg  range() is open-ended.
 scc 'range(5)'
 {0, 1, 2, 3, 4}
 
