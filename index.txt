@@ -986,6 +986,7 @@ MISC
 	operators overloading -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
 	Live Programming -- http://liveprogramming.github.com/liveblog/2013/01/13/a-hirory-of-live-programming.html
 	http://kotaku.com/5975610/the-exceptional-beauty-of-doom-3s-source-code
+	miniformat -- http://www.altdevblogaday.com/2013/04/13/a-fast-type-safe-minimal-string-formatting-library-miniformat/
 FP
 	TODO  select --  http://paulkeir.wordpress.com/2012/12/03/building-tuple-indices/
 
@@ -1051,11 +1052,15 @@ RANGES
 		distribution (e.g. with a good random function) with using
 		Euclidean algorithm to calculate GCD in O(log(N)) complexity
 		you'll get what you want.
+
+	IO Ranges
+		line iterator -- TR http://stackoverflow.com/questions/1567082/how-do-i-iterate-over-cin-line-by-line-in-c/156770
 	
 
 
 MAP
 	TRIE
+		http://marisa-trie.googlecode.com/svn/trunk/docs/readme.en.html
 		http://login2win.blogspot.com/2011/06/c-tries.html
 
 	HASH_MAP
@@ -1072,6 +1077,7 @@ STL
 	map adapter: https://github.com/krig/k11/blob/master/src/tests/iter.cpp
 	STXXL: Standard Template Library for Extra Large Data Sets --- http://stxxl.sourceforge.net/
 	Thread Safe Template Library -- http://freecode.com/projects/tstl
+	C++ Pipelines -- http://www.open-std.org/JTC1/SC22/WG21/docs/papers/2013/n3534.html
 
 TABLE 
 	http://en.wikipedia.org/wiki/Language_Integrated_Query

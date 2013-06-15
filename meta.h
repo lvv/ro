@@ -44,7 +44,7 @@ template<class From, class To> struct copy_rcv<From const volatile&& , To> { typ
 
 template<class T>     typename std::add_lvalue_reference<const T>::type const   decllval();
 
-// shortcuts
+//  SHORTCUTS
 template<class Rg>     using	rm_qualifier     = typename std::remove_cv<typename std::remove_reference<Rg>::type>::type;
 template<class Rg>     using	rm_ref           = typename std::remove_reference<Rg>::type;
 

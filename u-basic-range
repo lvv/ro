@@ -59,8 +59,12 @@ scc  'range(0) || ro::div, range(1,3) || ro::div'
 
 # stl algorithms
 scc 'vint{3,1,2} | sort | reverse'
-scc 'str s("HELLOW WORLD 321"); s | isalpha | sort ; s' 	# TOFIX
 scc 'v9 | random_shuffle'
+
+# TOFIX
+# for now applying inplace algorithm (sort) to a lazy range is not defined
+# fix can be: if inplace-algo is applyed to lazy of read-only range  => make copy before applying this algo
+# scc 'str s("HELLOW WORLD 321"); s | isalpha | sort ; s'
 
 # TODO 
 # scc 'char s[99]="abc"; char* p=s;   range(p) | reverse'
