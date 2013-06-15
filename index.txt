@@ -43,22 +43,21 @@ operator. You probably can figure out what it does without explanation:
 container << x1 << x2;
 ---------------------------------------------------------------------------
 
-Yes, these are  two `push_back`.
+Yes, this was like applying  two `push_back` (if container was vector like). That was simple.
 
-Or to be precise, if container is `std::vector` - we will need to use `push_back` .  If
-`std::set` - we need `insert`. If `std::map` - we need `operator[]` or `insert`.  If
-`std::stack` - that would be `push`.  If `x1` is container too, you will need `std::copy`. Or
-`std::slice`. Or plain for-loop.  If container is a C-string, you will need to
-close your STL reference and start looking at `man string`.
+Now, if you will use STL it would be not so simple.  I am not talking about
+syntax.  If container is `std::vector` - we will need to use `push_back` .  If
+`std::set` - we need `insert`. If `std::map` - we need `operator[]` or
+`insert`.  If `std::stack` - that would be `push`.  If `x1` is container too,
+you will need `std::copy`. Or `std::slice`. Or plain for-loop.  If container is
+a C-string, you will need to close your STL reference and start looking at `man string`. 
 
 Of cause there is logical explanation for STL's non-uniformity.  Operations
 performed under the hood are very different for each case.  End result is that
-even after many years of using it, I still need reference manual handy.
+even after many years of using it, I still need STL reference manual handy.
 
-With RO, it will stay the same as shown in above example.  No IFs no ORs.
-RO will treats STL containers, C-strings, C-arrays and RO-Ranges in the same way and it provides
-uniform interface for all of them.  Using operators interface actually enforces uniformity:
-there are not so many operators to choose from, and they have fixed number of arguments.
+With RO operator overloads above line won't change for any container type.
+RO library has same interface for STL containers, C-strings, C-arrays and RO-Ranges.
 
 In next example we need to perform simple operation: remove a value from a
 `std::vector`. This is why C++ is called "too expert friendly": 
@@ -71,18 +70,16 @@ For above you need not only C++ reference, but you will need know erase-remove i
 Of cause if container is not `std::vector`, you will have to find out how STL
 does erase for your particular container.
 
-And people that use above, are saying that overloaded operators are confusing:
+Now with RO:
 
 ---------------------------------------------------------------------------
 container - x;
 ---------------------------------------------------------------------------
 
-Above expression won't change if we use any container (or range) or if
-`x` is not a  value, but a predicate, iterator or sub-range .
+And again, above expression won't change if we use any container (or range) and if
+`x` is  a value, a predicate, iterator or sub-range.
 
-One more. Given as example of terseness and simplicity of +++C++11+++ by Herb Sutter in
-http://channel9.msdn.com/Events/PDC/PDC10/FT13[Lambdas, Lambdas Everywhere]
-talk:
+One more. This was used by someone as example of terseness and simplicity of +++C++11+++ :
 
 ------------------------
 find_if(vec.begin(), vec.end(), [=](int i){ return i > val})
@@ -95,15 +92,15 @@ vec / (_1 > val)
 ----------------------------
 
 Again, with STL, you will need different algorithm if you are looking for a value
-or sub-range. With RO, syntax will be the same `v / x`.
+or sub-range. With RO, that would be the same divide op: `v / x`.
 
 Usually result of what is found
-in above is used in loop that process all found elements. 
+in above expression is used in loop that process all found elements. 
 Writing this loop and comparing found iterator to `vec.end()` is rather low level way of doing
 things. 
 
 RO provides mulch simpler to use - filtered (and lazy) range for this: `vec | (_1>val)`.
-Result of `operator|` is range from all found elements.
+Result of `operator|` is range of all found elements.
 
 One of the reasons why RO choose to use operators was because it was designed
 to be composable.  Range/functors/RO-lambdas can be combined into complex
@@ -179,17 +176,17 @@ scc 'vint{1,2,3} - 2'
 ----------------------------------------------------------------------------
 
 RO print operator can print almost any STL objects
-directly.  Items in print operator (and last expression which will be printed)
+directly.  Print operator are `_` and `__`.  Longer one terminates output with `endl`.
+Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
-scc  'range(3),  endl,  make_tuple("abc",42)'
+scc  '__ range(3),  endl,  make_tuple("abc",42);'
 {0, 1, 2}
 ⟨abc, 42⟩
 -----------------------------------------------------------------------------
 
-Print operator are `_` and `__`.  Longer one terminates output with `endl`.
-With these, equivalent to previous example would be:
+Or equivalent:
 
 -----------------------------------------------------------------------------
 scc  '__ range(3);  __ make_tuple("abc",42)'
@@ -392,10 +389,10 @@ scc 'vint V{1,2,3};  V || plus<int>()'
 scc 'vint V{1,2,3};  V || add'  		// add -  similar to std::plus<T>(), but will handle empty ranges too
 6
 
-scc 'range(1,3) || mul'				// fuctorial;   mul -  similar std::multiplies<T>()
+scc 'range(1,3) || mul'				// fuctorial;   mul -  similar to std::multiplies<T>()
 6
 
-scc 'vstr V{"aa", "bb", "cc"};  V || add'	// concantenest
+scc 'vstr V{"aa", "bb", "cc"};  V || add'	// concatenates
 aabbcc
 
 scc 'vint V{1,2,3};  V || min'			// uses std::min
