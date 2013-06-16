@@ -12,4 +12,7 @@ scc -f u-print.h
 . u-range
 . u-lambda
 
+# FIXME
+scc 'size(c9)'
+
 : '= = = = = = = = = = = = = = = = = = = = = = = = ALL PASS = = = = = = = = = = = = = = = = = = = = = = = = ='

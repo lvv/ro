@@ -9,4 +9,8 @@ scc 'range(v9/2, v9/5)   = 42;  v9'
 scc 'range(v9/5, v9/999) = v9;  v9'
 scc 'vint{3,1,2,2,1,4,3} | sort | unique'
 
+# c-str pointer ctor
+scc -a1		"char s[99]=\"abc\"; char* p=s;   range(p) | reverse;  *p=='c' "
+scc -a3 	'size(range("abc12") | ro::isalpha)'
+
 
