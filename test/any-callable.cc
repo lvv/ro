@@ -12,9 +12,9 @@ typedef   vector<int>   vint;
 //////////////////////////////////////////////////////////////////////////   UPDATE  T&&(T&&)
 
 		////  UPDATER
-		int	 updater(int x)        		{ cout << " updater(int        )   ";	return x+=-1; }
-		int&&	 updater(int&& x) 		{ cout << " updater(int&&      )   ";	return move(x+=1); }
-		int&	 updater(int& x)       		{ cout << " updater(int&       )   ";	return x+=2; }
+		int	 updater(int x)        		{ cout << " updater(int  )   ";	return x=1; }
+		int&&	 updater(int&& x) 		{ cout << " updater(int&&)   ";	return move(x=2); }
+		int&	 updater(int& x)       		{ cout << " updater(int& )   ";	return x=3; }
 
 
 /* UPDATER       - T&&(*)(T&&)
@@ -107,7 +107,7 @@ cout << "\n*** REPLACE \n";
 	cout << "arg:  int                function<>    " << apply_replace(function<int(int)>([](int i)->int{return 1;}) , -600)		<< endl;
 
 	cout << "arg:  int                ro:abs        " << apply_replace(ro::abs, -300)			<< endl;
-	cout << "arg:  int                std::abs      " << apply_replace(abs, -400)				<< endl;
+	cout << "arg:  int                std::abs      " << apply_replace(std::abs, -400)				<< endl;
 	cout << "arg:  int                abs           " << apply_replace(abs, -500)				<< endl;
 
 
@@ -129,7 +129,7 @@ cout << "\n***  UPDATE REFERENCED VALUE \n";
 	cout << "arg:  vint&              RO λ(&)       " << apply_update((_1=vint{99}),                            lv_v)       	<< endl;
 
 	// ERROR
-	cout << "arg:  vint&&             RO λ(&&)      " << apply_update((_1=vint{99}),                          vint{})       	<< endl;
+	//cout << "arg:  vint&&             RO λ(&&)      " << apply_update((_1=vint{99}),                          vint{})       	<< endl;
 
 cout << "\n***  TRANSFORM TYPE \n";
 	cout << "arg:  int                " << apply_transform(transformer, 0)	<< endl;
