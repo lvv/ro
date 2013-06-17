@@ -172,6 +172,23 @@
 		return  std::forward<Rg>(rg);
 	 };
 
+
+	// cstr - value
+			template<typename Cstr_ptr>
+			void
+		cstr2_erase_value_impl (Cstr_ptr b,  Cstr_ptr e,  decltype(*Cstr_ptr()) c) {
+			auto p=std::find(b,e,c); 
+			if (p!=e)   std::copy(p+1,e+1, p);
+		 };
+
+		template<typename Cstr>
+		Cstr&&
+	erase_value_impl (Cstr&& s, rg_elem_type<Cstr> c, cstr_erasable) {
+		cstr2_erase_value_impl(s,endz(s),c);
+		return std::forward<Cstr>(s);
+	 };
+
+
 	// basic_range - value
 		template<typename Rg>
 		Rg&&
@@ -180,15 +197,14 @@
 		return std::forward<Rg>(rg);
 	 };
 
-
-	// cstr - value
-		template<typename Cstr>
-		Cstr&&
-	erase_value_impl (Cstr&& s, rg_elem_type<Cstr> c, cstr_erasable) {
-		auto p=std::find(s,endz(s),c); 
-		if (p!=endz(s))   std::copy(p+1,endz(s)+1, p);
-		return std::forward<Cstr>(s);
+	// iterator_range - value
+		template<typename IR>							// TODO specialize for IR<char>
+		IR&&
+	erase_value_impl (IR&& ir, rg_elem_type<IR> c, iterator_range_erasable) {
+		cstr2_erase_value_impl(ir.b_, ir.e_, c);
+		return std::forward<IR>(ir);
 	 };
+
 
 
 /////  rg - value
@@ -271,13 +287,23 @@
 			return std::forward<Cstr>(s);
 		 };
 
-	// basic_range - value
+	// basic_range - it
 		template<typename Rg>
 		Rg&&
-	erase_it_impl (Rg&& rg, rg_iterator<Rg> it, basic_range_erasable) {
+	erase_it_impl (Rg&& rg, rg_iterator<Rg> it,  basic_range_erasable) {
 		erase_it_impl(rg.value, it.current,  erasable_category(rg.value));
 		return std::forward<Rg>(rg);
 	 };
+
+
+	// iterator_range - it
+		template<typename Rg>		       		// implmented for Cstr only, TODO all other
+		Rg&&
+	erase_it_impl (Rg&& rg, rg_iterator<Rg> it,  iterator_range_erasable) {
+		if (it!=rg.e_)   std::copy(it+1, rg.e_+1, it);
+		return std::forward<Rg>(rg);
+	 };
+
 
 
 

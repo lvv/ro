@@ -99,16 +99,22 @@ struct list_erasable{};
 struct map_erasable{};
 
 struct basic_range_erasable{};
+struct iterator_range_erasable{};
+
 template<class Rg>  				struct  basic_range;
+template<class Rg>  				struct  iterator_range;
 
 								non_erasable		erasable_category(...)                                 { return non_erasable(); }; 
 
+template<size_t N>						cstr_erasable		erasable_category(char*)                          { return cstr_erasable(); };
+template<size_t N>						cstr_erasable		erasable_category(const char*)                    { return cstr_erasable(); };
 template<size_t N>						cstr_erasable		erasable_category(char(&)[N])                          { return cstr_erasable(); };
-template<size_t N>						cstr_erasable		erasable_category(const char(&)[N])                          { return cstr_erasable(); };
+template<size_t N>						cstr_erasable		erasable_category(const char(&)[N])                    { return cstr_erasable(); };
 
-//template<class CharT, class Traits, class A>			string_erasable		erasable_category(std::basic_string<CharT,Traits,A>)        { return string_erasable(); }; 
-template<class Rg>						basic_range_erasable	erasable_category(basic_range<Rg>)        		{ return basic_range_erasable(); }; 
-template<class CharT, class Traits, class A>			vector_erasable		erasable_category(std::basic_string<CharT,Traits,A>)        { return vector_erasable(); }; 
+//template<class CharT, class Traits, class A>			string_erasable		erasable_category(std::basic_string<CharT,Traits,A>)   { return string_erasable(); }; 
+template<class Rg>						basic_range_erasable	erasable_category(basic_range<Rg>)        	       { return basic_range_erasable(); }; 
+template<class Rg>						iterator_range_erasable	erasable_category(iterator_range<Rg>)        	       { return iterator_range_erasable(); }; 
+template<class CharT, class Traits, class A>			vector_erasable		erasable_category(std::basic_string<CharT,Traits,A>)   { return vector_erasable(); }; 
 
 template<class T, class A>					vector_erasable		erasable_category(std::vector<T,A>)                    { return vector_erasable(); }; 
 template<class T, class A>					vector_erasable		erasable_category(std::deque<T,A>)                     { return vector_erasable(); }; 
@@ -134,11 +140,18 @@ template<bool Cnd, class T1, class T2>	using  SEL		= typename std::conditional <
 template<typename Rg>	                using  rg_elem_fwd	= typename  copy_rcv<Rg&&, rg_elem_type<Rg>>::type;
 template<typename Rg>	                using  rg_iterator_fwd	= typename  copy_rcv<Rg&&, rg_iterator<Rg>>::type;
 
-///template<class T, class TT=rm_qualifier<T>>  constexpr bool 
-///is_cstr() { return std::is_array<TT>::value  &&  std::is_same<char, typename std::remove_extent<TT>::type>::value; }
+template<class T, class TT=rm_qualifier<T>>
+struct is_cstr_ptr { enum { value = std::is_pointer<TT>::value  &&  std::is_same<char, rm_qualifier<typename std::remove_pointer<TT>::type>>::value }; };
 
 template<class T, class TT=rm_qualifier<T>>
-struct is_cstr { enum { value = std::is_array<TT>::value  &&  std::is_same<char, typename std::remove_extent<TT>::type>::value }; };
+struct is_cstr {
+	enum {
+	value =
+		is_cstr_ptr<TT>::value
+		|| 
+		( std::is_array<TT>::value &&  std::is_same<char, rm_qualifier<typename std::remove_extent<TT>::type>>::value )
+	};
+};
 
 
 

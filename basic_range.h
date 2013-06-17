@@ -1,6 +1,6 @@
 
-						#ifndef  RO_CHAIN_RANGE_H
-						#define  RO_CHAIN_RANGE_H
+						#ifndef  RO_BASIC_RANGE_H
+						#define  RO_BASIC_RANGE_H
 
 						#include <ro/meta.h>
 						#include <ro/stl.h>
@@ -252,7 +252,7 @@ template<class Rg, bool RO>	struct is_ro_range_iterator <basic_range_iterator<Rg
 ////////////////////////////////////////////////////////////////  FUNCTION RANGE() -- range maker
 
 	template<class Rg>   
-	eIF<is_range<Rg>::value, basic_range<Rg&&>>   
+	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value, basic_range<Rg&&>>   
 range(Rg&& rg)  {
 	return  basic_range<Rg&&>(std::forward<Rg>(rg));  // there is no copy on return
  };
@@ -301,4 +301,4 @@ operator| (Rg&& rg, void (*f)(rg_iterator<Rg> b, rg_iterator<Rg> e) )    {
  }
 	
 						}; 
-						#endif //  RO_CHAIN_RANGE_H
+						#endif //  RO_BASIC_RANGE_H
