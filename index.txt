@@ -7,7 +7,7 @@ RO — Range Operators
 +++ <small> +++
 
 * Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
-* Requires:  +++ C++11 +++   compiler.  Tested with gcc-4.8(pre release) and clang-3.2 +
+* Requires:  +++ C++11 +++   compiler.  Tested with gcc-4.8 and clang-3.2 +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
 * Status:  alpha
 
@@ -876,8 +876,8 @@ image::include-deps.png
 Status 
 ------
 
-RO was tested with GCC-4.8-pre-release and CLANG-3.2.
-It is knows that it will not work with GCC-4.7.2
+RO was tested with GCC-4.8 and CLANG-3.2.
+
 
 Appendix A
 ----------
