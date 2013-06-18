@@ -16,8 +16,7 @@
 ////  it - n
 	template <class RgI>
 	eIF<
-		( is_numeric_range_iterator<RgI>::value  ||  is_ro_range_iterator<RgI>::value )
-		&&  is_random_access_iterator<RgI>::value
+		is_ro_range_iterator<RgI>::value  &&  is_random_access_iterator<RgI>::value
 		, rm_ref<decltype(std::declval<RgI>().current-1, std::declval<RgI>())> 
 	>  
 operator-  (RgI it, typename RgI::difference_type n) {
@@ -28,8 +27,7 @@ operator-  (RgI it, typename RgI::difference_type n) {
 ////  it + n
 	template <class RgI>
 	eIF<
-		( is_numeric_range_iterator<RgI>::value  ||  is_ro_range_iterator<RgI>::value )
-		&&  is_random_access_iterator<RgI>::value
+		is_ro_range_iterator<RgI>::value  &&  is_random_access_iterator<RgI>::value
 		, rm_ref<decltype(std::declval<RgI>().current+1, std::declval<RgI>())> 
 	>  
 operator+  (RgI it, typename RgI::difference_type n) {

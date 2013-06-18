@@ -241,10 +241,8 @@ basic_range<Rg>::operator[] (Fr2&& fr2)
 template<class Rg>		struct is_range_t<basic_range<Rg>>		: std::true_type  {};
 template<class Rg, bool RO>	struct is_range_t<basic_range_iterator<Rg,RO>>	: std::false_type {};
 
-template<class Rg>		struct is_ro_range               		: std::false_type {};
 template<class Rg>		struct is_ro_range<basic_range<Rg>>		: std::true_type {};
 
-template<class It>		struct is_ro_range_iterator      		: std::false_type {};
 template<class Rg, bool RO>	struct is_ro_range_iterator <basic_range_iterator<Rg,RO>> 	: std::true_type {};
 
 

@@ -523,6 +523,10 @@ template<typename T, typename Rg>                 struct is_elem_of { enum { val
   template<class Rg1, class Rg2>              struct  have_same_elem { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };
 
 
+
+template<class Rg>		struct is_ro_range               		: std::false_type {};
+template<class It>		struct is_ro_range_iterator      		: std::false_type {};
+
 /////////////////////////////////////////////////////////////////////////////////////////  REF CONTAINER
 
 template<class T>	struct  ref_container;

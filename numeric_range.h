@@ -154,6 +154,10 @@ struct  numeric_range {
 template<class T>	struct  is_range_t  <numeric_range<T>>				: std::true_type  {};
 template<class T>	struct 	is_range_t  <numeric_range_iterator<T>>			: std::false_type  {};
 
+template<class T>      	struct  is_ro_range	    <numeric_range<T>>			: std::true_type {};
+template<class T>	struct  is_ro_range_iterator <numeric_range_iterator<T>>	: std::true_type {};
+
+
 template<class Rg>	struct	is_numeric_range               				: std::false_type {};
 template<class T>	struct	is_numeric_range<numeric_range<T>>			: std::true_type {};
 

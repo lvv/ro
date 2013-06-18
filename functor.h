@@ -7,7 +7,7 @@
 				namespace ro {
 
 
-//  CTYPE.H
+///////  CTYPE.H
 //  TODO locale ctype: http://www.boost.org/doc/libs/1_52_0/libs/bind/bind.html#err_modeling_stl_function_object_concepts
 //  	http://stackoverflow.com/questions/13676507/how-do-i-display-special-characters-in-c-with-linux
 char	toupper (char c) { return std::toupper((int)c); }
@@ -26,11 +26,11 @@ bool	isupper (char c) { return std::isupper ((int)c); }
 bool	isxdigit(char c) { return std::isxdigit((int)c); }
 
 
-// MATH
+////// MATH
 template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }	// cstdlib is bad 
 
 
-// FOLDERS
+////// FOLDERS
 
 			// initial value for folding -- http://en.wikipedia.org/wiki/Identity_element
 
@@ -57,7 +57,7 @@ struct div_t {
  } div  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
  						// http://stackoverflow.com/questions/10445586/c11-includes-cstdlib-at-times-when-c03-will-not
 						
-// UTILS
+////// UTILS
 
 	template<class Rg>
 	eIF<is_range<Rg>::value, size_t>
@@ -75,6 +75,9 @@ struct nop_t {
 	template<class T>  size_t operator()(T&& a, T&& b) { return 0; };
 	template<class T> T fold_init_value(T) { return T(0); }	// indicator for folder
  } nop   __attribute__((unused));
+
+
+/////// SEQUENCES
 
 
 				};
