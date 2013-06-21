@@ -124,7 +124,7 @@
  operator >> (X&& x, Rg&& rg1)            {  detail::prepend_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
 
 
-	// sRn >> tRn
+	// fromRg >> toRg
 	template<class sRn, class tRn> 
 	eIF <have_same_elem<tRn,sRn>::value,  tRn&&>
  operator >>  (sRn&& src, tRn&& trg)  {

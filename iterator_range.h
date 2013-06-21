@@ -21,10 +21,11 @@ struct  iterator_range {
 	iterator_range()  : b_(0), e_(0) {};
 	iterator_range(iterator b, iterator e)  : b_(b), e_(e) {};
 
-	// ASSIGNMENT
+	// ASSIGNMENT ------------------------------------------------------------------------------------
 	
 	// RG = VALUE
 	iterator_range& operator= (value_type x) { std::fill(b_, e_, x);  return *this; };
+
 
 	// RG<T> = RG2
 		// primary

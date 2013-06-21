@@ -185,7 +185,7 @@ struct  basic_range : ref_container<Rg&&> {
 	reference  	back()		{ return  *std::prev(ro::endz(rg)); } 
 
 
-	////  INPORTED RG METHODS
+	////  IMPORTED RG METHODS
 	template<class U=Rg>   eIF<has_push_back<U>::value>	push_back(const elem_type&  value)	{ rg.push_back(value);}
 	template<class U=Rg>   eIF<has_push_back<U>::value>	push_back(      elem_type&& value)	{ rg.push_back(std::move(value));}
 
