@@ -558,8 +558,6 @@ template<class T>	struct  ref_container<T const&&>  {
         T const value;	
 	explicit ref_container(T const && x) : value(x) {}
  };
-/*
- */
 
 // 2								// ugly - TODO refactor
 template<class T>	struct  ref_container2;

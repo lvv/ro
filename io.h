@@ -388,9 +388,19 @@ struct  out {
 	*/
 
 	
+	
 		template<typename T>	
 		out& 
-	operator,   (T&& x)	{
+
+	//// TOFIX: error in: scc 'int i = 1;  ((_1 = 2, _1 + i)(i))'  -- rvalue lost prematurely
+	operator,   (T&& x)	{ 
+       
+	//// linker error on units test (scc -f u-print.h)  in  GCC and CLANG
+	//operator,   (const T x)	{      
+
+	//// works correctly with GCC, spits out garbage on unit test with CLANG
+	//operator,   (T x)	{	// replaced 'T&&' with  'const T' to fix: 
+
 		if (need_blank  &&  !is_string<T>::value)  std::cout << ' '; 
 		std::cout << x;  
 		need_blank =  ! is_string<T>::value; 
@@ -398,7 +408,7 @@ struct  out {
 	};
 
 
-		template<typename T, size_t N> // we need this beacause of array decays to pointer
+		template<typename T, size_t N> // we need this because of array decays to pointer
 		out& 
 	operator,   (T (&x)[N])	{
 		if (need_blank  &&  !is_string<T(&)[N]>::value)  std::cout << ' '; 
