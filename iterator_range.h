@@ -22,10 +22,19 @@ struct  iterator_range {
 	iterator_range(iterator b, iterator e)  : b_(b), e_(e) {};
 
 	// ASSIGNMENT
+	
+	// RG = VALUE
 	iterator_range& operator= (value_type x) { std::fill(b_, e_, x);  return *this; };
 
+	// RG<T> = RG2
+		// primary
+		// iterators do not know about about undelying stucture of container and can not resize it.
+		// we copy min(size(RG), size(RG2)) elements
 		template<typename rhsRn>
-		eIF <is_elem_of<value_type, rhsRn>::value, iterator_range&>
+		eIF <
+			!is_cstr<I>::value  &&  is_elem_of<value_type, rhsRn>::value,
+			iterator_range&
+		>
 	operator= (const rhsRn& rhs) {
 		auto it= b_;
 		for (const auto &x: rhs)  {
@@ -34,6 +43,22 @@ struct  iterator_range {
 		}
 		return *this;
 	}
+
+	// RG<cstr> = RG2
+		// for C-STR we can clear destination
+		// for now, we copy size(RG2) elements 
+		template<typename rhsRn>
+		eIF <
+			is_cstr<I>::value  &&  std::is_convertible<rg_elem_type<rhsRn>,char>::value,
+			iterator_range&
+		>
+	operator= (const rhsRn& rhs) {
+		e_=b_;
+		for (const char &c: rhs) *e_++ = c;
+		*e_ = '\0';
+		return *this;
+	}
+	
 
 
 
@@ -74,6 +99,7 @@ template<typename I>	struct  is_range_t	<iterator_range<I>>	: std::true_type { }
 range(I b, I e) { return iterator_range<I>(b,e); };
 
 
+	// C-STR
 	template<typename I>
 	eIF<is_cstr<I>::value, iterator_range<I>>
 range(I b) { I e=b;  while(*e) ++e;   return iterator_range<I>(b,e); };
