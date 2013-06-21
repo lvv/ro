@@ -35,12 +35,12 @@ scc 'auto i=+rd9, ii=i+1; *i, *ii'
 scc ' if (rv9/3)  *(rv9/3) = 33; rv9'
 
 # rg = value_type
-scc 'range(a9)=42;  a9'
+scc -a1		'range(a9)=42;  a9[0]==a9[9]  &&  a9[0]==42'
 
 # rg1 = rg2
-scc 'range(v0) = a9; v0'
-scc 'range(s) = cc9; s'
-scc 'range(v9) = range(5); v9'
+scc -a1 	'range(v0) = a9; ++v0==++range(a9)  &&  v0++ == range(a9)++'
+scc -a1		'range(s) = cc9;  s==str(cc9)'
+scc -a1		'range(v9) = range(5);  ++v9==0 && v9++==4'
 
 # Rg || F 	################################################################ FOLD
 scc '__ (v9 || min), (mk_v9()||min);'
