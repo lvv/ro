@@ -78,8 +78,13 @@ template <typename T>		struct rg_traits      {
 };
 
 
-template <typename T, size_t N> struct rg_traits<T[N]>     { typedef  T  elem_type;   typedef  T*  iterator;  typedef  const T*  const_iterator;   typedef  T&  reference;  typedef  const T&  const_reference; };
-template <typename T, size_t N> struct rg_traits<T(&)[N]>  { typedef  T  elem_type;   typedef  T*  iterator;  typedef  const T*  const_iterator;   typedef  T&  reference;  typedef  const T&  const_reference; };
+template <>                     struct rg_traits<char*&>          { typedef  char        elem_type;   typedef  char*  iterator;  typedef  const char*  const_iterator;   typedef  char&  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<const char*&>    { typedef  const char  elem_type;   typedef  const char*  iterator;  typedef  const char*  const_iterator;   typedef  const char&  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<char*>          { typedef  char        elem_type;   typedef  char*  iterator;  typedef  const char*  const_iterator;   typedef  char&  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<const char*>    { typedef  const char  elem_type;   typedef  const char*  iterator;  typedef  const char*  const_iterator;   typedef  const char&  reference;  typedef  const char&  const_reference; };
+
+template <typename T, size_t N> struct rg_traits<T[N]>           { typedef  T     elem_type;   typedef  T*     iterator;  typedef  const T*     const_iterator;   typedef  T&     reference;  typedef  const T&     const_reference; };
+template <typename T, size_t N> struct rg_traits<T(&)[N]>        { typedef  T     elem_type;   typedef  T*     iterator;  typedef  const T*     const_iterator;   typedef  T&     reference;  typedef  const T&     const_reference; };
 
 
 template<typename Rg>   using rg_elem_type      	= typename rg_traits<Rg>::elem_type;
@@ -237,7 +242,6 @@ struct is_range_t {
 		static int16_t
 	test(...);
 
-	//enum { value  =  sizeof test <rm_qualifier<T>> (0) == 1 };
 	enum { value  =  sizeof test <T> (0) == 1 };
 };
 
@@ -246,7 +250,14 @@ struct is_range_t {
 template<typename T, size_t N>	struct  is_range_t <T[N]>		: std::true_type {};
 template<typename T, size_t N>	struct  is_range_t <std::array<T,N>>	: std::true_type {};
 
-template<class T>	struct  is_range { enum { value = is_range_t<rm_qualifier<T>>::value };};
+// cstr
+template<            size_t N>	struct  is_range_t <char      [N]>    	: std::true_type {};
+template<            size_t N>	struct  is_range_t <char const[N]>     	: std::true_type {};
+template<>	                struct  is_range_t <char      *>       	: std::true_type {};
+template<>	                struct  is_range_t <char const*>       	: std::true_type {};
+
+//template<class T>		struct  is_range { enum { value = is_range_t<rm_qualifier<T>>::value  || is_cstr<T>::value};};
+template<class T>		struct  is_range { enum { value = is_range_t<rm_qualifier<T>>::value};};
 //template<typename T>     constexpr bool   is_range()        { return  is_range_t<rm_qualifier<T>>::value; };
 
 
@@ -468,9 +479,20 @@ struct is_callable<F, R(&&)(Args...)> {					// rval-ref to callable
 									// not really a meta functions
 
 /////  ENDZ - like std::end() but type const char[] is assumed to be C-string and its corresponding correct end (at '\0') is returned
-template<class Rg>	auto  endz(Rg&& rg)                  -> decltype(std::end(rg))    { return  std::end(rg); };
-template<size_t N>	auto  endz( const char (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
-template<size_t N>	auto  endz(       char (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
+template<class Rg>	auto  endz(Rg&& rg)                 -> decltype(std::end(rg))    { return  std::end(rg); };
+			auto  endz(char      * p)           -> char      *               { auto e=p; while(*e) ++e;   return e; };
+			auto  endz(char const* p)           -> char const*               { auto e=p; while(*e) ++e;   return e; };
+template<size_t N>	auto  endz(char const (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
+template<size_t N>	auto  endz(char       (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
+
+// BEGINZ
+template<class Rg>	auto  beginz(Rg&& rg)                 -> decltype(std::begin(rg))  { return  std::begin(rg); };
+			auto  beginz(char      * p)           -> char      *               { return  p; };
+			auto  beginz(char const* p)           -> char const*               { return  p; };
+template<size_t N>	auto  beginz(char const (&array)[N] ) -> decltype(std::begin(array)) { return  std::begin(array); };
+template<size_t N>	auto  beginz(char       (&array)[N] ) -> decltype(std::begin(array)) { return  std::begin(array); };
+/*
+*/
 
 /////  SIZE
 

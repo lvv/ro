@@ -10,20 +10,20 @@ scc 'basic_range<vint&> lv(v9);  basic_range<vint&&> rv(mk_v9());'
 #scc 'auto r = range(range(v9));   auto rr=range(range(mk_v9()));  assert(r.size()==rr.size());'
 
 scc -A -DV=rl9  'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
-scc -A -DV=rd9   'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
-scc -A -DV=rd9r  'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
-scc -A -DV=rrd9  'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
-scc -A -DV=n9   'V.begin(); +V; V.end(); end(V); endz(V);   ; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
+scc -A -DV=rd9  'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
+scc -A -DV=rd9r 'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
+scc -A -DV=rrd9 'V.begin(); +V; V.end(); end(V); endz(V); -V; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
+scc -A -DV=n9	'V.begin(); +V; V.end(); end(V); endz(V);   ; _ ++V, V.front(), front(V), V++, V.back(), back(V), V.size(), size(V), V.empty(), empty(V), bool(V);'
 
 # access
-scc 'assert( rd9++==9  &&  ++rd9==0 );'
+scc -a1		'rd9++==9  &&  ++rd9==0'
 
 scc 'auto r = range(v9);  while(r) {  _ v9++; v9--; };'
 scc 'auto r = range(v9);  __ r.back(),  r++; r.back() =99; r'
 
 
 # Imported methods
-scc 'auto r=range(v9); r.push_back(99); r << 999;  (range(v9) << 9999)'
+scc -a1		'auto r=range(vint{}); r.push_back(1); r << 2;  range(r) << 3;  size(r)==3'
 
 # Iterators
 scc 'rd9.begin(); rrd9.begin(); '

@@ -127,6 +127,10 @@ CHECK(   (have_same_elem<vint, basic_range<vint>>::value)	)
 CHECK(   (have_same_elem<vint, basic_range<vint&>&>::value)	)
 CHECK(   (have_same_elem<vint, basic_range<vint&>&>::value)	)
 
+CHECK(   (have_same_elem<vchar, dchar>::value)	)
+CHECK(   (have_same_elem<vchar, char[3]>::value)	)
+CHECK(   (have_same_elem<vchar, char*>::value)	)
+
 // ITERATORS
 CHECK(   is_input_iterator<vint::const_iterator>::value	)
 

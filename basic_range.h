@@ -144,7 +144,7 @@ struct  basic_range : ref_container<Rg&&> {
 	Rg&	rg;
 
 	////  CTOR
-	explicit basic_range(Rg&& rg) : ref_container<Rg&&>(std::forward<Rg>(rg)), rg(this->value)  {};
+	explicit basic_range(Rg&& rg_arg) : ref_container<Rg&&>(std::forward<Rg>(rg_arg)), rg(this->value)  {};
 
 	////  ASSIGNMENT
 	self_type&   operator= (elem_type x) { std::fill(begin(), end(), x);  return *this; };
@@ -152,7 +152,7 @@ struct  basic_range : ref_container<Rg&&> {
 
 		template<class Rg2>			// TODO specialize for seq containers self-assignemet
 		eIF <have_same_elem<Rg,Rg2>::value, self_type>
-	operator= (const Rg2& rhs) { 			//std:: cout << " SSIGNMENT \n";
+	operator= (const Rg2& rhs) { 		      
 		ro::clear(rg);
 		auto e = endz(rhs);
 		for (auto it = std::begin(rhs);   it != e;  ++it)  {
@@ -167,8 +167,8 @@ struct  basic_range : ref_container<Rg&&> {
 	const_iterator	end()   const	{ return  const_iterator(this, endz(rg)); }
 
 
-	      iterator	begin()		{ return        iterator(this, std::begin(rg)); };
-	const_iterator	begin()	const	{ return  const_iterator(this, std::begin(rg)); };
+	      iterator	begin()		{ return        iterator(this, beginz(rg)); };
+	const_iterator	begin()	const	{ return  const_iterator(this, beginz(rg)); };
 
 
 	////  RG PROPERTIES
@@ -250,7 +250,7 @@ template<class Rg, bool RO>	struct is_ro_range_iterator <basic_range_iterator<Rg
 ////////////////////////////////////////////////////////////////  FUNCTION RANGE() -- range maker
 
 	template<class Rg>   
-	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value, basic_range<Rg&&>>   
+	eIF<is_range<Rg>::value  ||  is_cstr<Rg>::value, basic_range<Rg&&>>   
 range(Rg&& rg)  {
 	return  basic_range<Rg&&>(std::forward<Rg>(rg));  // there is no copy on return
  };
