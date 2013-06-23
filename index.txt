@@ -13,42 +13,42 @@ RO — Range Operators
 
 +++ </small> +++
 
-ABOUT
+About
 -----
 
 RO is +++C++ +++ headers only library, which provides alternative
 interface to STL with some elements of functional programming.
 
 RO operates on _ranges_ which are STL containers, RO-ranges, Tuples, C-arrays or
-C-strings.  Most of operations are provided through overloaded operators.
+C-strings. 
+
+RO strives to provide simpler interface and more comprehensible code.
+RO, similarly to STL, has zero overhead, and is as efficient
+as hand written for-loop.
+
+
+Introduction and overloaded operators vs functions
+--------------------------------------------------
+
+In RO most of operations are provided through overloaded operators.
 
 Some consider that overloaded operators, not having meaningful names and having
-multiple overloads are confusing and ambiguous.
+multiple overloads are confusing and ambiguous.  I disagree with that.
 
-I would argue that it is not so. 
+Below are examples of what is more confusing. 
 
-//////////////
-Even in C you have to know the type of operands to understant what action is performed:
-
---------------------
-x + 1 	// adds 1
-p + 1	// adds sizeof(*p)
----------------------
-//////////////
-
-Here is an example of what is more confusing: member function or overload
-operator. You probably can figure out what it does without explanation:
+In this RO code snippet, you can probably figure out what it does without explanation:
 
 ---------------------------------------------------------------------------
-container << x1 << x2;
+container << value1 << value2;
 ---------------------------------------------------------------------------
 
-Yes, this was like applying  two `push_back` (if container was vector like). That was simple.
+Yes, this was like applying  two `push_back` (if container was vector-like). That was simple.
 
-Now, if you will use STL it would be not so simple.  I am not talking about
+With STL it would be not so simple.  And I am not talking about
 syntax.  If container is `std::vector` - we will need to use `push_back` .  If
 `std::set` - we need `insert`. If `std::map` - we need `operator[]` or
-`insert`.  If `std::stack` - that would be `push`.  If `x1` is container too,
+`insert`.  If `std::stack` - that would be `push`.  If `value1` is container too,
 you will need `std::copy`. Or `std::slice`. Or plain for-loop.  If container is
 a C-string, you will need to close your STL reference and start looking at `man string`. 
 
@@ -56,7 +56,7 @@ Of cause there is logical explanation for STL's non-uniformity.  Operations
 performed under the hood are very different for each case.  End result is that
 even after many years of using it, I still need STL reference manual handy.
 
-With RO operator overloads above line won't change for any container type.
+With RO,  above snippet won't change for any container type.
 RO library has same interface for STL containers, C-strings, C-arrays and RO-Ranges.
 
 In next example we need to perform simple operation: remove a value from a
@@ -70,10 +70,10 @@ For above you need not only C++ reference, but you will need know erase-remove i
 Of cause if container is not `std::vector`, you will have to find out how STL
 does erase for your particular container.
 
-Now with RO:
+Now with RO you won't need 10 parenthesis:
 
 ---------------------------------------------------------------------------
-container - x;
+vec - x;
 ---------------------------------------------------------------------------
 
 And again, above expression won't change if we use any container (or range) and if
@@ -94,13 +94,25 @@ vec / (_1 > val)
 Again, with STL, you will need different algorithm if you are looking for a value
 or sub-range. With RO, that would be the same divide op: `v / x`.
 
-Usually result of what is found
-in above expression is used in loop that process all found elements. 
-Writing this loop and comparing found iterator to `vec.end()` is rather low level way of doing
-things. 
+Usually we need to find not 1st, but all values. Like so:
 
-RO provides mulch simpler to use - filtered (and lazy) range for this: `vec | (_1>val)`.
-Result of `operator|` is range of all found elements.
+--------------------------
+vector<int>  result;
+
+auto it=vec.begin(); 
+while(it!=vec.end()) {
+	find_if(vec.begin(), vec.end(), [=](int i){ return i > val});
+	result << *it; 
+}
+---------------------------
+
+This is rather low level way of doing things. 
+
+RO provides mulch simpler to use - filtered (and lazy) range for this:
+
+-----------------------------------------
+vector<int> result = vec | (_1>val);
+-----------------------------------------
 
 One of the reasons why RO choose to use operators was because it was designed
 to be composable.  Range/functors/RO-lambdas can be combined into complex
@@ -114,10 +126,6 @@ If RO used functions instead of operators, this would be much more complex
 expression with 4-level deep parenthesis.  Here RO under the hood passes
 function pointers from `<algorithm>` to `operator|`.
 
-
-RO strives to provide simpler interface and more comprehensible code.
-RO, similarly to STL, has zero overhead, and is as efficient
-as hand written for-loop.
 
 ///////////////////
 
