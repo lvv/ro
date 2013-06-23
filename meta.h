@@ -78,10 +78,10 @@ template <typename T>		struct rg_traits      {
 };
 
 
-template <>                     struct rg_traits<char*&>          { typedef  char        elem_type;   typedef  char*  iterator;  typedef  const char*  const_iterator;   typedef  char&  reference;  typedef  const char&  const_reference; };
-template <>                     struct rg_traits<const char*&>    { typedef  const char  elem_type;   typedef  const char*  iterator;  typedef  const char*  const_iterator;   typedef  const char&  reference;  typedef  const char&  const_reference; };
-template <>                     struct rg_traits<char*>          { typedef  char        elem_type;   typedef  char*  iterator;  typedef  const char*  const_iterator;   typedef  char&  reference;  typedef  const char&  const_reference; };
-template <>                     struct rg_traits<const char*>    { typedef  const char  elem_type;   typedef  const char*  iterator;  typedef  const char*  const_iterator;   typedef  const char&  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<char*&>         { typedef  char        elem_type;   typedef  char      *  iterator;  typedef  const char*  const_iterator;   typedef  char      &  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<const char*&>   { typedef  char const  elem_type;   typedef  char const*  iterator;  typedef  const char*  const_iterator;   typedef  char const&  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<char*>          { typedef  char        elem_type;   typedef  char      *  iterator;  typedef  const char*  const_iterator;   typedef  char      &  reference;  typedef  const char&  const_reference; };
+template <>                     struct rg_traits<const char*>    { typedef  char const  elem_type;   typedef  char const*  iterator;  typedef  const char*  const_iterator;   typedef  char const&  reference;  typedef  const char&  const_reference; };
 
 template <typename T, size_t N> struct rg_traits<T[N]>           { typedef  T     elem_type;   typedef  T*     iterator;  typedef  const T*     const_iterator;   typedef  T&     reference;  typedef  const T&     const_reference; };
 template <typename T, size_t N> struct rg_traits<T(&)[N]>        { typedef  T     elem_type;   typedef  T*     iterator;  typedef  const T*     const_iterator;   typedef  T&     reference;  typedef  const T&     const_reference; };
@@ -499,15 +499,18 @@ template<size_t N>	auto  beginz(char       (&array)[N] ) -> decltype(std::begin(
 struct size_fo {
 		typedef 	size_t 	result_type;
 
-	template<class Rg>    eIF<has_size<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return rg.size(); };
+	template<class Rg>    eIF<has_size<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return  rg.size(); };
 	//template<class Rg>		auto	size_impl (const Rg& rg) ->decltype(rg.size())  const      { return rg.size(); };
-	template<class T, size_t N>	size_t constexpr  size_impl (const T    (&C)[N]) const                       { return N; };
-	template<class T, size_t N>	size_t 		  size_impl (const char (&C)[N]) const                       { return ro::endz(C) - std::begin(C); };
+	template<class T, size_t N>    eIF<!is_cstr<T[N]>::value, size_t>  constexpr  size_impl (const T    (&C)[N]) const                       { return N; };
 	template<class T, size_t N>	size_t constexpr  size_impl (const std::array<T,N>& A) const                 { return N; };
 	template<class... Types>	size_t 		  size_impl (const typename std::tuple<Types...>& Tpl) const { return  std::tuple_size<std::tuple<Types...> >::value; };
 	template<class U, class V>	size_t constexpr  size_impl (const std::pair<U,V>& P) const                  { return 2; };
 
+	template<class Rg>    eIF<is_cstr<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return  endz(rg)-beginz(rg); };
+	//template<class T, size_t N>	size_t 		  size_impl (const char (&C)[N]) const                       { return ro::endz(C) - beginz(C); };
+
 	template<class X>		size_t	operator() (const X& x)  const                             { return size_impl(x); };
+
 };
 
 size_fo  size;

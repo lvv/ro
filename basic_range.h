@@ -68,8 +68,9 @@ struct basic_range_iterator {
 							: parent_p(parent_p), current(current)         {};
 
 	////// CONVERSION 
-	/* to  const */	operator basic_range_iterator<Rg&&,true>() { return basic_range_iterator<Rg&&,true>(parent_p, current); };
-	/* to bool */	explicit operator bool() const	{ return  *this != parent_p->end(); }
+	/* to  const */			 operator basic_range_iterator<Rg&&,true> ()        { return  basic_range_iterator<Rg&&,true>(parent_p, current); };
+	/* to bool */		explicit operator bool				  () const  { return  *this != parent_p->end(); }
+	/* to  org_iterator */		 operator org_iterator			  ()        { return  current; };
 
 	////// IFACE
 	reference	operator*()  		{ return  *current; };
@@ -82,7 +83,7 @@ struct basic_range_iterator {
 	self_type&	operator++()		{ ++current;  return *this; }
 
 
-	// ++ It
+	// It ++
 	self_type	operator++(int)		{
 		org_iterator e = endz(parent_p->rg);
 		assert(current !=e);
@@ -97,8 +98,9 @@ struct basic_range_iterator {
 	///////////////////////////////////////////////////////////////////// INPORT ORG_ITERATOR METHODS
 	
 	//  bidiractional
-	template<class U=org_iterator, class=decltype(std::declval<U>()--)> 			self_type&	operator--()			{ --current;  return *this; }
-	template<class U=org_iterator, class=decltype(std::declval<U>()--)> 			self_type	operator--(int)			{ self_type tmp=*this;  --current;   return std::move(tmp); }
+	template<class U=org_iterator, class=decltype(std::declval<U>()-1)> 			self_type&	operator--()			{ --current;  return *this; }
+	template<class U=org_iterator, class=decltype(std::declval<U>()-1)> 			self_type	operator--(int)			{ self_type tmp=*this;  --current;   return std::move(tmp); }
+									// we using "-1" instead of "--" to make compiler happy
 	                                                          
 	// random access
 	template<class U=org_iterator, class=decltype(std::declval<U&>()+=1)>			iterator	operator+= (difference_type n)	{ current+=n;  return *this; }
@@ -199,14 +201,15 @@ struct  basic_range : ref_container<Rg&&> {
 	template<class U=Rg>   eIF<has_pop_front<U>::value>	pop_front()				{ rg.pop_front();}
 
 	// erase
-	template<class U=Rg>   eIF<has_erase2<U>::value>	erase(iterator b, iterator e)	{ rg.erase(b.current,e.current);}
-	template<class U=Rg>   eIF<has_erase1<U>::value>	erase(iterator p)	       	{ rg.erase(p.current);  }
+	template<class U=Rg>   eIF<has_erase2<U>::value>	erase(iterator b, iterator e)		{ rg.erase(b.current,e.current);}
+	template<class U=Rg>   eIF<has_erase1<U>::value>	erase(iterator p)			{ rg.erase(p.current);  }
 
 	// cstr
 	template<class U=Rg>   eIF<is_cstr<U>::value>		push_back(const elem_type&  value)	{ auto e=endz(rg);  *e=value; *++e='\0';}
 	template<class U=Rg>   eIF<is_cstr<U>::value>		push_front(const elem_type&  value)	{ std::copy(rg, endz(rg)+1, rg+1); *rg=value;}
 	template<class U=Rg>   eIF<is_cstr<U>::value>		pop_back()				{ *(endz(rg)-1) = '\0';}
 	template<class U=Rg>   eIF<is_cstr<U>::value>		pop_front()				{ std::copy((rg+1), endz(rg)+1, rg);}
+
 	template<class U=Rg>   eIF<is_cstr<U>::value>		erase(rg_iterator<Rg> b, rg_iterator<Rg> e)	{ std::copy(e,endz(rg)+1,b); }
 	template<class U=Rg>   eIF<is_cstr<U>::value>		erase(rg_iterator<Rg> p)			{ std::copy(p+1,endz(rg)+1,p); }
 
@@ -294,7 +297,7 @@ operator ||       (Rg&& rg, F f )    {
 	template<class Rg> 
 	eIF <is_range<Rg>::value,  Rg&&>
 operator| (Rg&& rg, void (*f)(rg_iterator<Rg> b, rg_iterator<Rg> e) )    {
-	f(std::begin(rg),std::end(rg));
+	f(beginz(rg),endz(rg));
 	return  std::forward<Rg>(rg);
  }
 	

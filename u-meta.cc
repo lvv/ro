@@ -69,22 +69,22 @@ CHECK(   is_string<string>::value)
 CHECK(   is_string<const string&>::value) 
 
 
-//  IS_C_STRING
-CHECK   ( is_cstr_ptr<char*>          ::value)
-CHECK   ( is_cstr_ptr<const char*>    ::value)
-CHECK   ( !is_cstr_ptr<int*>    ::value)
+//  IS_CSTR
+CHECK(   is_cstr_ptr<char*>          ::value)
+CHECK(   is_cstr_ptr<const char*>    ::value)
+CHECK( ! is_cstr_ptr<int*>    ::value)
 
-CHECK   ( is_cstr<decltype( "abc")>   ::value)
-CHECK   ( is_cstr<char[3]>            ::value)
-CHECK   ( ! is_cstr<unsigned char[3]> ::value)
-CHECK   ( ! is_cstr<signed char[3]>   ::value)
-CHECK   ( ! is_cstr<int[3]>           ::value)
-CHECK   ( is_cstr<char(&)[3]>         ::value)
-CHECK   ( is_cstr<const char[3]>      ::value)
-//CHECK ( ! is_cstr<char*>            ::value)
-//CHECK ( is_cstr<const char*>        ::value)
-CHECK   ( ! is_cstr<string>           ::value)
-CHECK   ( ! is_cstr<const string&>    ::value)
+CHECK(   is_cstr<decltype( "abc")>   ::value)
+CHECK(   is_cstr<char[3]>            ::value)
+CHECK( ! is_cstr<unsigned char[3]> ::value)
+CHECK( ! is_cstr<signed char[3]>   ::value)
+CHECK( ! is_cstr<int[3]>           ::value)
+CHECK(   is_cstr<char(&)[3]>         ::value)
+CHECK(   is_cstr<const char[3]>      ::value)
+CHECK(   is_cstr<char*>            ::value)
+CHECK(   is_cstr<const char*>        ::value)
+CHECK( ! is_cstr<string>           ::value)
+CHECK( ! is_cstr<const string&>    ::value)
 
 //  HAS_PUSH_BACK
 CHECK(   has_push_back<vint>::value			)
@@ -170,6 +170,10 @@ CHECK( ! (is_ro_range		<decltype(+range(vint{1}))>::value))
 CHECK(   (is_ro_range		<decltype( range(vint{1}))>::value))
 CHECK(   (is_range			<decltype( range(vint{1}))>::value))
 CHECK( ! (is_range			<decltype(+range(vint{1}))>::value))
+
+// cstr
+CHECK(   (is_range			<char*>::value))
+CHECK(   (is_range			<char[3]>::value))
 
 // numeric_range
 CHECK(   (is_numeric_range_iterator	<decltype(+range(2))>::value))
