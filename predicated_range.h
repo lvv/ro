@@ -196,6 +196,9 @@ struct  predicated_range : basic_range<Rg> {
 	using b::pop_back;
 	using b::operator[];
 	*/
+
+	// conversion to stl-containers
+	#include <ro/conversion.h>
  };
 
 

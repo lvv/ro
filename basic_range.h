@@ -227,6 +227,10 @@ struct  basic_range : ref_container<Rg&&> {
 		return	fr2_t<subscript_op,var_t<self_type&&>,Fr2&&>  (var_t<self_type&&>(FWD(self_type,*this)), FWD(Fr2,fr2));
 	}
 	*/
+
+
+	// conversion to stl-containers
+	//#include <ro/conversion.h>
  };
 
 	template<class Rg>
