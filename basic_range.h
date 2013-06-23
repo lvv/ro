@@ -229,8 +229,9 @@ struct  basic_range : ref_container<Rg&&> {
 	*/
 
 
+	
 	// conversion to stl-containers
-	//#include <ro/conversion.h>
+	//#include <ro/conversion.h>		<----- conflict with derived ranges
  };
 
 	template<class Rg>
