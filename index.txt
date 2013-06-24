@@ -33,7 +33,8 @@ Introduction and overloaded operators vs functions
 In RO most of operations are provided through overloaded operators.
 
 Some consider that overloaded operators, not having meaningful names and having
-multiple overloads are confusing and ambiguous.  I disagree with that.
+multiple overloads are confusing and ambiguous.  I will try to show you that it
+is not so.
 
 Below are examples of what is more confusing. 
 
@@ -108,13 +109,13 @@ while(it!=vec.end()) {
 
 This is rather low level way of doing things. 
 
-RO provides mulch simpler to use - filtered (and lazy) range for this:
+RO provides mulch simpler - filtered (and lazy) range for this:
 
 -----------------------------------------
 vector<int> result = vec | (_1>val);
 -----------------------------------------
 
-One of the reasons why RO choose to use operators was because it was designed
+One of the reasons why RO chooses to use operators was because it was designed
 to be composable.  Range/functors/RO-lambdas can be combined into complex
 expression, where actions usually flow from left to right.  Like classic:
 
@@ -123,8 +124,7 @@ container | sort | unique | reverse;
 ---------------------------------------------------------------------------
 
 If RO used functions instead of operators, this would be much more complex
-expression with 4-level deep parenthesis.  Here RO under the hood passes
-function pointers from `<algorithm>` to `operator|`.
+expression with 4-level deep parenthesis.
 
 
 ///////////////////
@@ -141,9 +141,9 @@ SCC
 
 RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++
 snippet evaluator at shell prompt).  RO does not depends on SCC but we will use
-it in examples, so we need to tell about SCC first. 
+it in examples, so we need SCC's short intro.
 
-Without SCC, minimal complete example for above erase code would be:
+Without SCC, minimal complete example for above erase snipped would be:
 
 ----------------------------------------------------------------------------
 #include <iostream>
@@ -166,7 +166,7 @@ int main() {
 With SCC, equivalent which also shows output, is: 
 
 ----------------------------------------------------------------------------
-scc 'vector<int> vec{1,2,3};  vec - 2;  vec'
+scc 'vector<int> vec{1,2,3};  cout << vec - 2;'
 {1, 3}
 ----------------------------------------------------------------------------
 
@@ -183,7 +183,7 @@ scc 'vint{1,2,3} - 2'
 {1, 3}
 ----------------------------------------------------------------------------
 
-RO print operator can print almost any STL objects
+RO print operator (and `std::cout`) can print almost any STL objects
 directly.  Print operator are `_` and `__`.  Longer one terminates output with `endl`.
 Items in print operator (and last expression which will be printed)
 are separated by `,` not by `<<`. 
@@ -884,7 +884,7 @@ image::include-deps.png
 Status 
 ------
 
-RO was tested with GCC-4.8 and CLANG-3.2.
+RO was tested with GCC-4.8.1 and CLANG-3.3.
 
 
 Appendix A
