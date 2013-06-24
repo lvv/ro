@@ -25,6 +25,8 @@ else
 endif
 
 
+HTML_DIR=/tmp
+
 include $(INCLUDE)
 
 /tmp/t.ad:  README.asciidoc
@@ -38,15 +40,14 @@ include $(INCLUDE)
 #	head -n-1 README.asciidoc > /tmp/t.ad
 #	make -B index.html
 
-u-meta.cc: *.h
 
 #COPY_LIST += $(wildcard *.png)
-
+CLEAN_LIST += t-print  t-regex t-meta
 
 ###########################################################
 
+u-meta.cc: *.h
 
-CLEAN_LIST += t-print  t-regex t-meta
 
 #CXXFLAGS +=   -std=gnu++11 -Wall -I/home/lvv/p/ 
 CXXFLAGS +=   -Wall -I/home/lvv/p/ -I .. 

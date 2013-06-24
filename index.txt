@@ -7,7 +7,7 @@ RO — Range Operators
 +++ <small> +++
 
 * Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
-* Requires:  +++ C++11 +++   compiler.  Tested with gcc-4.8 and clang-3.2 +
+* Requires:  +++ C++11 +++   compiler.  Tested with gcc-4.8.1 and clang-3.3 +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
 * Status:  alpha
 
@@ -16,29 +16,24 @@ RO — Range Operators
 About
 -----
 
-RO is +++C++ +++ headers only library, which provides alternative
-interface to STL with some elements of functional programming.
-
-RO operates on _ranges_ which are STL containers, RO-ranges, Tuples, C-arrays or
-C-strings. 
+RO is +++C++ +++ headers only library, which provides alternative interface to
+STL with some elements of functional programming.  RO operates on _ranges_
+which are STL containers, RO-ranges, Tuples, C-arrays or C-strings. 
 
 RO strives to provide simpler interface and more comprehensible code.
-RO, similarly to STL, has zero overhead, and is as efficient
-as hand written for-loop.
+RO has zero overhead, and is as efficient as using hand-written for-loops.
 
 
-Introduction and overloaded operators vs functions
---------------------------------------------------
+Introduction
+------------
 
 In RO most of operations are provided through overloaded operators.
 
 Some consider that overloaded operators, not having meaningful names and having
-multiple overloads are confusing and ambiguous.  I will try to show you that it
-is not so.
+multiple overloads are confusing and ambiguous.  I will try to show that it
+is not so.  Below follow examples comparing STL vs RO code.
 
-Below are examples of what is more confusing. 
-
-In this RO code snippet, you can probably figure out what it does without explanation:
+In below RO code snippet, you can probably figure out what it does without explanation:
 
 ---------------------------------------------------------------------------
 container << value1 << value2;
@@ -46,28 +41,32 @@ container << value1 << value2;
 
 Yes, this was like applying  two `push_back` (if container was vector-like). That was simple.
 
-With STL it would be not so simple.  And I am not talking about
-syntax.  If container is `std::vector` - we will need to use `push_back` .  If
-`std::set` - we need `insert`. If `std::map` - we need `operator[]` or
-`insert`.  If `std::stack` - that would be `push`.  If `value1` is container too,
-you will need `std::copy`. Or `std::slice`. Or plain for-loop.  If container is
-a C-string, you will need to close your STL reference and start looking at `man string`. 
+If you want to add two values to a container with STL - that would be not so simple.  And I am not talking about
+syntax:  
+
+- If above container is `std::vector` - we will use `push_back`;
+- If `std::set` - we need `insert`;
+- If `std::map` - `operator[]` or `insert`; 
+- If `std::stack` - that would be `push`; 
+- If `value1` is container too, you will need `std::copy` possibly with `std::back_insert_iterator`.
+  Or `std::slice`. Or plain for-loop; 
+- If container is a C-string, you will need to close your STL reference and start looking at `man string`; 
 
 Of cause there is logical explanation for STL's non-uniformity.  Operations
 performed under the hood are very different for each case.  End result is that
 even after many years of using it, I still need STL reference manual handy.
 
-With RO,  above snippet won't change for any container type.
+With RO,  above snippet won't change for any of above listed cases.
 RO library has same interface for STL containers, C-strings, C-arrays and RO-Ranges.
 
-In next example we need to perform simple operation: remove a value from a
-`std::vector`. This is why C++ is called "too expert friendly": 
+In next example we need to perform another simple operation: remove a value from a
+`std::vector`:
 
 ---------------------------------------------------------------------------
 vec.erase(stl::remove(vec.begin(), vec.end(), x), vec.end()); 
 ---------------------------------------------------------------------------
 
-For above you need not only C++ reference, but you will need know erase-remove idiom.
+For above you need not only STL reference, but you will need know erase-remove idiom.
 Of cause if container is not `std::vector`, you will have to find out how STL
 does erase for your particular container.
 
@@ -80,7 +79,15 @@ vec - x;
 And again, above expression won't change if we use any container (or range) and if
 `x` is  a value, a predicate, iterator or sub-range.
 
-One more. This was used by someone as example of terseness and simplicity of +++C++11+++ :
+Some will say that STL iterface is more flexible because we can erase sub-range defined by two iterators. 
+RO is flexible too:
+
+---------------------------------------------------------------------------
+vec - range(it1,it2);
+---------------------------------------------------------------------------
+
+One more example. This was used by someone as example of terseness and
+simplicity of +++C++11+++. We need to find an element bigger than `val`:
 
 ------------------------
 find_if(vec.begin(), vec.end(), [=](int i){ return i > val})
@@ -93,23 +100,22 @@ vec / (_1 > val)
 ----------------------------
 
 Again, with STL, you will need different algorithm if you are looking for a value
-or sub-range. With RO, that would be the same divide op: `v / x`.
+or sub-range. With RO, that would be the same divide op: `v / something`.
 
-Usually we need to find not 1st, but all values. Like so:
+Usually we need to find not 1st, but all values. Like in this code:
 
 --------------------------
 vector<int>  result;
+auto it = vec.begin(); 
 
-auto it=vec.begin(); 
 while(it!=vec.end()) {
-	find_if(vec.begin(), vec.end(), [=](int i){ return i > val});
-	result << *it; 
+	it = find_if(it, vec.end(), [=](int i){ return i > val;});
+	if (it  == vec.end())  break;
+	result.push_back(*it++); 
 }
 ---------------------------
 
-This is rather low level way of doing things. 
-
-RO provides mulch simpler - filtered (and lazy) range for this:
+This is rather low level way of doing things.  RO provides mulch simpler code with filtered range:
 
 -----------------------------------------
 vector<int> result = vec | (_1>val);
@@ -117,7 +123,7 @@ vector<int> result = vec | (_1>val);
 
 One of the reasons why RO chooses to use operators was because it was designed
 to be composable.  Range/functors/RO-lambdas can be combined into complex
-expression, where actions usually flow from left to right.  Like classic:
+expression, where actions usually flow from left to right.  Like in classic Unix pipe:
 
 ---------------------------------------------------------------------------
 container | sort | unique | reverse;
@@ -141,9 +147,9 @@ SCC
 
 RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++
 snippet evaluator at shell prompt).  RO does not depends on SCC but we will use
-it in examples, so we need SCC's short intro.
+it in examples, so we need short intro for SCC.
 
-Without SCC, minimal complete example for above erase snipped would be:
+Without SCC, minimal complete example for erase snipped `vec - 2` would be:
 
 ----------------------------------------------------------------------------
 #include <iostream>
@@ -184,9 +190,8 @@ scc 'vint{1,2,3} - 2'
 ----------------------------------------------------------------------------
 
 RO print operator (and `std::cout`) can print almost any STL objects
-directly.  Print operator are `_` and `__`.  Longer one terminates output with `endl`.
-Items in print operator (and last expression which will be printed)
-are separated by `,` not by `<<`. 
+directly.  RO's print operators are `_` and `__`.  Longer one terminates output with `endl`.
+Items in print operator are separated by `,` not by `<<`. 
 
 -----------------------------------------------------------------------------
 scc  '__ range(3),  endl,  make_tuple("abc",42);'
@@ -203,7 +208,7 @@ scc  '__ range(3);  __ make_tuple("abc",42)'
 -----------------------------------------------------------------------------
 
 
-This is all you need to know about SCC. You can read more, if you wish  on
+This is all you need to know about SCC. You can read more about it on
 http://volnitsky.com/project/scc[SCC page].  To be able to run examples you
 need to <<_install, install RO>> and
 http://volnitsky.com/project/scc/#_install[SCC] 
@@ -313,7 +318,7 @@ containers.  Here is simple lazy-expression range, which shows that it just
 a reference to underlying container:
 
 ------------------------------------------
-scc  'vint V;  auto R=range(V);  R=range(1,10);  R, V'
+scc  'vint V;  auto R=range(V);  V=range(1,10);  R, V'
 {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 -------------------------------------------------
 
@@ -321,27 +326,26 @@ scc  'vint V;  auto R=range(V);  R=range(1,10);  R, V'
 Operation with C-strings 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+C-strings are treated as special kind of range in RO. The only limitation is that C-string is a POD type and +++C++ +++ 
+does not allow to use overloaded on POD types and we need to wrap it into RO range. 
+
 We first assign "abc" to a c-string, then append `"XYZ"` and then remove `"bc"` substring :
 
 -----------------------------------------
-scc 'char s[99];  range(s) = "abc";  (range(s) << "XYZ") - "bc"'
-aXYZ
+scc 'char s[99] = "abc";  (range(s) << "123") - "bc"'
+a123
 ------------------------------------------
-
-Note that we can not define overloaded operations if arguments are only POD types (like c-string).
-+++C++ +++ do not allow this. This is a reason why we have to wrap `s` with `range()`. For binary
-ops, we need to wrap at least one of operands in a class.
 
 Same example, but for `str::string` (without range-wrapping):
 
 -----------------------------------------
-scc 'str s("abc");  (s << "XYZ") - "bc"'
-aXYZ
+scc 'str s("abc");  (s << "123") - "bc"'
+a123
 ------------------------------------------
 
 
-Operators: Map, Reduce, Filter
-----------------------------
+FP operators: Map, Reduce, Filter
+---------------------------------
 
 
 Map/Transform
@@ -349,7 +353,8 @@ Map/Transform
 
 Operator `ro::operator* (Range,Functor)` is map/transform operator,
 where `Functor` have signature compatible with `return_type(*)(range_elem_type)`.
-Examples where `return_type` is the same as `elem_type`:
+
+First examples:
 
 ------------------------------------------
 scc 'range("abc") * toupper'
@@ -367,7 +372,7 @@ Expression `V * abs` is equivalent to:
 std::transform(V.begin(), V.end(), V.begin(), std::abs<int>)'
 ----------------------------------------------
 
-Example with arbitrary `return_type`:
+Example where transformed type is different from source range type: 
 
 ----------------------------------------------------------------------
 scc 'vector<const char*> V{"aa", "bbb"};  V * strlen'
@@ -403,7 +408,7 @@ scc 'range(1,3) || mul'				// fuctorial;   mul -  similar to std::multiplies<T>(
 scc 'vstr V{"aa", "bb", "cc"};  V || add'	// concatenates
 aabbcc
 
-scc 'vint V{1,2,3};  V || min'			// uses std::min
+scc 'vint V{1,2,3};  V || std::min'		
 1
 
 scc 'vstr V{"aaa", "bb", "cccc"};  V * size ||  min'	// length of shortest string
@@ -881,10 +886,22 @@ digraph G {
 
 image::include-deps.png
 
+/////////////////////
 Status 
 ------
 
 RO was tested with GCC-4.8.1 and CLANG-3.3.
+///////////////////////
+
+
+TODO
+----
+
+- Regex with ranges
+- C-strings optimization (do no look for end-of-string every time)
+- Split from RO all not range related parts (io, ...)
+- add asserts to all unit tests
+- test with libc++ 
 
 
 Appendix A
