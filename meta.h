@@ -52,7 +52,7 @@ template<class Rg>     using	rm_ref           = typename std::remove_reference<R
 #define  	FWD(T,t)  	std::forward<T>(t)
 
 
-////////////////////////////////////////////////////////////////////////////////////////  CL_TRAITS
+////////////////////////////////////////////////////////////////////////////////////////  RG_TRAITS
 
 
 template <typename T>		struct rg_traits      {
@@ -151,10 +151,10 @@ struct is_cstr_ptr { enum { value = std::is_pointer<TT>::value  &&  std::is_same
 template<class T, class TT=rm_qualifier<T>>
 struct is_cstr {
 	enum {
-	value =
-		is_cstr_ptr<TT>::value
-		|| 
-		( std::is_array<TT>::value &&  std::is_same<char, rm_qualifier<typename std::remove_extent<TT>::type>>::value )
+		value =
+			is_cstr_ptr<TT>::value
+			|| 
+			( std::is_array<TT>::value &&  std::is_same<char, rm_qualifier<typename std::remove_extent<TT>::type>>::value )
 	};
 };
 

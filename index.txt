@@ -1019,6 +1019,7 @@ REGEX
 	Writing own regular expression parser -- http://www.codeproject.com/KB/recipes/OwnRegExpressionsParser.aspx
 	http://swtch.com/~rsc/regexp/
 	PCRE++ http://www.linuxquestions.org/questions/showthread.php?p=4387972#post4387972
+	Finite State Machines and Regular Expressions -- http://www.gamedev.net/page/resources/_/technical/general-programming/finite-state-machines-and-regular-expressions-r3176
 MISC
 	SETS -- http://docs.python.org/2/library/sets.html#set-objects
 	operators overloading -- http://www.reddit.com/r/programming/comments/15ob1l/why_arent_userdefined_operators_more_common/
