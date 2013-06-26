@@ -17,7 +17,7 @@ About
 -----
 
 RO is +++C++ +++ headers only library, which provides alternative interface to
-STL with some elements of functional programming.  RO operates on _ranges_
+STL,  mostly through overloaded operators and with some elements of functional programming.  RO operates on _ranges_
 which are STL containers, RO-ranges, Tuples, C-arrays or C-strings. 
 
 RO strives to provide simpler interface and more comprehensible code.
@@ -27,9 +27,7 @@ RO has zero overhead, and is as efficient as using hand-written for-loops.
 Introduction
 ------------
 
-In RO most of operations are provided through overloaded operators.
-
-Some consider that overloaded operators, not having meaningful names and having
+Some consider that use of overloaded operators, not having meaningful names and having
 multiple overloads are confusing and ambiguous.  I will try to show that it
 is not so.  Below follow examples comparing STL vs RO code.
 

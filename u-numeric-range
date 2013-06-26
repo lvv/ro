@@ -26,5 +26,6 @@ scc 'range(0,10) | (_1%2)'
 
 # conversion 
 scc 'vint V = range(5);  set<int> S = range(5); unordered_set<int> U = range(5);  V, S, U'
+scc 'vector<vint> vv= {range(7),range(1,5)};  vv << range(3)'
 
 : '- - - - - - - - - - - - - - - - - - - - - -  U-NUMERIC_RANGE passed   - -- - - - - - - - - - - - - - - - - - - - -'

@@ -543,6 +543,7 @@ template<typename T>  constexpr bool   is_collection()     {
 
 //template<typename T, typename Rg>   constexpr bool   is_elem_of()        { return  is_collection<Rg>()  &&  std::is_same<rm_ref<T>, rm_ref<rg_elem_type<Rg>>>::value; }
 template<typename T, typename Rg>                 struct is_elem_of { enum { value = is_collection<Rg>()  &&  std::is_same<rm_qualifier<T>, rm_qualifier<rg_elem_type<Rg>>>::value }; };
+template<typename T, typename Rg>                 struct is_convertible_to_elem_of { enum { value = std::is_convertible<T,rg_elem_type<Rg>>::value}; };
 
 //template<class Rg1, class Rg2>      constexpr bool  have_same_elem()      { return  is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value; }
   template<class Rg1, class Rg2>              struct  have_same_elem { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };

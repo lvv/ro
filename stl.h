@@ -108,7 +108,7 @@
 
 	// Rg << x
 	template<class Rg, class X>
-	eIF <std::is_convertible<X,rg_elem_type<Rg>>::value,  Rg&&>
+	eIF <is_convertible_to_elem_of<X,Rg>::value,  Rg&&>
  operator << (Rg&& rg1, X&& x)            {  detail::append_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
 
 
