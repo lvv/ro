@@ -15,7 +15,18 @@
 				int main () {
 
 
-//  CL_ELEM_TYPE
+//  BASE/DERIVED
+struct B{
+	bool empty() {return true;}
+	typedef int iterator;
+}; 
+
+struct D: B{};  
+
+CHECK(has_empty<B>::value  &&  has_empty<D>::value  &&  !has_empty<int>::value)
+CHECK(has_iterator<B>::value  &&  has_iterator<D>::value  && !has_iterator<int>::value)
+
+//  RG_ELEM_TYPE
 CHECK_TYPES_ARE_SAME(   rg_elem_type<vint>        , int)
 CHECK_TYPES_ARE_SAME(   rg_elem_type<vint&>       , int)
 CHECK_TYPES_ARE_SAME(   rg_elem_type<vint&&>      , int)
