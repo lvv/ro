@@ -165,7 +165,7 @@ struct is_cstr {
 
 
 /*
-#define DEF_HAS_MEMBER(NAME,MEMBER)										\
+#define DEF_HAS_TYPE(NAME,MEMBER)										\
 	namespace detail {											\
 		template <class T>                                std::false_type	NAME##_ol(...);		\
 		template <class T, class M = typename T::MEMBER>  std::true_type	NAME##_ol(T* t);	\
@@ -184,7 +184,7 @@ struct is_cstr {
 	template<class T> constexpr bool NAME()      { return  decltype(detail::NAME##_ol<rm_qualifier<T>>(0))::value; };
 */
 
-#define DEF_HAS_MEMBER(NAME,MEMBER)										\
+#define DEF_HAS_TYPE(NAME,MEMBER)										\
 	namespace detail {											\
 		template <class T>                                std::false_type	NAME##_ol(...);		\
 		template <class T, class M = typename T::MEMBER>  std::true_type	NAME##_ol(T* t);	\
@@ -200,11 +200,11 @@ struct is_cstr {
 	}; 													\
 	template<class T> struct  NAME { enum { value = decltype(detail::NAME##_ol<rm_qualifier<T>>(0))::value }; };
 
-DEF_HAS_MEMBER(has_iterator,iterator)
-DEF_HAS_MEMBER(has_iterator_category,iterator_category)
-DEF_HAS_MEMBER(has_result_type,result_type)
-DEF_HAS_MEMBER(is_map,mapped_type)
-DEF_HAS_MEMBER(is_lambda_functor,is_lambda_functor)
+DEF_HAS_TYPE(has_iterator,iterator)
+DEF_HAS_TYPE(has_iterator_category,iterator_category)
+DEF_HAS_TYPE(has_result_type,result_type)
+DEF_HAS_TYPE(is_map,mapped_type)
+DEF_HAS_TYPE(is_lambda_functor,is_lambda_functor)
 DEF_HAS_METHOD(is_fold_functor,fold_init_value(T()))
 DEF_HAS_METHOD(has_push_front,push_front(typename T::value_type()))
 DEF_HAS_METHOD(has_push_back,push_back(typename T::value_type()))
