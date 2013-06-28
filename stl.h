@@ -121,10 +121,20 @@
 	template<class Rg1, class Rg2> 
 	eIF <have_convertible_elems<Rg1,Rg2>::value,  bool>
  operator ==  (Rg1&& rg1, Rg2&& rg2)         { 
-	 for (auto i1=beginz(rg1), i2=beginz(rg2);  i1!=endz(rg1);  ++i1, ++i2)
+	auto i1=beginz(rg1);
+	auto i2=beginz(rg2); 
+
+	for (;  i1!=endz(rg1)  &&  i2!=endz(rg2);  ++i1, ++i2)
 		 if (*i1!=*i2) return false;  
-	 return  true;
+
+	if ( (i1==endz(rg1))  !=  (i2==endz(rg2)) )  return false;
+	return  true;
  };
+
+	// Rg != Rg2
+	template<class Rg1, class Rg2> 
+	eIF <have_convertible_elems<Rg1,Rg2>::value,  bool>
+ operator !=  (Rg1&& rg1, Rg2&& rg2)         { return  ! (rg1 == rg2); };
 
 
 /////  T >> Rg 
