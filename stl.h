@@ -117,6 +117,15 @@
 	eIF <have_same_elems<Rg,Rg2>::value,  Rg&&>
  operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), std::move(*i));   return  std::forward<Rg>(rg1); };
 
+	// Rg == Rg2
+	template<class Rg1, class Rg2> 
+	eIF <have_convertible_elems<Rg1,Rg2>::value,  bool>
+ operator ==  (Rg1&& rg1, Rg2&& rg2)         { 
+	 for (auto i1=beginz(rg1), i2=beginz(rg2);  i1!=endz(rg1);  ++i1, ++i2)
+		 if (*i1!=*i2) return false;  
+	 return  true;
+ };
+
 
 /////  T >> Rg 
 	// x >> Rg 
