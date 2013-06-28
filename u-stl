@@ -121,6 +121,19 @@ scc '-DZ=range(+v9,-v9)'	'_ front(Z)   ,back(Z)   ,size(Z);'
 scc '-DZ=range(v9|(_1%2))'	'_ front(Z)   ,back(Z)   ,size(Z);'
 scc '-DZ=range(v9*(_1%2))'	'_ front(Z)   ,back(Z)   ,size(Z);'
 
+# Rg1 == Rg2
+scc -a1		'vint{}      == vint{}'
+scc -a1		'""          == vint{}'
+scc -a1		'vint{}      == ""'
+scc -a1		'vint{1}     != vint{}'
+scc -a1		'vint{1,2,3} != vint{1,2}'
+scc -a1		'vint{1,2,3} != vint{1,2,3,4}'
+scc -a1		'vint{1,2,3} == vint{1,2,3}'
+scc -a1		'vint{1,2,3} == dfloat{1,2,3}'
+scc -a1		'vint{1,2,3} == range(1,3)'
+scc -a1		'vint{1,2,3} != range(1,4)'
+
+
 
 
 

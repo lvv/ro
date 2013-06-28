@@ -396,9 +396,9 @@ template<class T> using  is_random_access_iterator	= typename is_iterator_of<T,s
 	constexpr bool  
 is_const_iterator() {	// does not answer if this is CI, but if IT is const or not
 	return  ! std::is_assignable <
-		decltype( *std::declval<IT>() ),
-		T
-	>::value;
+			decltype( *std::declval<IT>() ),
+			T
+		  >::value;
 }
 
 
@@ -547,7 +547,8 @@ template<typename T, typename Rg>                 struct is_convertible_to_elem_
 
 //template<class Rg1, class Rg2>      constexpr bool  have_same_elems()      { return  is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value; }
   template<class Rg1, class Rg2>              struct  have_same_elems { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };
-  template<class Rg1, class Rg2>              struct  have_convertible_elem { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };
+  template<class Rg1, class Rg2>              struct  have_convertible_elems { enum { value = is_range<Rg1>::value  &&  is_range<Rg2>::value  &&  std::is_convertible< rm_qualifier<rg_elem_type<Rg1>>,  rm_qualifier<rg_elem_type<Rg2>> >::value }; };
+  								// TO THINK ABOUT:  this test convertion to one side. How about other direction?
 
 
 
