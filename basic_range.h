@@ -153,7 +153,7 @@ struct  basic_range : ref_container<Rg&&> {
 
 
 		template<class Rg2>			// TODO specialize for seq containers self-assignemet
-		eIF <have_same_elem<Rg,Rg2>::value, self_type>
+		eIF <have_same_elems<Rg,Rg2>::value, self_type>
 	operator= (const Rg2& rhs) { 		      
 		ro::clear(rg);
 		auto e = endz(rhs);

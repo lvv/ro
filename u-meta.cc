@@ -123,24 +123,24 @@ CHECK_TYPES_ARE_SAME(    rg_traits<const vint&&>::elem_type,	int	)
 
 
 //  HAVE_SAME_ELEM
-CHECK( ! (have_same_elem<vint, int>::value)			)
+CHECK( ! (have_same_elemsss<vint, int>::value)			)
 
-CHECK(   (have_same_elem<vint, int[3]>::value)		)
-CHECK(   (have_same_elem<vint, int(&)[3]>::value)		)
-CHECK(   (have_same_elem<vlong, int(&)[3]>::value)		)
+CHECK(   (have_same_elemsss<vint, int[3]>::value)		)
+CHECK(   (have_same_elemsss<vint, int(&)[3]>::value)		)
+CHECK(   (have_same_elemsss<vlong, int(&)[3]>::value)		)
 
-CHECK(   (have_same_elem<vint, vlong>::value)		)
-CHECK(   (have_same_elem<vint, llong>::value)		)
-CHECK(   (have_same_elem<vint, vint&&>::value)		)
-CHECK(   (have_same_elem<vint, vint&&>::value)		)
-CHECK(   (have_same_elem<vint, vint&&>::value)		)
-CHECK(   (have_same_elem<vint, basic_range<vint>>::value)	)
-CHECK(   (have_same_elem<vint, basic_range<vint&>&>::value)	)
-CHECK(   (have_same_elem<vint, basic_range<vint&>&>::value)	)
+CHECK(   (have_same_elemsss<vint, vlong>::value)		)
+CHECK(   (have_same_elemsss<vint, llong>::value)		)
+CHECK(   (have_same_elemsss<vint, vint&&>::value)		)
+CHECK(   (have_same_elemsss<vint, vint&&>::value)		)
+CHECK(   (have_same_elemsss<vint, vint&&>::value)		)
+CHECK(   (have_same_elemsss<vint, basic_range<vint>>::value)	)
+CHECK(   (have_same_elemsss<vint, basic_range<vint&>&>::value)	)
+CHECK(   (have_same_elemsss<vint, basic_range<vint&>&>::value)	)
 
-CHECK(   (have_same_elem<vchar, dchar>::value)	)
-CHECK(   (have_same_elem<vchar, char[3]>::value)	)
-CHECK(   (have_same_elem<vchar, char*>::value)	)
+CHECK(   (have_same_elemsss<vchar, dchar>::value)	)
+CHECK(   (have_same_elemsss<vchar, char[3]>::value)	)
+CHECK(   (have_same_elemsss<vchar, char*>::value)	)
 
 // ITERATORS
 CHECK(   is_input_iterator<vint::const_iterator>::value	)

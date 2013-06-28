@@ -152,7 +152,7 @@ struct  predicated_range : basic_range<Rg> {
 
 	/*
 		template<class Rg2>			// TODO specialize for seq containers self-assignemet
-		eIF <have_same_elem<Rg,Rg2>::value, self_type>
+		eIF <have_same_elems<Rg,Rg2>::value, self_type>
 	operator= (const Rg2& rhs) { 			//std:: cout << " SSIGNMENT \n";
 		//ro::clear(rg);
 		

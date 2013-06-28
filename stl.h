@@ -114,7 +114,7 @@
 
 	// Rg << Rg2
 	template<class Rg, class Rg2> 
-	eIF <have_same_elem<Rg,Rg2>::value,  Rg&&>
+	eIF <have_same_elems<Rg,Rg2>::value,  Rg&&>
  operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), std::move(*i));   return  std::forward<Rg>(rg1); };
 
 
@@ -127,7 +127,7 @@
 
 	// fromRg >> toRg
 	template<class sRn, class tRn> 
-	eIF <have_same_elem<tRn,sRn>::value,  tRn&&>
+	eIF <have_same_elems<tRn,sRn>::value,  tRn&&>
  operator >>  (sRn&& src, tRn&& trg)  {
 
 	if (std::begin(src) == endz(src)) 
@@ -330,7 +330,7 @@
 
 /////  rg - sub_rg
 	template<class Rg, class sub_Rg>
-	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elem<Rg,sub_Rg>::value,  Rg&&>
+	eIF<is_range<Rg>::value  &&  !is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elems<Rg,sub_Rg>::value,  Rg&&>
  operator-(Rg&& rg,  sub_Rg&& sub_rg) {
 	rg_iterator<Rg> rg_e = endz(rg);
 	rg_iterator<Rg> b    = std::search(beginz(rg), rg_e, beginz(sub_rg), endz(sub_rg));
@@ -344,7 +344,7 @@
 
 /////  cstr - sub_rg
 	template<class Rg, class sub_Rg>
-	eIF<is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elem<Rg,sub_Rg>::value,  Rg&&>
+	eIF<is_cstr<Rg>::value &&  is_range<sub_Rg>::value  &&  have_same_elems<Rg,sub_Rg>::value,  Rg&&>
  operator-(Rg&& rg,  sub_Rg&& sub_rg) {
 	auto rg_e = endz(rg);
 	auto b    = std::search(std::begin(rg), rg_e, std::begin(sub_rg), endz(sub_rg));
@@ -378,7 +378,7 @@
 			
 		//  Rg1 / Rg2
 			template<typename Rg1, typename Rg2>
-			eIF <have_same_elem<Rg1, Rg2>::value, rg_iterator<Rg1>>
+			eIF <have_same_elems<Rg1, Rg2>::value, rg_iterator<Rg1>>
 		find_elem(Rg1&& rg1, const Rg2& rg2)    {  return std::search(std::begin(rg1), endz(rg1), std::begin(rg2), endz(rg2)); };
 	}
 
