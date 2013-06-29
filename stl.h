@@ -472,7 +472,8 @@ template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::mo
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////  STACK
 
-
+ 										// TODO:   stack << Rg
+ 										// TODO:   stack == Rg
 /////  Stack--
 	template<typename Rg>
 	eIF <is_stack<Rg>::value, Rg>

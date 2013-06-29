@@ -4,82 +4,73 @@
 set -o errexit
 set -v
 
-# C1 >> C2 
-scc '__ (vint{1,2} >> dint{3,4});'
-scc '__ ( d23 >> d9);'
-scc 'dchar s; s << "efg";  ("ABC" >> s)'
-
-# C1 << C2
-scc '__ (v23 << a23); '
-scc 's="123";  __ (s << "ABC");'
-scc '__ (str("left")<<"RIGHT");'
-scc '__ (v23 << "abc");'
-#scc '_ (v23 << a23); _ v23;  s="123";  _ (s << "ABC");  _ (str("left")<<"RIGHT");  __ (v23 << "abc");'
+# Rg1 >> Rg2 << Rg3
+scc -a'range(1,4)'		'vint{1,2} >> dint{3,4}'
+scc -a'"abc123"' 		'dchar s;   "abc" >> s << "123"; '
+scc -a'(vint{2,3,2,3})'		'v23 << a23'
+scc -a'"abc123"'		's="abc";  s << "123"'
+scc -a'"abc123"'		'str("abc")<<"123"'
+scc -a"(vint{2,3,'a','b'})"	'v23 << "ab"'
 
 #  x << C >> y
-scc 'int i,j;  _ (i << d9          >> j);  __ i, j;'
-scc 'int i,j;  _ (i << dint{1,2,3} >> j);  __ i, j;'
-scc 'int i=200; v0 << 100 << i;  __ v0, (vint() << 100 << i);'
+scc -a1       	'int i,j;  dint d3{1,2,3};   i << d3 >> j;  i==1  &&  j==3  && size(d3)==1'
+scc -a1		'int i,j;  i << dint{1,2,3} >> j;           i==1  &&  j==3 '
+scc -a1 	'vint v0; int lv=2; v0 << 1 << lv;  v0==range(1,2)   &&   (vint{} << 1 << lv) == range(1,2)'
 
 #  x >> C << y
-scc '__ ( 1 >> dint{2,3} << 4);'
-scc '__ ( 1 >> d23 << 4);'
-scc 'int i=1; dint dk; i >> (2 >>  dk);  __ dk, (i >> (2 >> dint()));'
+scc -a1		'( 1 >> dint{2,3} << 4) == range(1,4)'
+scc -a1		'( 1 >> d23       << 4) == range(1,4)'
+scc -a1         'int lv=1; dint dk;   lv >> (2 >>  dk);   dk == range(1,2)  &&    (lv >> (2 >> dint{})) == range(1,2)'
 
 # Set << x 
-scc 'int i=200; set<int> st; st << 100 << i;  __ st, (set<int>() << 100 << i);'
+scc -a1		'int lv=2;  set<int> st;  st << 1 << lv;   st==range(1,2)  &&  (set<int>() << 1 << lv) == range(1,2)'
 
 
-# Set << Ct 
-scc 'set<char> st;  (st << "11221133")'
-scc '(set<char>()       << "11221133")'
+# Set << Rt 
+scc -a1		'set<char> st;  (st << "11221133") == "123"  &&  (set<char>{}<<"11221133") == "123"'
 
 #  Pair/Tuple
-scc 'auto P = pair<int,float>{1,3.3};  __ P, ++P, P++'
-scc 'auto P = tuple<int,float>{1,3.3};  __ P, ++P, P++;'
-scc 'auto T = MT(1,2,3);  __ ++T, T++, T;'
+scc -a1         'auto P = pair<int,float>{1,2.0};    ++P == 1   &&   P++ == 2.0   &&  size(P)==2'
+scc -a1		'auto T = tuple<int,float>{1,2.0};   ++T == 1   &&   T++ == 2.0   &&  size(T)==2'
+scc -a1		'auto T = MT(1,2,3);                 ++T == 1   &&   T++ == 3     &&  size(T)==3'
 
-scc 'stack<int> s; s << 1 << 2 << 3;  int x;  s >> x;  _ x, s++; __ "", size(s--);'
+#  Stack
+scc -a1		'stack<int> s;  s << 1 << 2 << 3;  int x;  s >> x;   x==3  &&   s++ == 2  &&  size(s--)==1;'
 
-scc 'deque<int> c{1,2,3};      _ ++c; _ c++; _ c--; __ --c;'
-scc 'dint d{1,2};   3 >> d;   d'
-#scc 'map<int,int> m;   m<<MP(1,2);  m'
-scc -a1		'size(-- -- dint{0,1,2,3,4} -- --)'
+scc -a1		'dint c{1,2,3,4};      --c;  c--; ++c==2  &&  c++==3'
+scc -a1		'map<int,int> m;   m << MP(1,2);   m[1]==2'
+scc -a1		'size(-- -- dint{0,1,2,3,4} -- --)==1'
 
 # SIZE
 scc -a1		'size(stack<int>() << 1<< 2) == 2  &&  size(sint{1,2}) == 2  &&   size(vint{1,2}) == 2 &&  size(MT(1,2)) == 2'
+
+# EMPTY
 scc -a1		'!!v9  &&  !v0'
 
-# FIND
+# FIND --  Rg / x
 scc -a1		'v9 % 3  &&  ! (v9 % 33)   &&   vint{1,2,3} % 3   &&  !(  vint{1,2,3} % 33)'
 scc -a1		'v9 % vint{3,4}   &&   v9 % vint{}   &&  !(v9 % vint{3,444})'
 scc    		'assert(v9 % [](int i){return i==3;}    &&   !(v9 % [](int i){return i==30;}));'
 scc -a1		's9 % "bc"  &&   !(s9 % "n/a")'
 
-scc '*(v9 / 3)  = 33; v9'
+scc -a1		'*(v9 / 3) = 33;   v9[3]==33'
 scc 'copy(v9/2, v9/5, oi)'
 scc 'copy(v9/vint{3,4}, v9/vint{8}, oi); endl'
 
-# Ct / x
-scc -a3		'*(v9 / 3)'
-# Ct / F
+scc -a1		'*(v9 / 3) == 3'
 scc '__ v9 / [](int i){return i==3;} - +v9;'
-# Ct / F (lambdas)
 scc '__ *(str("Hello") / [](char c){return c==*"l";});'
-# Ct / F (ctype)
 scc '*(str("Hello") / islower)'
-# Ct %
 scc '__ s9 % [](char c){return c==*"b";},  str("Hello") % islower,  str("Hello") % isdigit,  vs9 % str("bb");'
 
 
 
 # BEGIN/ END
-scc  ' *+v9=-33;  __ *+vint{1,2}, v9;'
+scc -a1		'*+v9=42;  ++v9==42  &&  *+vint{1,2}==1'
 
 # ACCESS
-scc '__ size(s9), size(c9), size(a9), size(v9);'
+scc -a1 	'char cs[99]="abc";   size(cs)==3  &&  size(c9)==10  &&  size(a9)==10  &&  size(v9)==10'
 scc '__ ++range(c9), range(a23)++, ++v9;'
-scc '__ ++MT(1,2), MT(1,2)++;'
 
 # ERASE
 scc 'v9 - (_1%2);  v9'

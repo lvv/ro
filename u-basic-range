@@ -70,3 +70,6 @@ scc 'str s("HELLOW WORLD 321"); s | isalpha | sort ;  s | isalpha'
 
 # cstr
 scc 'char s[99]="old old old";  range(s) = range("new");  s'
+
+# conversions
+# TOFIX scc 'set<char> s = range("aabbc"); s'
