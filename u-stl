@@ -69,7 +69,7 @@ scc '__ s9 % [](char c){return c==*"b";},  str("Hello") % islower,  str("Hello")
 scc -a1		'*+v9=42;  ++v9==42  &&  *+vint{1,2}==1'
 
 # ACCESS
-scc -a1 	'char cs[99]="abc";   size(cs)==3  &&  size(c9)==10  &&  size(a9)==10  &&  size(v9)==10'
+scc -a1 	'char cs[99]="abc";   size(cs)==3  &&  size("abc")==3  &&  size(a9)==10  &&  size(v9)==10'
 scc '__ ++range(c9), range(a23)++, ++v9;'
 
 # ERASE
