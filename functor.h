@@ -40,6 +40,7 @@ struct  add_t {
  } add  __attribute__((unused));
 
 
+
 struct  sub_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a-b)  { return  a-b; }
 	template<class T> T fold_init_value(T) { return T(); }
@@ -57,6 +58,11 @@ struct div_t {
  } div  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
  						// http://stackoverflow.com/questions/10445586/c11-includes-cstdlib-at-times-when-c03-will-not
 						
+struct  count_t {						// conflicts with std::count, shoudl be used only with ro::
+	template<class T> size_t operator()(size_t n, T b)  { return  n+1; }
+	template<class T> size_t fold_init_value(T) { return 0; }    
+ } count  __attribute__((unused));
+
 ////// UTILS
 
 	template<class Rg>
