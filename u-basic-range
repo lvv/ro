@@ -43,11 +43,14 @@ scc -a1		'range(s) = cc9;  s==str(cc9)'
 scc -a1		'range(v9) = range(5);  ++v9==0 && v9++==4'
 
 # Rg || F 	################################################################ FOLD
-scc '__ (v9 || min), (mk_v9()||min);'
-scc '__ (vint{1,5} || function<int(int,int)>(std::plus<int>()));'
-scc '__ v9 || std::plus<int>();'
-scc '__ v9 || [](int a, int b){return min(a,b);};'
-scc 'vs9 * size || plus<int>()'
+scc -a1		'(v9 || min) + (mk_v9()||min) == 0'
+scc -a6		'vint{1,5} || function<int(int,int)>(std::plus<int>())'
+scc -a45	'v9 || std::plus<int>()'
+scc -a45	'v9 || add'
+scc -a0		'int mn= v9 || [](int a, int b){return min(a,b);};  mn'
+scc -a45	'vs9 * size || plus<int>()'
+scc -a3		'vint{1,2,3} || ro::count'
+scc -a0		'vint{}      || ro::count'
 
 # empty ranges
 scc  'range(0) || add, range(3) || add'
