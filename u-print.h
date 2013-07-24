@@ -58,7 +58,9 @@ cout << "-----------------------------------------\n\n";
 { vector<vector<int>>		v {{1,1}, {2,2}};		_ "v..<vint>:  ", v, ";    ";  cout << v << "\n"; };
 { vector<vector<int>>&&		v {{1,1}, {2,2}};		_ "v..<vint>:  ", v, ";    ";  cout << v << "\n"; };
 //ERROR { vector<vector<int>&&>&&	v {{1,1}, {2,2}};		_ "v..<vint>:  ", v, ";    ";  cout << v << "\n"; };
-//ERROR { vector<vector<int>&&>		v {{1,1}, {2,2}};		_ "v..<vint>:  ", v, ";    ";  cout << v << "\n"; };
+//EFFOR { vector<vector<int>&&>		v {{1,1}, {2,2}};		_ "v..<vint>:  ", v, ";    ";  cout << v << "\n"; };
+//
+//TOFIX {L"Стандарт"};
 
 { int				v[3]{1,2,3};			_ "int[]    :  ", v, ";    ";  cout << v << "\n"; };
 

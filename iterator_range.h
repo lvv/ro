@@ -101,23 +101,11 @@ template<typename I>	struct  is_range_t	<iterator_range<I>>	: std::true_type { }
 	eIF<is_iterator<I>::value, iterator_range<I>>
 range(I b, I e) { return iterator_range<I>(b,e); };
 
-
-	/*
-	// C-STR
 	template<typename I>
-	eIF<is_cstr<I>::value, iterator_range<I>>
-range(I b) { I e=b;  while(*e) ++e;   return iterator_range<I>(b,e); };
-*/
+	eIF<is_random_access_iterator<I>::value, iterator_range<I>>
+range(I b, size_t sz) { return iterator_range<I>(b,b+sz); };
 
 
-/*
-	iterator_range<char*>
-range(char* b) { char *e=b;  while(*e) ++e;  return iterator_range<char*>(b,e); };
-
-	iterator_range<const char*>
-range(const char* b) { const char *e=b;  while(*e) ++e;  return iterator_range<const char*>(b,e); };
-*/
-	
 ////////////////////////////////////////////////////////////////  SIMPLE PIPE
 
 	template<class Rg> 					// for std::unique

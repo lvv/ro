@@ -9,7 +9,6 @@ RO — Range Operators
 * Repo: httpx://github.com/lvv/ro[GitHub],  httpx://bitbucket.org/lvv/ro[BitBucket] +
 * Requires:  +++ C++11 +++   compiler.  Tested with gcc-4.8.1 and clang-3.3 +
 * License:  httpx://en.wikipedia.org/wiki/Boost_Software_License[Boost Software License]
-* Status:  alpha
 
 +++ </small> +++
 

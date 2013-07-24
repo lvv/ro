@@ -17,7 +17,7 @@ scc 'auto  r=range(0,10);  for(auto i=r.begin();  i!=r.end();  ++i) _ *i;'
 scc 'for(auto x: range(0,10,2)) _ x;'
 
 # stl algorithms
-scc 'auto r = range(0,1.0,0.01); __ count(+r,-r,0), count_if(+r,-r, [](double x){return x<0.5;});'
+scc 'auto r = range(0,1.0,0.01); __ std::count(+r,-r,0), std::count_if(+r,-r, [](double x){return x<0.5;});'
 
 scc 'range(0,10) | (_1%2)'
 

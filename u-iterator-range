@@ -13,4 +13,8 @@ scc 'vint{3,1,2,2,1,4,3} | sort | unique'
 scc -a1		"char s[99]=\"abc\"; char* p=s;   range(p) | reverse;  *p=='c' "
 scc -a3 	'size(range("abc12") | ro::isalpha)'
 
+# range(I,sz)
+scc -a3		'int A[3];  size(range(A,3))'
+scc -Aa"'C'"     '*range(argv,argc)++'  A B C
+
 
