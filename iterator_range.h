@@ -101,6 +101,10 @@ template<typename I>	struct  is_range_t	<iterator_range<I>>	: std::true_type { }
 	eIF<is_iterator<I>::value, iterator_range<I>>
 range(I b, I e) { return iterator_range<I>(b,e); };
 
+	template<typename I>
+	eIF<is_random_access_iterator<I>::value, iterator_range<I>>
+range(I b, size_t sz) { return iterator_range<I>(b,b+sz); };
+
 
 ////////////////////////////////////////////////////////////////  SIMPLE PIPE
 
