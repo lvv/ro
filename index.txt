@@ -891,16 +891,6 @@ RO was tested with GCC-4.8.1 and CLANG-3.3.
 ///////////////////////
 
 
-TODO
-----
-
-- Regex with ranges
-- C-strings optimization (do no look for end-of-string every time)
-- Split from RO all not range related parts (io, ...)
-- add asserts to all unit tests
-- test with libc++ 
-
-
 Appendix A
 ----------
 
