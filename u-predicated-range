@@ -11,6 +11,9 @@ scc 'for(auto c: range(v9) | (_1%2 == 1) )  _ c;'
 scc 'for(auto c: range(s9) | ro::isdigit) _ c;'
 scc 'for(auto c: range(c9) | ro::isdigit) _ c;'
 
+
+# FIXME (we should be able to assign to const predicated_range)  scc 'vector<int> V{1,2,3,2}; const auto twos=V|2;  twos=42; V, V|2, twos'
+
 #################################################################   FUNCTORS
 scc 'v9 | (_1 > 5)'
 

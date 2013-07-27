@@ -17,10 +17,9 @@ About
 
 RO is +++C++ +++ headers only library, which provides alternative interface to
 STL,  mostly through overloaded operators and with some elements of functional programming.  RO operates on _ranges_
-which are STL containers, RO-ranges, Tuples, C-arrays or C-strings. 
+which are STL containers, RO-ranges, Tuples, C-arrays and C-strings. 
 
-RO strives to provide simpler interface and more comprehensible code.
-RO has zero overhead, and is as efficient as using hand-written for-loops.
+RO strives for simpler and more expressive C++ code with zero overhead.
 
 
 Introduction
@@ -67,7 +66,8 @@ For above you need not only STL reference, but you will need know erase-remove i
 Of cause if container is not `std::vector`, you will have to find out how STL
 does erase for your particular container.
 
-Now with RO you won't need 10 parenthesis:
+Now with RO you won't need expression with calls to 4 member function, 1
+algorithm and  10 parenthesis:
 
 ---------------------------------------------------------------------------
 vec - x;
@@ -77,7 +77,7 @@ And again, above expression won't change if we use any container (or range) and 
 `x` is  a value, a predicate, iterator or sub-range.
 
 Some will say that STL iterface is more flexible because we can erase sub-range defined by two iterators. 
-RO is flexible too:
+No problem, RO has plenty of flexibility:
 
 ---------------------------------------------------------------------------
 vec - range(it1,it2);
@@ -123,11 +123,11 @@ to be composable.  Range/functors/RO-lambdas can be combined into complex
 expression, where actions usually flow from left to right.  Like in classic Unix pipe:
 
 ---------------------------------------------------------------------------
-container | sort | unique | reverse;
+some_range | std::sort | std::unique | std::reverse;
 ---------------------------------------------------------------------------
 
-If RO used functions instead of operators, this would be much more complex
-expression with 4-level deep parenthesis.
+That was valid RO expression.  If RO used functions instead of operators, this
+would be much more complex expression with 4-level deep parenthesis.
 
 
 ///////////////////
@@ -146,7 +146,7 @@ RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++
 snippet evaluator at shell prompt).  RO does not depends on SCC but we will use
 it in examples, so we need short intro for SCC.
 
-Without SCC, minimal complete example for erase snipped `vec - 2` would be:
+Without SCC, minimal complete example for erase snippet `vec - 2` would be:
 
 ----------------------------------------------------------------------------
 #include <iostream>
@@ -490,16 +490,32 @@ scc 'vint V{1,2,3,2};  V|2 = 42;  V'
 {1, 42, 3, 42}
 -----------------------------------------------------------------
 
-Something interesting:
+There are gotchas if you don't know what is going on under the hood:
 
 ---------------------------------------
 scc 'vint V{1,2,3,2};  (V|2 = 42)'
 {}
 ---------------------------------------
 
-Why empty range? Because this is range with all elements in `V` equal to `2`.
-But all `2` were replaced.  Underling container `V` is now `{1, 42, 3, 42}`,
-and  `{1, 42, 3, 42} | 2` is empty range.
+Lets do it slowly:
+
+------------------------------------------------------
+vector<int> V{1,2,3,2};
+
+auto twos = V|2;    // Filtered range of V,
+                    // where elements are predicated on [](int x)->bool {return x==2;}.
+                    // Range twos does not hold any elements. Value of twos is expression V|2. 
+                    // That is, twos holds reference to V and to filtering predicate
+
+cout << twos;       // {2,2} - twos lazily evaluates expression V|2
+
+twos = 42;          // Assign to every element of V which had element equal to 2.
+                    // But value of twos didn't change, it is still expression V|2.   
+
+cout << V;          // {1,42,3,42}
+cout << (V|2);      // {} - empty range, because there are no 2 in V now.
+cout << twos;       // {} - same thing.
+----------------------------------------------------------------
 
 
 Evaluate:  `range|stl-algorithm`
@@ -991,6 +1007,7 @@ Corresponding CLANG bugs:
 == Refs 
 
 REGEX
+	http://gcc.gnu.org/wiki/Regex/Status
 	* httpx://www.johndcook.com/cpp_regex.html[Getting started with C++ TR1 * regular expressions]
 	* http://www.informit.com/articles/article.aspx?p=2079020[Regular Expressions 101: Regex in +++C++11+++]
 	* httpx://www.boost.org/doc/libs/1_46_1/libs/regex/doc/html/boost_regex/introduction_and_overview.html[Boost.Regex]
