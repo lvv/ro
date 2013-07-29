@@ -21,12 +21,14 @@
 
 	template<typename Rg>		// do we need to care about r-value-ness here?
 	eIF <is_range<Rg>::value  &&  !std::is_array<Rg>::value,  rg_iterator<Rg>>
+	//eIF <is_range<Rg>::value  &&  !std::is_array<Rg>::value,  decltype(std::begin(std::declval<Rg&&>()))>
  operator+      (Rg&& rg) { return std::begin(rg); };	// does not work with r-values
 
 
 /////  -Rg   ---   end(),  	(n/a for c-arrays, use std::end)
 	template<typename Rg>
 	eIF <is_range<Rg>::value  &&  !std::is_array<Rg>::value,  rg_iterator<Rg>>
+	//eIF <is_range<Rg>::value  &&  !std::is_array<Rg>::value,  decltype(std::begin(std::declval<Rg&&>()))>
  operator-      (Rg&& rg) { return  std::end(rg); };
 
 

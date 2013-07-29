@@ -67,6 +67,8 @@ scc '__ s9 % [](char c){return c==*"b";},  str("Hello") % islower,  str("Hello")
 
 # BEGIN/ END
 scc -a1		'*+v9=42;  ++v9==42  &&  *+vint{1,2}==1'
+scc -a1		'const str cS("abc");   cS.begin() == +cS   &&   cS.end() == -cS'
+scc -a1		'      str  S("abc");    S.begin() == + S   &&    S.end() == - S'
 
 # ACCESS
 scc -a1 	'char cs[99]="abc";   size(cs)==3  &&  size("abc")==3  &&  size(a9)==10  &&  size(v9)==10'

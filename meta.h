@@ -62,11 +62,18 @@ template <typename T>		struct rg_traits      {
 
 		template <typename U, typename IT = typename rm_ref<U>::iterator>	static IT       it(rm_ref<U>* u);
 		template <typename U>							static no_type  it(...);
-	typedef   decltype(it<T>(0))   iterator;
 
 		template <typename U, typename IT = typename rm_ref<U>::const_iterator>	static IT       cit(rm_ref<U>* u);
 		template <typename U>							static no_type  cit(...);
 	typedef   decltype(cit<T>(0))   const_iterator;
+
+	//typedef   decltype(it<T>(0))   iterator;
+	typedef		typename std::conditional <
+				std::is_const<rm_ref<T>>::value,
+				const_iterator,
+				decltype(it<T>(0))
+			>::type					iterator;
+
 
 		template <typename U, typename RF = typename rm_ref<U>::reference>	static RF       rf(rm_ref<U>* u);
 		template <typename U>                                          		static no_type  rf(...);
