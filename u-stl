@@ -35,7 +35,7 @@ scc -a1		'auto T = tuple<int,float>{1,2.0};   ++T == 1   &&   T++ == 2.0   &&  s
 scc -a1		'auto T = MT(1,2,3);                 ++T == 1   &&   T++ == 3     &&  size(T)==3'
 
 #  Stack
-scc -a1		'stack<int> s;  s << 1 << 2 << 3;  int x;  s >> x;   x==3  &&   s++ == 2  &&  size(s--)==1;'
+scc -a1		'stack<int> s;  s << 1 << 2 << 3;  int x;  s >> x;   x==3  &&   s++ == 2  &&  size(s--)==1'
 
 scc -a1		'dint c{1,2,3,4};      --c;  c--; ++c==2  &&  c++==3'
 scc -a1		'map<int,int> m;   m << MP(1,2);   m[1]==2'

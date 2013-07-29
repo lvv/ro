@@ -524,7 +524,7 @@ Evaluate:  `range|stl-algorithm`
 Simple `operator|(Range, void(*)(It,It)) -> Range` matches STL algorithm which have 2 argument iterators:
 
 -----------------------------------------------------------------
-scc 'vint{3,1,2} | std::sort | std::reverse'
+scc 'vint{2,3,1} | std::sort | std::reverse'
 {3, 2, 1}
 -----------------------------------------------------------------
 
@@ -534,7 +534,7 @@ but the same range that was on input, modified in place (and requires mutable
 range) by corresponding stl-algorithm. Above example is equivalent to:
 
 -----------------------------------------------------------------
-scc 'vint V{3,1,2};  std::sort(+V,-V);  std::reverse(+V,-V);  V'
+scc 'vint V{2,3,1};  std::sort(+V,-V);  std::reverse(+V,-V);  V'
 {3, 2, 1}
 
 -----------------------------------------------------------------
