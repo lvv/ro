@@ -272,6 +272,7 @@ template<class T>		struct  is_range { enum { value = is_range_t<rm_qualifier<T>>
 template<class T>	struct  is_string_t				: std::false_type {};
 template<class CharT>	struct  is_string_t <std::basic_string<CharT>>	: std::true_type  {};
 template<size_t N>	struct  is_string_t <char[N]>			: std::true_type  {};
+template<size_t N>	struct  is_string_t <wchar_t[N]>       		: std::true_type  {};
 template<class T>	struct  is_string { enum { value = is_string_t<rm_qualifier<T>>::value };};
 
 //template<class T>     constexpr bool   is_string()        { return  is_string_t<rm_qualifier<T>>::value; };
@@ -294,9 +295,14 @@ template<class T>		struct  is_tuple_or_pair { enum { value = is_tuple_t<rm_quali
 			// alt impl:  http://stackoverflow.com/questions/257288/is-it-possible-to-write-a-c-template-to-check-for-a-functions-existence/9154394#9154394
 template<class T>			struct  is_ioable_t    					: std::conditional<std::is_arithmetic<T>::value, std::true_type, std::false_type>::type  {};
 template<class T,class CT,class AL>	struct  is_ioable_t <std::basic_string<T,CT,AL>>	: std::true_type  {};
+
 template<size_t N>			struct  is_ioable_t <char[N]>				: std::true_type  {};
 template<>				struct  is_ioable_t <char*>				: std::true_type  {};
 template<>				struct  is_ioable_t <const char*>			: std::true_type  {};
+
+template<size_t N>			struct  is_ioable_t <wchar_t[N]>				: std::true_type  {};
+template<>				struct  is_ioable_t <wchar_t*>				: std::true_type  {};
+template<>				struct  is_ioable_t <const wchar_t*>			: std::true_type  {};
 
 template<class T>	struct  is_ioable { enum { value = is_ioable_t<rm_qualifier<T>>::value };};
 //template<class T>     constexpr bool   is_ioable()        { return  is_ioable_t<rm_qualifier<T>>::value; };

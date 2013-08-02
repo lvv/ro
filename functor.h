@@ -7,6 +7,8 @@
 				namespace ro {
 
 
+
+//**** THIS WILL BE DEPRECATED SOON ****
 ///////  CTYPE.H
 //  TODO locale ctype: http://www.boost.org/doc/libs/1_52_0/libs/bind/bind.html#err_modeling_stl_function_object_concepts
 //  	http://stackoverflow.com/questions/13676507/how-do-i-display-special-characters-in-c-with-linux
@@ -24,6 +26,7 @@ bool	ispunct (char c) { return std::ispunct ((int)c); }
 bool	isspace (char c) { return std::isspace ((int)c); }
 bool	isupper (char c) { return std::isupper ((int)c); }
 bool	isxdigit(char c) { return std::isxdigit((int)c); }
+//******************************************
 
 
 ////// MATH
