@@ -49,7 +49,7 @@ template <typename T>	struct ref2name <volatile T&&>       { static constexpr co
 template <typename T>	struct ref2name <volatile const T&&> { static constexpr const char* value =  "volatile const &&";};
 
 
-#define ptype(T)  std::cout <<  type2name<T>() << " " << ref2name<T>::value <<  std::endl;
+#define ptype(T)  std::cout <<  ro::type2name<T>() << " " << ro::ref2name<T>::value <<  std::endl;
 #define pvtype(V)  ptype(decltype((V))); 		// double (()) - return lvalue even for named entities
 
 //// Template Type Dumper
