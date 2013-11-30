@@ -5,6 +5,7 @@
 						#include <ro/basic_range.h>
 						#include <ro/debug.h>
 
+						namespace    {
 						namespace ro {
 
 	// forward dcl
@@ -284,5 +285,6 @@ operator *       (Rg&& rg, O (*f)(E) )    {
 	return   mapped_range<Rg&&, O(*)(E), E>  (std::forward<Rg>(rg), f);
  };
 
+						};
 						};
 						#endif //  RO_MAPPED_RANGE_H

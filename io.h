@@ -19,6 +19,7 @@
 
 					#include <ro/range.h>
 
+					namespace    {
 					namespace ro {
 
 	std::filebuf cout_fb;
@@ -434,5 +435,5 @@ struct  outln : out  {
 
 
 					};
+					};
 					#endif	// SCC_IO_H
-

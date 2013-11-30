@@ -1,5 +1,5 @@
 
-// CONVERTABILITY TO STD-CONTAINERS
+// CONVERTABILITY TO STD-CONTAINERS	(included as member of basic_range dirivatives)  (shoud re-implement ad CRTP?)
 
 	template<class A, template<class,class> class Ct> 		//  std sequence containers
 operator Ct<value_type,A>(){
@@ -24,4 +24,3 @@ operator Ct<value_type,H,KE,A>() {					//  std::unordered_set
 	C << *this;
 	return std::move(C);
 }
-							// is it possilble to convert to c-array?

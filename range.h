@@ -6,6 +6,7 @@
 						#include <ro/mapped_range.h>
 						#include <ro/predicated_range.h>
 
+						namespace    {
 						namespace ro {
 
 /////////////////////////////////////////////////////////////////  OPERATORS - FREE FUNCTIONS
@@ -62,4 +63,5 @@ operator-  (const RgI& it1, const RgI& it2) {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 						}       // ro namespace
+						}    
 						#endif	// RO_RANGE_H

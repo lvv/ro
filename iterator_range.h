@@ -3,6 +3,7 @@
 						#define  RO_ITERATOR_RANGE_H
 
 						#include <ro/meta.h>
+						namespace    {
 						namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  ITERATOR_RANGE
@@ -117,5 +118,6 @@ operator| (Rg&& rg, rg_iterator<Rg> (*f)(rg_iterator<Rg> b, rg_iterator<Rg> e) )
 	return iterator_range<rg_iterator<Rg>>(b,new_e);
  }
 
+						};
 						};
 						#endif //  RO_ITERATOR_RANGE_H
