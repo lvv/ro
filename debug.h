@@ -18,6 +18,7 @@
 				#endif
 
 
+				namespace    {
 				namespace ro {
 
 //////////////////////////////////////////////////////////////////////////////////////////////  PTYPE / PVTYPE
@@ -132,5 +133,6 @@ auto __attribute__((unused))		n9	= range(9);
 #endif
 
 				};	// namespace ro
+				};
 				#endif  // RO_DEBUG_H
 				// vim:ts=8 smarttab

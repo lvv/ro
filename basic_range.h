@@ -7,6 +7,7 @@
 
 						#include <cassert>
 
+						namespace    {
 						namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  FORWARD
@@ -306,5 +307,6 @@ operator| (Rg&& rg, void (*f)(rg_iterator<Rg> b, rg_iterator<Rg> e) )    {
 	return  std::forward<Rg>(rg);
  }
 	
+						}; 
 						}; 
 						#endif //  RO_BASIC_RANGE_H

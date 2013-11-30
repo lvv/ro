@@ -9,6 +9,7 @@
 				#include <ro/meta.h>
 				#include <ro/io.h>
 
+				namespace    {
 				namespace ro {
 
 
@@ -487,11 +488,12 @@ template<class Arg1>		struct  is_range_op<multiply_op   ,Arg1>	{ enum {value=is_
 
 
 				};	// namespace ro
+				};
 
 
 				namespace std {
 template<int N> 	struct 	is_placeholder<ro::ph<N>>		: std::integral_constant<int,N>  {};
-				};	// namespace std
+				};
 
 
 				#endif	// RO_LAMBDA_H

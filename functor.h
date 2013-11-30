@@ -4,6 +4,7 @@
 				#include <cctype>
 				#include <ro/meta.h>
 
+				namespace    {
 				namespace ro {
 
 
@@ -89,6 +90,7 @@ struct nop_t {
 /////// SEQUENCES
 
 
+				};
 				};
 
 				#endif

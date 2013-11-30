@@ -18,6 +18,7 @@
 
 					#include <ro/range.h>
 
+					namespace    {
 					namespace ro {
 
 std::regex operator "" _R (const char* p, size_t n)	{ return std::regex(p); };
@@ -52,5 +53,6 @@ operator ~     (const S e)	{ return  std::regex(e.begin(), e.end()); };
 */
 
 
+					};
 					};
 					#endif	// LVV_REGEX_H

@@ -5,6 +5,7 @@
 						#include <ro/basic_range.h>
 						#include <cassert>
 
+						namespace    {
 						namespace ro {
 
 	// forward dcl
@@ -224,6 +225,7 @@ template<class Rg, class F>	eIF<is_range<Rg>::value && is_callable<F, bool(rg_el
 //  Rg1 | elem_type --> range
 template<class Rg>		eIF<is_range<Rg>::value,  predicated_range<Rg&&, std::function<bool(rg_elem_type<Rg>)>      >>	operator|  (Rg&& rg,  const rg_elem_type<Rg>& value)                    { return   predicated_range<Rg&&, std::function<bool(rg_elem_type<Rg>)>>       (std::forward<Rg>(rg),  [value](const rg_elem_type<Rg>& el){return el==value;}); };
 		// Overload is better than SFINAE selection. With OL we do not need to specify functor template arguments
+						};
 						};
 						#endif //  RO_MAPPED_RANGE_H
 

@@ -13,6 +13,7 @@
 
 					#include <ro/meta.h>
 
+					namespace    {
 					namespace ro {
 
 //##########################################################################  MEMBERS FUNC SHORTCUTS
@@ -525,5 +526,6 @@ template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::mo
  template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ return front(rg); }
  template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
 
+					};
 					};
 					#endif	// RO_STL_H

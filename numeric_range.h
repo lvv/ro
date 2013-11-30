@@ -5,6 +5,7 @@
 					
 						#include <cassert>
 
+						namespace    {
 						namespace ro {
 
 /////////////////////////////////////////////////////////////////////////////////////////  NUMERIC_RANGE_ITERATOR
@@ -156,5 +157,6 @@ range(T to) { return numeric_range<T>(0, to-1, 1); };
 
 
 
+						};
 						};
 						#endif //  RO_NUMERIC_RANGE_H
