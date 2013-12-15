@@ -8,7 +8,7 @@ make -B u-meta && ./u-meta || exit
 scc -f u-print.h
 . u-stl
 . u-in
-. u-regex
+#. u-regex
 . u-range
 . u-lambda
 
