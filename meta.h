@@ -117,7 +117,7 @@ struct iterator_range_erasable{};
 template<class Rg>  				struct  basic_range;
 template<class Rg>  				struct  iterator_range;
 
-								non_erasable		erasable_category(...)                                 { return non_erasable(); }; 
+ __attribute__((unused))					non_erasable		erasable_category(...)                                 { return non_erasable(); }; 
 
 template<size_t N>						cstr_erasable		erasable_category(char*)                          { return cstr_erasable(); };
 template<size_t N>						cstr_erasable		erasable_category(const char*)                    { return cstr_erasable(); };
@@ -527,6 +527,7 @@ struct size_fo {
 
 };
 
+ __attribute__((unused))
 size_fo  size;
 
 //template<class X>   		size_t			size 	(const X& x)  { return size_impl(x); };

@@ -99,8 +99,8 @@ struct basic_range_iterator {
 	///////////////////////////////////////////////////////////////////// INPORT ORG_ITERATOR METHODS
 	
 	//  bidiractional
-	template<class U=org_iterator, class=decltype(std::declval<U>()-1)> 			self_type&	operator--()			{ --current;  return *this; }
-	template<class U=org_iterator, class=decltype(std::declval<U>()-1)> 			self_type	operator--(int)			{ self_type tmp=*this;  --current;   return std::move(tmp); }
+	template<class U=org_iterator, class=decltype(std::declval<U>()--)> 			self_type&	operator--()			{ --current;  return *this; }
+	template<class U=org_iterator, class=decltype(std::declval<U>()--)> 			self_type	operator--(int)			{ self_type tmp=*this;  --current;   return std::move(tmp); }
 									// we using "-1" instead of "--" to make compiler happy
 	                                                          
 	// random access
