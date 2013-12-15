@@ -106,6 +106,10 @@ range(I b, I e) { return iterator_range<I>(b,e); };
 	eIF<is_random_access_iterator<I>::value, iterator_range<I>>
 range(I b, size_t sz) { return iterator_range<I>(b,b+sz); };
 
+	template<typename P>
+	eIF<is_cstr<P>::value, iterator_range<P>>
+range(P b)  { P e=b;  while(*e) ++e;   return iterator_range<P>(b,e); };
+
 
 ////////////////////////////////////////////////////////////////  SIMPLE PIPE
 

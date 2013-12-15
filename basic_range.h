@@ -259,7 +259,8 @@ template<class Rg, bool RO>	struct is_ro_range_iterator <basic_range_iterator<Rg
 ////////////////////////////////////////////////////////////////  FUNCTION RANGE() -- range maker
 
 	template<class Rg>   
-	eIF<is_range<Rg>::value  ||  is_cstr<Rg>::value, basic_range<Rg&&>>   
+	//eIF<is_range<Rg>::value  ||  is_cstr<Rg>::value, basic_range<Rg&&>>   
+	eIF<is_range<Rg>::value  &&  ! is_cstr<Rg>::value, basic_range<Rg&&>>   
 range(Rg&& rg)  {
 	return  basic_range<Rg&&>(std::forward<Rg>(rg));  // there is no copy on return
  };

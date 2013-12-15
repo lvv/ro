@@ -9,9 +9,6 @@
 		struct fo_t	{ bool operator()(int) { return true; }; };
 		struct mfo_t	{ bool mf(int)         { return true; }; };
 		struct empty_t  {};
-		auto lam = [](int x)->bool { return x==0; };
-		typedef decltype(lam) lam_t;
-
 				int main () {
 
 
@@ -247,8 +244,12 @@ CHECK(   (is_callable<decltype(f),              bool(int)>::value))
 CHECK(   (is_callable<fo_t,                     bool(int)>::value))
 CHECK(   (is_callable<std::function<bool(int)>, bool(int)>::value))
 CHECK( ! (is_callable<std::function<bool()>,	bool(int)>::value))
+
+//		auto lam = [](int x)->bool { return x==0; };
+//		typedef decltype(lam) lam_t;
 //CHECK(   (is_callable<std::function<bool(*)(int)>, bool(int)>::value))
 //CHECK(   (is_callable<std::function<lam_t>, bool(int)>::value)) 	// ??????????????????????????
+
 CHECK(   (is_callable<std::negate<int>,		int(int)>::value))
 CHECK(   (is_callable<std::less<int>,		bool(int,int)>::value))
 
