@@ -96,7 +96,7 @@ struct  to : counter<to> {
 
 int to::constructed   {0};
 
-	std::ostream&
+	  __attribute__((unused)) std::ostream& 
 operator<<      (std::ostream& os, const to& o) { std::cout << "to{" << o.id << "}";  return os; };
 
 

@@ -24,6 +24,7 @@
 
 	std::filebuf cout_fb;
 
+	__attribute__((unused))
 bool set_out_file(const char* path) { 
 	if (cout_fb.is_open())  cout_fb.close();
 	cout_fb.open (path, std::ios::out);
@@ -196,8 +197,8 @@ namespace oi_space {
 		}
 	};
 
-	std::ostream& operator<<      (std::ostream& os, const oi_space::oi_t &)	{return os; };
-	std::ostream& operator<<      (std::ostream& os, const oi_space::oi_any_t& s) { return os; };
+	__attribute__((unused))	std::ostream& operator<<      (std::ostream& os, const oi_space::oi_t &)	{return os; };
+	__attribute__((unused))	std::ostream& operator<<      (std::ostream& os, const oi_space::oi_any_t& s) { return os; };
 
 };
 
@@ -370,8 +371,8 @@ operator>>      (std::istream& is, Rg& rg)    {
 
 // NOP op<<  (so if last semicolon is fogoten, it is not an error)
 struct out;
-std::ostream& operator<<      (std::ostream& os, const  ostream& )		{return os; };
-std::ostream& operator<<      (std::ostream& os, const out&)			{return os; };
+__attribute__((unused))	std::ostream& operator<<      (std::ostream& os, const  ostream& )		{return os; };
+__attribute__((unused))	std::ostream& operator<<      (std::ostream& os, const out&)			{return os; };
 
 struct  out {
 

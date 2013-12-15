@@ -13,20 +13,20 @@
 ///////  CTYPE.H
 //  TODO locale ctype: http://www.boost.org/doc/libs/1_52_0/libs/bind/bind.html#err_modeling_stl_function_object_concepts
 //  	http://stackoverflow.com/questions/13676507/how-do-i-display-special-characters-in-c-with-linux
-char	toupper (char c) { return std::toupper((int)c); }
-char	tolower (char c) { return std::tolower((int)c); }
-
-bool	isalnum (char c) { return std::isalnum ((int)c); }
-bool	isalpha (char c) { return std::isalpha ((int)c); }
-bool	iscntrl (char c) { return std::iscntrl ((int)c); }
-bool	isdigit (char c) { return std::isdigit ((int)c); }
-bool	isgraph (char c) { return std::isgraph ((int)c); }
-bool	islower (char c) { return std::islower ((int)c); }
-bool	isprint (char c) { return std::isprint ((int)c); }
-bool	ispunct (char c) { return std::ispunct ((int)c); }
-bool	isspace (char c) { return std::isspace ((int)c); }
-bool	isupper (char c) { return std::isupper ((int)c); }
-bool	isxdigit(char c) { return std::isxdigit((int)c); }
+__attribute__((unused))	char	toupper (char c) { return std::toupper((int)c); }
+__attribute__((unused))	char	tolower (char c) { return std::tolower((int)c); }
+                       	
+__attribute__((unused))	bool	isalnum (char c) { return std::isalnum ((int)c); }
+__attribute__((unused))	bool	isalpha (char c) { return std::isalpha ((int)c); }
+__attribute__((unused))	bool	iscntrl (char c) { return std::iscntrl ((int)c); }
+__attribute__((unused))	bool	isdigit (char c) { return std::isdigit ((int)c); }
+__attribute__((unused))	bool	isgraph (char c) { return std::isgraph ((int)c); }
+__attribute__((unused))	bool	islower (char c) { return std::islower ((int)c); }
+__attribute__((unused))	bool	isprint (char c) { return std::isprint ((int)c); }
+__attribute__((unused))	bool	ispunct (char c) { return std::ispunct ((int)c); }
+__attribute__((unused))	bool	isspace (char c) { return std::isspace ((int)c); }
+__attribute__((unused))	bool	isupper (char c) { return std::isupper ((int)c); }
+__attribute__((unused))	bool	isxdigit(char c) { return std::isxdigit((int)c); }
 //******************************************
 
 

@@ -21,14 +21,16 @@
 					namespace    {
 					namespace ro {
 
+	 __attribute__((unused))
 std::regex operator "" _R (const char* p, size_t n)	{ return std::regex(p); };
 
 
 	template<typename S>
 	eIF<is_string<S>::value, bool>
 operator == (const S s,  const std::regex &e)		{ return std::regex_match(s.begin(), s.end(), e); };
+
 	// specialization  for c-string
-	bool  
+	__attribute__((unused)) bool  
 operator == (const char  *p,  const std::regex &e)	{ return std::regex_match(p,e); };
 
 

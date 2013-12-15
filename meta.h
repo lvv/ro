@@ -494,15 +494,15 @@ struct is_callable<F, R(&&)(Args...)> {					// rval-ref to callable
 
 /////  ENDZ - like std::end() but type const char[] is assumed to be C-string and its corresponding correct end (at '\0') is returned
 template<class Rg>	auto  endz(Rg&& rg)                 -> decltype(std::end(rg))    { return  std::end(rg); };
-			auto  endz(char      * p)           -> char      *               { auto e=p; while(*e) ++e;   return e; };
-			auto  endz(char const* p)           -> char const*               { auto e=p; while(*e) ++e;   return e; };
+__attribute__((unused)) auto  endz(char      * p)           -> char      *               { auto e=p; while(*e) ++e;   return e; };
+__attribute__((unused)) auto  endz(char const* p)           -> char const*               { auto e=p; while(*e) ++e;   return e; };
 template<size_t N>	auto  endz(char const (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
 template<size_t N>	auto  endz(char       (&array)[N] ) -> decltype(std::end(array)) { return  std::find(std::begin(array), std::end(array),'\0'); };
 
 // BEGINZ
 template<class Rg>	auto  beginz(Rg&& rg)                 -> decltype(std::begin(rg))  { return  std::begin(rg); };
-			auto  beginz(char      * p)           -> char      *               { return  p; };
-			auto  beginz(char const* p)           -> char const*               { return  p; };
+__attribute__((unused)) auto  beginz(char      * p)           -> char      *               { return  p; };
+__attribute__((unused)) auto  beginz(char const* p)           -> char const*               { return  p; };
 template<size_t N>	auto  beginz(char const (&array)[N] ) -> decltype(std::begin(array)) { return  std::begin(array); };
 template<size_t N>	auto  beginz(char       (&array)[N] ) -> decltype(std::begin(array)) { return  std::begin(array); };
 /*
@@ -539,11 +539,11 @@ template<typename Rg>	eIF<!has_empty<Rg>::value,bool>	empty(const Rg& rg)	{ retu
 /////  CLEAR
 template<typename Rg>	eIF< has_clear<Rg>::value>	clear(Rg&& rg) 		{ rg.clear(); }
 template<typename Rg>	eIF<!has_clear<Rg>::value>	clear(Rg&& rg) 		{}
-                                              void	clear(char*rg) 		{ *rg = '\0'; }
+ __attribute__((unused))                     void	clear(char*rg) 		{ *rg = '\0'; }
 /////  RESIZE
 template<typename Rg>	eIF< has_resize<Rg>::value>	resize(Rg&& rg, size_t n) 		{ rg.resize(n); }
 template<typename Rg>	eIF<!has_resize<Rg>::value>	resize(Rg&& rg, size_t n) 		{}
-                                              void	resize(char*rg, size_t n) 		{ *(rg+n) = '\0'; }
+__attribute__((unused))                      void	resize(char*rg, size_t n) 		{ *(rg+n) = '\0'; }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
