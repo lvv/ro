@@ -38,41 +38,36 @@ template<class T> 	T abs(T t) { return  t > 0 ?  t : -t; }	// cstdlib is bad
 
 			// initial value for folding -- http://en.wikipedia.org/wiki/Identity_element
 
-struct  add_t {
+struct  plus_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a+b)  { return  a+b; }
 	template<class T> T fold_init_value(T) { return T(); }	// T() - correct value for std::string too.
- } add  __attribute__((unused));
+ } plus_  __attribute__((unused));
 
 
 
-struct  sub_t {
+struct  minus_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a-b)  { return  a-b; }
 	template<class T> T fold_init_value(T) { return T(); }
- } sub  __attribute__((unused));
+ } minus_  __attribute__((unused));
 
 
-struct mul_t {
+struct multiplies_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a*b)  { return  a*b; }
 	template<class T> T fold_init_value(T) { return T(1); }
- } mul  __attribute__((unused));
+ } multiplies_ __attribute__((unused));
 
-struct div_t {
+struct divides_t {
 	template<class T> auto operator()(T a, T b) -> decltype(a/b)  { return  a/b; }
 	template<class T> T fold_init_value(T) { return T(1); }
- } div  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
+ } divides_  __attribute__((unused));		// conflicts with <cstdlib>::div  (included with <string>)
  						// http://stackoverflow.com/questions/10445586/c11-includes-cstdlib-at-times-when-c03-will-not
 
 						
-								// this will be depricated
 struct  count_t {						// conflicts with std::count, shoudl be used only with ro::
 	template<class T> size_t operator()(size_t n, T b)  { return  n+1; }
 	template<class T> size_t fold_init_value(T) { return 0; }    
- } count  __attribute__((unused));
+ } count_  __attribute__((unused));
 
-struct  cnt_t {						// conflicts with std::count, shoudl be used only with ro::
-	template<class T> size_t operator()(size_t n, T b)  { return  n+1; }
-	template<class T> size_t fold_init_value(T) { return 0; }    
- } cnt  __attribute__((unused));
 
 ////// UTILS
 

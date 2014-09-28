@@ -396,13 +396,13 @@ accumulate, compress, catamorphisms, or inject).
 scc 'vint V{1,2,3};  V || plus<int>()'
 6
 
-scc 'vint V{1,2,3};  V || add'  		// add -  similar to std::plus<T>(), but will handle empty ranges too
+scc 'vint V{1,2,3};  V || plus_'  		// plus_ -  similar to std::plus<T>(), but will handle empty ranges too
 6
 
 scc 'range(1,3) || mul'				// fuctorial;   mul -  similar to std::multiplies<T>()
 6
 
-scc 'vstr V{"aa", "bb", "cc"};  V || add'	// concatenates
+scc 'vstr V{"aa", "bb", "cc"};  V || plus_'	// concatenates
 aabbcc
 
 scc 'vint V{1,2,3};  V || std::min'		
@@ -428,7 +428,7 @@ Integrate `sin(x)` from `0` to `pi`
 (compare with httpx://www.wolframalpha.com/input/?i=integrate+sin%28x%29+from+0+to+pi[WolframAlpha]):
 
 -------------------------------------------------------
-scc 'auto d=0.001;  (range(0,pi,d) * sin || add) * d'
+scc 'auto d=0.001;  (range(0,pi,d) * sin || plus_) * d'
 2
 -------------------------------------------------------
 
@@ -599,7 +599,7 @@ RO also defines some generic helper functions:
 * `endz(range) -> It` -- like `std::end(StlContainer)`, but will work with C-strings too
 * `clear(range) -> void`
 * all `ctype` functions reimplemented 
-* `add`,`sub`, `mul` and `div` - function object equivalent to `std::plus<T>()`, etc
+* `plus_`,`minus_`, `multiplies_` and `divides_` - function object equivalent to `std::plus<T>()`, etc
 
 
 /////////////
@@ -823,7 +823,7 @@ echo '
 	#include <ro/ro.h> 
 	using namespace ro;
 	int main() {
-		return range(10) || add;
+		return range(10) || plus_;
 	}
 ' > /tmp/ro-test.cc
 

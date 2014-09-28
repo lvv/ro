@@ -58,15 +58,15 @@ scc -a1 	'_1[1](range(9))'
 # scc -a1	'(v9[_1])(1)'		       			# not fixable:  error: no viable overloaded operator[] for type 'std::vector<int>'
 scc -a1		'(range(v9)[_1])(1)'
 # scc 		'range(9) * v9[_1]'  				# not fixable
-scc -a10	'(range(5) * range(v9)[_1]) || add'
-# scc -a10	'(range(5) * range(9)[_1]) || add'		# FIXME: numeric_range with lambda subscript
+scc -a10	'(range(5) * range(v9)[_1]) || plus_'
+# scc -a10	'(range(5) * range(9)[_1]) || plus_'		# FIXME: numeric_range with lambda subscript
 scc -a1		'(_1[_2])(v9,1)'
 
 # filtered_range
 scc 		'v9 | (_1 == 5)'
 scc 		'v9 | (_1 - 5)'
 scc 		'v9 | (_1 % 2)'	 				# FIXME for gcc.  Add fr_t::operator bool() ?
-scc -a45	'v9 | var(true) || add'
+scc -a45	'v9 | var(true) || plus_'
 
 # folding
 scc -a45	'v9 || (_1+_2)'
@@ -85,9 +85,9 @@ scc -a0		' ((*+_1)(v9))'
 scc -a1		'int i=1;  int *p=&i;  int **pp=&p;  (**_1)(pp)'
 
 ######################################   mapped_range
-scc -a10    	'range(5) * _1 || add'
-scc -a10        'range(10) * var(1) || add'
-scc -a10   	'range(5) * (_1+0)  || add'
+scc -a10    	'range(5) * _1 || plus_'
+scc -a10        'range(10) * var(1) || plus_'
+scc -a10   	'range(5) * (_1+0)  || plus_'
 scc		'int sum=0;  for(auto i: range(5) * _1) sum+= i;'
 scc		'v9       * (_1+0)'
 scc		'v9 * (_1==1)'
@@ -95,7 +95,7 @@ scc		'v9 * _1'
 scc		'v9 * var(1)'
 
 # side effects
-scc 		'v9 | (cout << _1) || add;'
+scc 		'v9 | (cout << _1) || plus_;'
 scc 		'eval(v9 * (cout <<  _1  ));'
 scc		'(v9 | (cout << _1)) || nop;'
 scc		'vector<int*> va;  eval(v9 * (va << &_1));  va * *_1 | reverse'
