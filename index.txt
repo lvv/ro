@@ -48,7 +48,7 @@ syntax:
   Or `std::slice`. Or plain for-loop; 
 - If container is a C-string, you will need to close your STL reference and start looking at `man string`; 
 
-Of cause there is logical explanation for STL's non-uniformity.  Operations
+There is logical explanation for STL's non-uniformity.  Operations
 performed under the hood are very different for each case.  End result is that
 even after many years of using it, I still need STL reference manual handy.
 
@@ -63,7 +63,7 @@ vec.erase(stl::remove(vec.begin(), vec.end(), x), vec.end());
 ---------------------------------------------------------------------------
 
 For above you need not only STL reference, but you will need know erase-remove idiom.
-Of cause if container is not `std::vector`, you will have to find out how STL
+If container is not `std::vector`, you will have to find out how STL
 does erase for your particular container.
 
 With RO you won't need expression with calls to 4 member function, 1
@@ -448,10 +448,10 @@ resize, reorder and convert to different type. Performed  operation depends on t
 Filter:  `range|predicate`
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Filter are defined with `operators|(Range, Predicate)` and `operator|(Range, elem_type)`. 
+Filters have two signatures:  `operators|(Range, Predicate)` and `operator|(Range, elem_type)`. 
 
-Predicate is functor with signature compatible with `bool(*)(elem_type)`. If such is used
-with pipe operator, all elements which evaluate to `false` with predicate - are
+Predicate is functor with signature compatible with `bool(*)(elem_type)`. When it used
+with pipe operator, all elements which predicate evaluates to `false` - are
 filtered out:
 
 ------------------------------------------
@@ -475,7 +475,7 @@ John Q Public  (XXX)XXXXXXX
 
 Expression `S | isdigit`, produce a filtered range,  where `isdigit` is
 predicate for filtering.  This is lazy-evaluated, it does not creates
-temporary container and should be as efficient as hand written for-loop.
+temporary container.
 
 Filter `operator|(Range, range_elem_type)` selects only elements which are
 equal to second argument. 
@@ -513,7 +513,7 @@ twos = 42;          // Assign to every element of V which had element equal to 2
                     // But value of twos didn't change, it is still expression V|2.   
 
 cout << V;          // {42,1,42,3}
-cout << (V|2);      // {} - empty range, because there are no 2 in V now.
+cout << (V|2);      // {} - empty range, because there are no 2 in V!.
 cout << twos;       // {} - same thing.
 ----------------------------------------------------------------
 
