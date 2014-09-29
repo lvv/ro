@@ -5,8 +5,43 @@
 					
 						#include <cassert>
 
+						#include <random>
+
 						namespace    {
 						namespace ro {
+
+/////////////////////////////////////////////////////////////////////////////////////////  TODO: RANDOM RANGE
+
+#ifndef __OPENCV_CORE_HPP__
+
+// for now opencv compatible randn/randu
+
+	template<class Rg, class T>
+	eIF< std::is_integral<T>::value , void >  
+randu(Rg& rg, T from, T to) {
+	// http://www.cplusplus.com/reference/random/uniform_int_distribution/
+	std::default_random_engine generator;
+	std::uniform_int_distribution<T> distribution(from,to);
+	for (auto& x: rg) x = distribution(generator);
+}
+	template<class Rg, class T>
+	eIF< std::is_floating_point<T>::value , void >  
+randu(Rg& rg, T from, T to) {
+	// http://www.cplusplus.com/reference/random/uniform_real_distribution/
+	std::default_random_engine generator;
+	std::uniform_real_distribution<T> distribution(from,to);
+	for (auto& x: rg) x = distribution(generator);
+}
+
+	template<class Rg, class T>
+void randn(Rg& rg, T mean, T stddev) {
+	// http://www.cplusplus.com/reference/random/normal_distribution/
+	std::default_random_engine generator;
+	std::normal_distribution<T> distribution(mean,stddev);
+	for (auto& x: rg) x = distribution(generator);
+}
+
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////  NUMERIC_RANGE_ITERATOR
 	template<typename T>
