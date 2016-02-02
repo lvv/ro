@@ -285,6 +285,8 @@ operator *       (Rg&& rg, O (*f)(E) )    {
 	return   mapped_range<Rg&&, O(*)(E), E>  (std::forward<Rg>(rg), f);
  };
 
+
+
 						};
 						};
 						#endif //  RO_MAPPED_RANGE_H

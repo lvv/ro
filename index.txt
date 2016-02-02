@@ -37,14 +37,13 @@ container << value1 << value2;
 
 Yes, this was like applying  two `push_back` (if container was vector-like). That was simple.
 
-If you want to add two values to a container with STL - that would be not so simple.  And I am not talking about
-syntax:  
+If you want to add two values to a container with STL - that would be not so simple:
 
 - If above container is `std::vector` - we will use `push_back`;
 - If `std::set` - we need `insert`;
 - If `std::map` - `operator[]` or `insert`; 
 - If `std::stack` - that would be `push`; 
-- If `value1` is container too, you will need `std::copy` possibly with `std::back_insert_iterator`.
+- If `value1` is container too, it will depend on type of container. It can be `std::copy` possibly with `std::back_insert_iterator`.
   Or `std::slice`. Or plain for-loop; 
 - If container is a C-string, you will need to close your STL reference and start looking at `man string`; 
 
@@ -76,8 +75,7 @@ vec - x;
 And again, above expression won't change if we use any container (or range) and if
 `x` is  a value, a predicate, iterator or sub-range.
 
-Some will say that STL iterface is more flexible because we can erase sub-range defined by two iterators. 
-No problem, RO has plenty of flexibility:
+If we need to erase subrange:
 
 ---------------------------------------------------------------------------
 vec - range(it1,it2);
@@ -115,19 +113,19 @@ while(it!=vec.end()) {
 This is rather low level way of doing things.  RO provides mulch simpler code with filtered range:
 
 -----------------------------------------
-vector<int> result = vec | (_1>val);
+vector<int> result = vec | (_1 > val);
 -----------------------------------------
 
-One of the reasons why RO chooses to use operators was because it was designed
-to be composable.  Range/functors/RO-lambdas can be combined into complex
-expression, where actions usually flow from left to right.  Like in classic Unix pipe:
+// One of the reasons why RO chooses to use operators was because it was designed
+// to be composable.  Range/functors/RO-lambdas can be combined into complex
+// expression, where actions usually flow from left to right.  Like in classic Unix pipe:
+// 
+//  ---------------------------------------------------------------------------
+// some_range | std::sort | std::unique | std::reverse;
+// ---------------------------------------------------------------------------
 
----------------------------------------------------------------------------
-some_range | std::sort | std::unique | std::reverse;
----------------------------------------------------------------------------
-
-That was valid RO expression.  If RO used functions instead of operators, this
-would be much more complex expression with 4-level deep parenthesis.
+// That was valid RO expression.  If RO used functions instead of operators, this
+// would be much more complex expression with 4-level deep parenthesis.
 
 
 ///////////////////
@@ -143,7 +141,7 @@ SCC
 ---
 
 RO was originally part of http://volnitsky.com/project/scc[SCC] (+++ C++ +++
-snippet evaluator at shell prompt).  RO does not depends on SCC but we will use
+snippet evaluator at shell prompt (aka REPL)).  RO does not depends on SCC but we will use
 it in examples, so we need short intro for SCC.
 
 Without SCC, minimal complete example for erase snippet `vec - 2` would be:
@@ -178,7 +176,7 @@ SCC includes RO and all standard libraries includes; and it sends last
 statement-expression, if not terminated by semi-colon, to `std::cout`. 
 
 In examples we will use two SCC's types typedefs: `str` is  `std::string`, and
-`vint`  is `std::vector<int>`.  We need these because most examples are
+`vint`  is `std::vector<int>`.  We need these to cut verbosity,  most examples are
 1-liners.  With these we can rewrite above as:
 
 ----------------------------------------------------------------------------
@@ -186,7 +184,7 @@ scc 'vint{1,2,3} - 2'
 {1, 3}
 ----------------------------------------------------------------------------
 
-RO print operator (and `std::cout`) can print almost any STL objects
+RO print operator (and `std::cout` with RO) can print almost any STL objects
 directly.  RO's print operators are `_` and `__`.  Longer one terminates output with `endl`.
 Items in print operator are separated by `,` not by `<<`. 
 
@@ -280,7 +278,7 @@ scc 'range(10,0,-1.5)'
 {10, 8.5, 7, 5.5, 4, 2.5, 1}
 
 // any arithmetic type
-scc 'range('a','z')'
+scc "range('a','z')"
 a b c d e f g h i j k l m n o p q r s t u v w x y z
 
 // no need for verbose iota
@@ -308,15 +306,15 @@ scc 'vint V=range(1,10);   range(V/2, V/5) = 42;  V'
 Expression `range(1,10)` constructs numeric range which initialize `V`.  
 Expression `V/2` returns iterator to 1st element with value `2`.  Expression
 `range(V/2,V/5)` constructs iterator range from pair of iterators.
+Expression `range = val` assigns value to all elements of range.
 
 
 Ranges can be assigned to another range even if they have different underlying
-containers.  Here is simple lazy-expression range, which shows that it just
-a reference to underlying container:
+containers:
 
 ------------------------------------------
-scc  'vint V;  auto R=range(V);  V=range(1,10);  R, V'
-{1, 2, 3, 4, 5, 6, 7, 8, 9, 10} {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+scc 'vector<int> V{1,2,3}; list<long> L;   range(L)=V;  L'
+{1, 2, 3}
 -------------------------------------------------
 
 
@@ -324,7 +322,8 @@ Operation with C-strings
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 C-strings are treated as special kind of range in RO. The only limitation is that C-string is a POD type and +++C++ +++ 
-C++ does not allow to overloaded ops on POD types and we need to wrap it into RO range. 
+C++ does not allow to overloaded ops on POD types and we need to wrap it into
+RO range.  For `str::string` we don't need to do `range()` wrapping.
 
 We first assign "abc" to a c-string, then append `"123"` and then remove `"bc"` substring :
 
@@ -333,17 +332,8 @@ scc 'char s[99] = "abc";  (range(s) << "123") - "bc"'
 a123
 ------------------------------------------
 
-Same example, but for `str::string` (without range-wrapping):
-
------------------------------------------
-scc 'str s("abc");  (s << "123") - "bc"'
-a123
-------------------------------------------
-
-
-FP operators: Map, Reduce, Filter
----------------------------------
-
+Function programing: Map, Reduce, Filter
+----------------------------------------
 
 Map/Transform
 ~~~~~~~~~~~~~

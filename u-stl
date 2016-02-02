@@ -38,7 +38,7 @@ scc -a1		'auto T = MT(1,2,3);                 ++T == 1   &&   T++ == 3     &&  s
 scc -a1		'stack<int> s;  s << 1 << 2 << 3;  int x;  s >> x;   x==3  &&   s++ == 2  &&  size(s--)==1'
 
 scc -a1		'dint c{1,2,3,4};      --c;  c--; ++c==2  &&  c++==3'
-scc -a1		'map<int,int> m;   m << MP(1,2);   m[1]==2'
+scc -a1		'map<int,int> m;   m << make_pair(1,2);   m[1]==2'
 scc -a1		'size(-- -- dint{0,1,2,3,4} -- --)==1'
 
 # SIZE
