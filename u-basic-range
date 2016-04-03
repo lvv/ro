@@ -49,8 +49,8 @@ scc -a45	'v9 || std::plus<int>()'
 scc -a45	'v9 || plus_'
 scc -a0		'int mn= v9 || [](int a, int b){return min(a,b);};  mn'
 scc -a45	'vs9 * size || plus<int>()'
-scc -a3		'vint{1,2,3} || ro::count'
-scc -a0		'vint{}      || ro::count'
+#scc -a3		'vint{1,2,3} || size'
+#scc -a0		'vint{}      || size'
 
 # empty ranges
 scc  'range(0) || plus_, range(3) || plus_'

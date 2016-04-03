@@ -513,6 +513,7 @@ template<size_t N>	auto  beginz(char       (&array)[N] ) -> decltype(std::begin(
 struct size_fo {
 		typedef 	size_t 	result_type;
 
+	///// size_impl for different T
 	template<class Rg>    eIF<has_size<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return  rg.size(); };
 	//template<class Rg>		auto	size_impl (const Rg& rg) ->decltype(rg.size())  const      { return rg.size(); };
 	template<class T, size_t N>    eIF<!is_cstr<T[N]>::value, size_t>  constexpr  size_impl (const T    (&C)[N]) const                       { return N; };
@@ -523,7 +524,11 @@ struct size_fo {
 	template<class Rg>    eIF<is_cstr<Rg>::value, size_t>	size_impl (const Rg& rg)  const		   { return  endz(rg)-beginz(rg); };
 	//template<class T, size_t N>	size_t 		  size_impl (const char (&C)[N]) const                       { return ro::endz(C) - beginz(C); };
 
+	///// size function
 	template<class X>		size_t	operator() (const X& x)  const                             { return size_impl(x); };
+
+	///// folding operator  (like in:   range||size)
+	template<class X>		size_t	operator() (const X& x1, const X& x2)  const                             { return x1+1; };
 
 };
 

@@ -73,7 +73,7 @@ struct	numeric_range_iterator {
 
 
 	// 
-	T get_value(int i) 		const	{  assert( 0 <= i && i <= range->range_end);  return range->from  +  i * range->step; }
+	T get_value(int i) 		const	{  assert( 0 <= i && i <= (ssize_t) range->range_end);  return range->from  +  i * range->step; }
 
 
 	// forward  iter
