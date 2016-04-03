@@ -128,12 +128,12 @@ struct  rand_range {
 
 	
 	std::default_random_engine	generator;           // http://www.cplusplus.com/reference/random/uniform_int_distribution/
-	D				distribution {param1,param2};
+	D				distribution;
 
 
 	// CTOR
 	rand_range()  									: param1(T()),  param2(T())  {};
-	rand_range(T param1, T param2, size_t size=std::numeric_limits<T>::max())	: param1(param1), param2(param2),   range_end(size)/*, distribution(param1,param2)*/  { assert(range_end >= 0);};
+	rand_range(T param1, T param2,  size_t sz = std::numeric_limits<T>::max())	: param1(param1), param2(param2),   range_end(sz), distribution(param1,param2)  { assert(range_end >= 0);};
 
 	// ITERATOR
 	      iterator	begin()		{ return       iterator(this, 0); };
