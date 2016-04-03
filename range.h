@@ -5,6 +5,7 @@
 						#include <ro/iterator_range.h>
 						#include <ro/mapped_range.h>
 						#include <ro/predicated_range.h>
+						#include <ro/rand_range.h>
 
 						namespace    {
 						namespace ro {

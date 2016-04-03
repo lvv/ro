@@ -14,6 +14,7 @@
 
 #ifndef __OPENCV_CORE_HPP__
 
+/*
 // for now opencv compatible randn/randu
 
 	template<class Rg, class T>
@@ -40,6 +41,7 @@ void randn(Rg& rg, T mean, T stddev) {
 	std::normal_distribution<T> distribution(mean,stddev);
 	for (auto& x: rg) x = distribution(generator);
 }
+*/
 
 #endif
 
@@ -76,7 +78,7 @@ struct	numeric_range_iterator {
 	T get_value(int i) 		const	{  assert( 0 <= i && i <= (ssize_t) range->range_end);  return range->from  +  i * range->step; }
 
 
-	// forward  iter
+	// input iter op
 	const_reference	operator*()	const	{ return   get_value(current); }
 	const_pointer	operator->()	const	{ return  &(operator*()); }
 	const_iterator&	operator++()		{ ++current;   return *this; }
@@ -86,13 +88,13 @@ struct	numeric_range_iterator {
 	bool		operator==(const const_iterator &rhs)	const	{ return   rhs.current == current; }
 	bool		operator!=(const const_iterator &rhs)	const	{ return   ! (*this == rhs); }
 
-	typedef		std::random_access_iterator_tag		iterator_category;
+	typedef		std::random_access_iterator_tag		iterator_category;  	//  §24.2.7 -- random access.iterators
 		
-	// bidi iter 
+	// bidi iter op
 	const_iterator&	operator--()					{ --current;   assert(current>=0); return *this; }
 	const_iterator&	operator--(int)					{ auto tmp=*this;  --current;   assert(current>=0); return tmp; }
 
-	// random access iter
+	// random access iter op
 	const_iterator	operator+= (difference_type n)			{ current+=n;  assert(current<=range->range_end);  return *this; }
 	const_iterator	operator-= (difference_type n)			{ current-=n;  assert(current>=0);           return *this; }
 	value_type	operator[] (difference_type n)		const	{ return get_value(n); }
@@ -165,12 +167,12 @@ struct  numeric_range {
 template<class T>	struct  is_range_t  <numeric_range<T>>				: std::true_type  {};
 template<class T>	struct 	is_range_t  <numeric_range_iterator<T>>			: std::false_type  {};
 
-template<class T>      	struct  is_ro_range	    <numeric_range<T>>			: std::true_type {};
+template<class T>      	struct  is_ro_range	     <numeric_range<T>>			: std::true_type {};
 template<class T>	struct  is_ro_range_iterator <numeric_range_iterator<T>>	: std::true_type {};
 
 
 template<class Rg>	struct	is_numeric_range               				: std::false_type {};
-template<class T>	struct	is_numeric_range<numeric_range<T>>			: std::true_type {};
+template<class T>	struct	is_numeric_range <numeric_range<T>>			: std::true_type {};
 
 template<class It>	struct	is_numeric_range_iterator      				: std::false_type {};
 template<class T>	struct	is_numeric_range_iterator <numeric_range_iterator<T>>	: std::true_type {};
