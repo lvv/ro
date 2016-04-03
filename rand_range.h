@@ -174,6 +174,10 @@ template<class T, class D>	struct  is_ro_range_iterator <rand_range_iterator<T,D
 	eIF<std::is_arithmetic<T>::value,  rand_range<T>>
 urange(T1 p1,  T2 p2, size_t size = std::numeric_limits<T>::max())  { return rand_range<T>(p1, p2, size); };
 
+	template<class T1, class T2, class T=decltype(T1()+T2())>
+	eIF<std::is_arithmetic<T>::value,  rand_range<T, std::normal_distribution<T>>>
+grange(T1 p1,  T2 p2, size_t size = std::numeric_limits<T>::max())  { return rand_range<T, std::normal_distribution<T>>(p1, p2, size); };
+
 /*
 	template<class T1, class T2, class T3, class T=decltype(T1()+T2()+T3())>
 	eIF<std::is_arithmetic<T>::value,  numeric_range<T>>
