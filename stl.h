@@ -52,7 +52,7 @@
 
 	template<typename Rg>
 	auto
- front    (Rg&& rg) 
+ front    (Rg&& rg)
 	-> decltype(*std::begin(rg))  {
 	return      *std::begin(rg);
  }
@@ -116,43 +116,43 @@
 
 
 	// Rg << Rg2
-	template<class Rg, class Rg2> 
+	template<class Rg, class Rg2>
 	eIF <have_same_elems<Rg,Rg2>::value,  Rg&&>
  operator <<  (Rg&& rg1, Rg2&& rg2)         {  for (auto i=std::begin(rg2);  i!=endz(rg2);  ++i)  detail::append_elem(std::forward<Rg>(rg1), std::move(*i));   return  std::forward<Rg>(rg1); };
 
 	// Rg == Rg2
-	template<class Rg1, class Rg2> 
+	template<class Rg1, class Rg2>
 	eIF <have_convertible_elems<Rg1,Rg2>::value,  bool>
- operator ==  (Rg1&& rg1, Rg2&& rg2)         { 
+ operator ==  (Rg1&& rg1, Rg2&& rg2)         {
 	auto i1=beginz(rg1);
-	auto i2=beginz(rg2); 
+	auto i2=beginz(rg2);
 
 	for (;  i1!=endz(rg1)  &&  i2!=endz(rg2);  ++i1, ++i2)
-		 if (*i1!=*i2) return false;  
+		 if (*i1!=*i2) return false;
 
 	if ( (i1==endz(rg1))  !=  (i2==endz(rg2)) )  return false;
 	return  true;
  };
 
 	// Rg != Rg2
-	template<class Rg1, class Rg2> 
+	template<class Rg1, class Rg2>
 	eIF <have_convertible_elems<Rg1,Rg2>::value,  bool>
  operator !=  (Rg1&& rg1, Rg2&& rg2)         { return  ! (rg1 == rg2); };
 
 
-/////  T >> Rg 
-	// x >> Rg 
+/////  T >> Rg
+	// x >> Rg
 	template<class X, class Rg>
 	eIF <is_elem_of<X,Rg>::value,  Rg&&>
  operator >> (X&& x, Rg&& rg1)            {  detail::prepend_elem(std::forward<Rg>(rg1),  std::forward<X>(x));   return  std::forward<Rg>(rg1); };
 
 
 	// fromRg >> toRg
-	template<class sRn, class tRn> 
+	template<class sRn, class tRn>
 	eIF <have_same_elems<tRn,sRn>::value,  tRn&&>
  operator >>  (sRn&& src, tRn&& trg)  {
 
-	if (std::begin(src) == endz(src)) 
+	if (std::begin(src) == endz(src))
 		return  std::forward<tRn>(trg);
 
 	auto it = endz(src);
@@ -168,7 +168,7 @@
 //##############################################################################################  RG - X
 
 ////////////////////////////////////////////////////////////////////////////////////////////////  RG - VALUE
-	
+
 /////  IMPL
 
 	// vector - value
@@ -200,7 +200,7 @@
 			template<typename Cstr_ptr>
 			void
 		cstr2_erase_value_impl (Cstr_ptr b,  Cstr_ptr e,  decltype(*Cstr_ptr()) c) {
-			auto p=std::find(b,e,c); 
+			auto p=std::find(b,e,c);
 			if (p!=e)   std::copy(p+1,e+1, p);
 		 };
 
@@ -237,7 +237,7 @@
 	return  erase_value_impl(std::forward<Rg>(rg), value, erasable_category(rg));
  };
 
-	
+
 		// map - key
 		template<class Rg>
 		eIF <is_range<Rg>::value   &&  is_map<Rg>::value, Rg>
@@ -359,7 +359,7 @@
 	if (b==rg_e)  return  std::forward<Rg>(rg);
 	auto e = b;
 	std::advance(e,size(sub_rg));
-	rg.erase(b,e); 
+	rg.erase(b,e);
 	return  std::forward<Rg>(rg);
  };
 
@@ -372,7 +372,7 @@
 	auto b    = std::search(std::begin(rg), rg_e, std::begin(sub_rg), endz(sub_rg));
 	if (b==rg_e)  return  std::forward<Rg>(rg);
 	auto e = b;
-	//rg.erase(b,e); 
+	//rg.erase(b,e);
 	std::copy(e,rg_e+1,b);
 	return  std::forward<Rg>(rg);
  };
@@ -397,7 +397,7 @@
 			eIF <is_callable<F, bool(rg_elem_type<Rg>)>::value, rg_iterator<Rg>>
 		find_elem(Rg&& rg, const F& pred)  { return  std::find_if(std::begin(rg), endz(rg), pred); };
 
-			
+
 		//  Rg1 / Rg2
 			template<typename Rg1, typename Rg2>
 			eIF <have_same_elems<Rg1, Rg2>::value, rg_iterator<Rg1>>
@@ -405,8 +405,8 @@
 	}
 
 
-/////  Rg / X  
-	
+/////  Rg / X
+
 	// ---  non callable
 	template<typename Rg, typename T>
 	eIF <is_range<Rg>::value , rg_iterator<Rg>>
@@ -449,7 +449,7 @@ template<class U, class V>   V&    back   (std::pair<U,V>&  P)		{ return        
 template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::move(P.second); };
 
 
-/////  ++Tpl 
+/////  ++Tpl
 	template <class... Types>
 	typename std::tuple_element<std::tuple_size<std::tuple<Types...> >::value-1, typename std::tuple<Types...> >::type&
  back	(typename std::tuple<Types...>& Tpl)  {  return  std::get<std::tuple_size<std::tuple<Types...> >::value-1>(Tpl); };
@@ -461,13 +461,13 @@ template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::mo
  back	(const typename std::tuple<Types...>& Tpl)  {  return  std::get<std::tuple_size<std::tuple<Types...> >::value-1>(Tpl); };
 
 
-/////  Tpl++ 
+/////  Tpl++
 	template <class... Types>
 	typename std::tuple_element<0, std::tuple<Types...> >::type&
  front	(typename std::tuple<Types...>& Tpl)  {  return  std::get<0>(Tpl); };
 
 
-/////  Tpl++  (const) 
+/////  Tpl++  (const)
 	template <class... Types>
 	const typename std::tuple_element<0, std::tuple<Types...> >::type&
  front	(const typename std::tuple<Types...>& Tpl)  {  return  std::get<0>(Tpl); };
@@ -500,7 +500,7 @@ template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::mo
 
 /////  --Queue
 	template<class Rg, class Xt>
-	eIF <is_queue<Rg>::value, Rg&&> 
+	eIF <is_queue<Rg>::value, Rg&&>
  operator--      (Rg&& rg)    { rg.pop();   return std::forward<Rg>(rg); };
 
 
@@ -522,10 +522,11 @@ template<class U, class V>   V&&   back   (std::pair<U,V>&& P)		{ return std::mo
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////  GENERICS
 								 // this must be after all front(X) definitions
-								
+
  template<class Rg>	auto operator++(Rg&& rg)      -> decltype(front(rg)) 		{ return front(rg); }
  template<class Rg>	auto operator++(Rg&& rg, int) -> decltype(back (rg)) 		{ return back (rg); }
 
+ template<class Rg>	auto operator*(Rg&& rg)      -> decltype(back_inserter(rg)) 		{ return back_inserter(rg); } ///> for quickly writing back_insert. For example: boost::copy(in,*out);
 					};
 					};
 					#endif	// RO_STL_H
